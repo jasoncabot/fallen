@@ -1,0 +1,36 @@
+@font-face {
+  font-family: 'Roboto';
+  src: url(../fonts/Roboto-Regular.ttf)
+}
+
+@import 'variables';
+
+html {
+  font-size: $root-font-size;
+  font-family: $font-family;
+  text-align: center;
+  height: 100%;
+  color: $primary-text-color;
+  background-size: cover;
+  background: radial-gradient(at top left, $primary-color, $primary-color-dark);
+  background-repeat:no-repeat;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 8vw;
+}
+
+p {
+  font-size: $paragraph-font-size;
+}
+
+#root {
+  max-width: $page-width;
+  margin: 0 auto;
+  text-align: left;
+}

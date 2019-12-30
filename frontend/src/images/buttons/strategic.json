@@ -1,0 +1,374 @@
+{
+    "frames": [
+        {
+            "filename": "repair_0",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 46,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "repair_1",
+            "frame": {
+                "x": 0,
+                "y": 73,
+                "w": 46,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "repair_2",
+            "frame": {
+                "x": 0,
+                "y": 146,
+                "w": 46,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "repair_3",
+            "frame": {
+                "x": 0,
+                "y": 219,
+                "w": 46,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        }
+        ,
+        {
+            "filename": "build_0",
+            "frame": {
+                "x": 52,
+                "y": 0,
+                "w": 75,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "build_1",
+            "frame": {
+                "x": 52,
+                "y": 73,
+                "w": 75,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "build_2",
+            "frame": {
+                "x": 52,
+                "y": 146,
+                "w": 75,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "build_3",
+            "frame": {
+                "x": 52,
+                "y": 219,
+                "w": 75,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        }
+        ,
+        {
+            "filename": "road_0",
+            "frame": {
+                "x": 131,
+                "y": 0,
+                "w": 81,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "road_1",
+            "frame": {
+                "x": 131,
+                "y": 73,
+                "w": 81,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "road_2",
+            "frame": {
+                "x": 131,
+                "y": 146,
+                "w": 81,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "road_3",
+            "frame": {
+                "x": 131,
+                "y": 219,
+                "w": 81,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        }
+        ,
+        {
+            "filename": "recycle_0",
+            "frame": {
+                "x": 216,
+                "y": 0,
+                "w": 59,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "recycle_1",
+            "frame": {
+                "x": 216,
+                "y": 73,
+                "w": 59,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "recycle_2",
+            "frame": {
+                "x": 216,
+                "y": 146,
+                "w": 59,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "recycle_3",
+            "frame": {
+                "x": 216,
+                "y": 219,
+                "w": 59,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        }
+        ,
+        {
+            "filename": "map_0",
+            "frame": {
+                "x": 279,
+                "y": 0,
+                "w": 80,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "map_1",
+            "frame": {
+                "x": 279,
+                "y": 73,
+                "w": 80,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "map_2",
+            "frame": {
+                "x": 279,
+                "y": 146,
+                "w": 80,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "map_3",
+            "frame": {
+                "x": 279,
+                "y": 219,
+                "w": 80,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        }
+        ,
+        {
+            "filename": "menu_0",
+            "frame": {
+                "x": 363,
+                "y": 0,
+                "w": 83,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "menu_1",
+            "frame": {
+                "x": 363,
+                "y": 73,
+                "w": 83,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "menu_2",
+            "frame": {
+                "x": 363,
+                "y": 146,
+                "w": 83,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "menu_3",
+            "frame": {
+                "x": 363,
+                "y": 219,
+                "w": 83,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        }
+        ,
+        {
+            "filename": "colony_0",
+            "frame": {
+                "x": 451,
+                "y": 0,
+                "w": 65,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "colony_1",
+            "frame": {
+                "x": 451,
+                "y": 73,
+                "w": 65,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "colony_2",
+            "frame": {
+                "x": 451,
+                "y": 146,
+                "w": 65,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "colony_3",
+            "frame": {
+                "x": 451,
+                "y": 219,
+                "w": 65,
+                "h": 69
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ]
+}
