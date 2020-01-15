@@ -26,7 +26,8 @@ module.exports = {
       filename: 'index.html', // output file
     }),
     new webpack.DefinePlugin({
-      API_ENDPOINT: JSON.stringify(process.env.API_ENDPOINT),
+      API_ENDPOINT: JSON.stringify(process.env.API_ENDPOINT || '/assets/api'),
+      ASSET_ENDPOINT: JSON.stringify(process.env.ASSET_ENDPOINT || '/assets/data'),
       CANVAS_RENDERER: JSON.stringify(true),
       WEBGL_RENDERER: JSON.stringify(true)
     })

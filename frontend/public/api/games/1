@@ -1,0 +1,30 @@
+{
+    "globalReserve": 4255,
+    "haven": {
+        "energy": 123,
+        "research": 1234,
+        "income": 1421,
+        "units": {
+            "123456": {
+                "kind": {
+                    "category": "human",
+                    "id": "1"
+                },
+                "facing": 0,
+                "position": {"x": 3, "y": 2},
+                "hp": 15,
+                "experience": 1
+            }
+        },
+        "structures": {
+            "23456": {
+                "position": {"x": 6, "y": 1},
+                "hp": 15,
+                "kind": {
+                    "category": "human",
+                    "id": "1"
+                }
+            }
+        }
+    }
+}

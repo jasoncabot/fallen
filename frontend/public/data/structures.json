@@ -1,0 +1,26 @@
+{
+    "1": {
+        "kind": {
+            "category": "WALL",
+            "starship": false
+        },
+        "size": {
+            "x": 1,
+            "y": 1
+        },
+        "production": {
+            "category": "NONE",
+            "cash": 0,
+            "energy": 0,
+            "research": 0
+        },
+        "usage": {
+            "cash": 0,
+            "energy": 0
+        },
+        "storage": {
+            "category": "NONE",
+            "size": 0
+        }
+    }
+}

@@ -5,7 +5,7 @@ import dialogStructure from '../../images/ui/dialog-structure.png';
 import buttonsManufacturing from '../../images/buttons/manufacturing.png';
 import buttonsManufacturingData from '../../images/buttons/manufacturing.json';
 
-export class Dialog extends Scene {
+export default class Dialog extends Scene {
 
     constructor(key, x, y, parent) {
         super(key);

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 
-import { Dialog } from './Dialog';
+import Dialog from '../components/Dialog';
+import { api } from '../Config';
 
 // TODO: come up with a better way of referencing these images
 import rocky from '../../images/terrain/rocky.png';
@@ -18,23 +19,11 @@ import logoHuman from '../../images/ui/logo-human.png';
 import logoNeutral from '../../images/ui/logo-neutral.png';
 import roads from '../../images/roads/roads.png';
 
-const structure = {
-    neutral: {
-        ssi: require('../../images/structures/neut_ssi.png'),
-        si: require('../../images/structures/neut_ssi.png')
-    },
-    alien: {
-        ssi: require('../../images/structures/alie_ssi.png'),
-        si: require('../../images/structures/alie_ssi.png')
-    },
-    human: {
-        ssi: require('../../images/structures/huma_ssi.png'),
-        si: require('../../images/structures/huma_ssi.png')
-    }
-}
+import { Structures } from '../assets/Resources';
 
 import customCursor from '../../images/misc/FALLEN_223.cur';
 import customPointer from '../../images/misc/FALLEN_218.cur';
+import structurePointer from '../../images/misc/FALLEN_218.cur';
 
 import { Sounds } from './../assets/Sounds';
 
@@ -58,7 +47,7 @@ export default class Play extends Phaser.Scene {
     }
 
     init(data) {
-        console.log('Starting game with options ' + JSON.stringify(data));
+        this.gameId = data.gameId;
     }
 
     preload() {
@@ -72,7 +61,7 @@ export default class Play extends Phaser.Scene {
         this.load.spritesheet('unit-human', unitHuman, { frameWidth: 70, frameHeight: 54 });
         this.load.spritesheet('unit-neutral', unitNeutral, { frameWidth: 70, frameHeight: 54 });
 
-        this.load.spritesheet('nuetral-struct', structure.neutral.si, { frameWidth: 70, frameHeight: 54 });
+        this.load.spritesheet('nuetral-struct', Structures.neutral.si, { frameWidth: 70, frameHeight: 54 });
         this.load.spritesheet('roads', roads, { frameWidth: 70, frameHeight: 54 });
 
         this.load.atlas('buttons-strategic', buttonsStrategic, buttonsStrategicData);
@@ -87,7 +76,7 @@ export default class Play extends Phaser.Scene {
         this.sounds.preload(this);
 
         // dynamic content
-        this.load.json('map', 'assets/data/map1.json');
+        this.load.json('game', api("/games/" + this.gameId));
     }
 
     onUnitSelected(unit, pos) {
@@ -126,6 +115,7 @@ export default class Play extends Phaser.Scene {
     createButton(name, x, y, callback) {
         let button = this.add.image(x, y, 'buttons-strategic', name + '_0')
             .setScrollFactor(0)
+            // TODO: figure out how to have a non-rectangular spritesheet button
             // .setInteractive(new Phaser.Geom.Polygon([12, 411, 44, 411, 57, 429, 57, 460, 43, 477, 12, 477]), Phaser.Geom.Polygon.Contains);
             .setInteractive({ useHandCursor: true });
 
@@ -142,13 +132,23 @@ export default class Play extends Phaser.Scene {
         return button;
     }
 
-    unitImage(kind, direction) {
+    imageForUnit(unit) {
+        // TODO: hardcoded - needs to read the correct unit image
         return {
             spritesheet: 'unit-alien',
             name: '44'
         };
     }
 
+    imageForStructure(structure) {
+        // TODO: hardcoded - needs to read the correct size and structure image
+        return {
+            spritesheet: 'nuetral-struct',
+            name: '4'
+        }
+    }
+
+    // TODO: all this needs to move to real modules
     drawTileSelector(graphics, enabled) {
         // enabled == whether to draw a cross through it or not for construction
         graphics.lineStyle(1, 0xFFFFFF, 1.0);
@@ -175,34 +175,56 @@ export default class Play extends Phaser.Scene {
     }
 
     create() {
-        let map = this.cache.json.get('map');
+        let game = this.cache.json.get('game');
 
-        let tileBlitter = this.add.blitter(0, 0, map.terrain.type);
+        // dummy data let's just show haven
+        let terrain = this.cache.json.get('data-provinces').haven;
+        let province = game.haven;
+
+        // create province view
+        let tileBlitter = this.add.blitter(0, 0, terrain.type);
         let roadBlitter = this.add.blitter(0, 0, 'roads');
 
         // create unit image lookup
         let unitImages = [];
-        map.units.forEach(unit => {
+        Object.values(province.units).forEach((unit) => {
             let row = unitImages[unit.position.x];
             if (!row) {
                 row = [];
                 unitImages[unit.position.x] = row;
             }
-            row[unit.position.y] = this.unitImage(unit.kind, unit.facing);
+            row[unit.position.y] = this.imageForUnit(unit);
         });
 
+        // create structure image lookup
+        let structureImages = [];
+        Object.values(province.structures).forEach((structure) => {
+            let row = structureImages[structure.position.x];
+            if (!row) {
+                row = [];
+                structureImages[structure.position.x] = row;
+            }
+            // TODO: structures span more than 1 tile so this needs to populate multiple [x][y] tiles
+            row[structure.position.y] = this.imageForStructure(structure);
+        });
 
-        let scanLines = (map.height + map.width) - 1;
+        let scanLines = (terrain.height + terrain.width) - 1;
         var line = 0;
         while (line < scanLines) {
             for (let j = 0, i = line; j <= line; j++ , i--) {
-                if (j >= map.width) continue;
-                if (i >= map.height) continue;
+                if (j >= terrain.width) continue;
+                if (i >= terrain.height) continue;
 
                 let pos = this.screenCoordinates(j, i);
-                let terrain = tileBlitter.create(pos.x, pos.y, map.terrain.tiles[i][j]);
+                tileBlitter.create(pos.x, pos.y, terrain.tiles[i][j]);
 
-                // TODO: render buildings
+                // render structures
+                let structure = (structureImages[j] || [])[i];
+                if (structure) {
+                    this.add.image(pos.x, pos.y, structure.spritesheet, structure.name)
+                        .setOrigin(0, 0)
+                        .setInteractive({ cursor: 'url(' + structurePointer + '), pointer' });
+                }
 
                 // render units
                 let unit = (unitImages[j] || [])[i];
@@ -323,10 +345,10 @@ export default class Play extends Phaser.Scene {
         });
 
         let font = { color: 'green', fontSize: '12px', fontFamily: 'Courier' };
-        ui.add(this.add.text(48, 7, map.strategic.research, font));
-        ui.add(this.add.text(125, 7, map.strategic.energy, font));
-        ui.add(this.add.text(300, 7, map.strategic.name, font));
-        ui.add(this.add.text(540, 7, map.strategic.globalReserve + "/" + map.strategic.income, font));
+        ui.add(this.add.text(48, 7, province.research, font));
+        ui.add(this.add.text(125, 7, province.energy, font));
+        ui.add(this.add.text(300, 7, terrain.name, font));
+        ui.add(this.add.text(540, 7, game.globalReserve + "/" + province.income, font));
     }
 
     update(time, delta) {

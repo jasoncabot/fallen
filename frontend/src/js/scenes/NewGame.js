@@ -57,6 +57,6 @@ export default class NewGame extends Scene {
     onStart(options) {
         const { race, difficulty, campaign } = options;
         const data = { race, difficulty, campaign };
-        this.scene.start('Play', data);
+        this.scene.start('LoadGameResources', data);
     }
 }
