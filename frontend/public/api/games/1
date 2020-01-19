@@ -7,22 +7,27 @@
         "units": {
             "123456": {
                 "kind": {
-                    "category": "human",
-                    "id": "1"
+                    "category": "ASQU"
                 },
                 "facing": 0,
-                "position": {"x": 3, "y": 2},
+                "position": {"x": 3, "y": 5},
                 "hp": 15,
                 "experience": 1
             }
         },
         "structures": {
             "23456": {
-                "position": {"x": 6, "y": 1},
+                "position": {"x": 0, "y": 0},
                 "hp": 15,
                 "kind": {
-                    "category": "human",
-                    "id": "1"
+                    "category": "ASHP"
+                }
+            },
+            "34567": {
+                "position": {"x": 3, "y": 0},
+                "hp": 200,
+                "kind": {
+                    "category": "AAIR"
                 }
             }
         }

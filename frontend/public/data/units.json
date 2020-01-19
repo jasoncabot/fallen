@@ -1,9 +1,13 @@
 {
-    "1": {
+    "ASQU": {
         "kind": {
             "category": "Squad"
         },
         "upkeep": 2,
-        "cost": 30
+        "cost": 30,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 41
+        }
     }
 }

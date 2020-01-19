@@ -1,12 +1,14 @@
 {
-    "1": {
+    "ASHP": {
         "kind": {
-            "category": "WALL",
-            "starship": false
+            "category": "DROPSHIP",
+            "starship": true
         },
-        "size": {
-            "x": 1,
-            "y": 1
+        "display": {
+            "width": 3,
+            "height": 3,
+            "tiles": "structure-alien-dropship",
+            "offset": 0
         },
         "production": {
             "category": "NONE",
@@ -19,8 +21,42 @@
             "energy": 0
         },
         "storage": {
-            "category": "NONE",
-            "size": 0
+            "category": "TROOP FACTORY HOVER",
+            "size": 8
+        },
+        "build": {
+            "cost": 800,
+            "placement": "ANYWHERE"
+        }
+    },
+    "AAIR": {
+        "kind": {
+            "category": "AIRPORT",
+            "starship": false
+        },
+        "display": {
+            "width": 3,
+            "height": 4,
+            "tiles": "structure-alien",
+            "offset": 0
+        },
+        "production": {
+            "category": "HOVER",
+            "cash": 0,
+            "energy": 0,
+            "research": 0
+        },
+        "usage": {
+            "cash": 0,
+            "energy": 50
+        },
+        "storage": {
+            "category": "HOVER",
+            "size": 12
+        },
+        "build": {
+            "cost": 225,
+            "placement": "B-ROAD"
         }
     }
 }

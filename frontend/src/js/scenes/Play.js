@@ -11,15 +11,12 @@ import buttonsStrategic from '../../images/buttons/strategic.png';
 import buttonsStrategicData from '../../images/buttons/strategic.json';
 import uiStrategic from '../../images/ui/strategic.png';
 import activeUnitSelection from '../../images/icons/active-unit-selection.png';
-import unitAlien from '../../images/units/alie_ui.png';
-import unitNeutral from '../../images/units/neut_ui.png';
-import unitHuman from '../../images/units/huma_ui.png';
 import logoAlien from '../../images/ui/logo-alien.png';
 import logoHuman from '../../images/ui/logo-human.png';
 import logoNeutral from '../../images/ui/logo-neutral.png';
 import roads from '../../images/roads/roads.png';
 
-import { Structures } from '../assets/Resources';
+import { registerUnits, registerStructures } from '../assets/Resources';
 
 import customCursor from '../../images/misc/FALLEN_223.cur';
 import customPointer from '../../images/misc/FALLEN_218.cur';
@@ -57,11 +54,11 @@ export default class Play extends Phaser.Scene {
         this.load.spritesheet('rocky', rocky, { frameWidth: 70, frameHeight: 54 });
         this.load.spritesheet('forest', forest, { frameWidth: 70, frameHeight: 54 });
         this.load.spritesheet('desert', desert, { frameWidth: 70, frameHeight: 54 });
-        this.load.spritesheet('unit-alien', unitAlien, { frameWidth: 70, frameHeight: 54 });
-        this.load.spritesheet('unit-human', unitHuman, { frameWidth: 70, frameHeight: 54 });
-        this.load.spritesheet('unit-neutral', unitNeutral, { frameWidth: 70, frameHeight: 54 });
 
-        this.load.spritesheet('nuetral-struct', Structures.neutral.si, { frameWidth: 70, frameHeight: 54 });
+        registerUnits(this);
+
+        registerStructures(this);
+
         this.load.spritesheet('roads', roads, { frameWidth: 70, frameHeight: 54 });
 
         this.load.atlas('buttons-strategic', buttonsStrategic, buttonsStrategicData);
@@ -132,22 +129,6 @@ export default class Play extends Phaser.Scene {
         return button;
     }
 
-    imageForUnit(unit) {
-        // TODO: hardcoded - needs to read the correct unit image
-        return {
-            spritesheet: 'unit-alien',
-            name: '44'
-        };
-    }
-
-    imageForStructure(structure) {
-        // TODO: hardcoded - needs to read the correct size and structure image
-        return {
-            spritesheet: 'nuetral-struct',
-            name: '4'
-        }
-    }
-
     // TODO: all this needs to move to real modules
     drawTileSelector(graphics, enabled) {
         // enabled == whether to draw a cross through it or not for construction
@@ -174,11 +155,26 @@ export default class Play extends Phaser.Scene {
         return true;
     }
 
+    writeTile(dest, position, spritesheet, index) {
+        let row = dest[position.x];
+        if (!row) {
+            row = [];
+            dest[position.x] = row;
+        }
+        row[position.y] = { spritesheet, name: "" + index }
+    }
+
     create() {
         let game = this.cache.json.get('game');
 
+        const data = {
+            terrain: this.cache.json.get('data-provinces'),
+            structures: this.cache.json.get('data-structures'),
+            units: this.cache.json.get('data-units')
+        }
+
         // dummy data let's just show haven
-        let terrain = this.cache.json.get('data-provinces').haven;
+        let terrain = data.terrain.haven;
         let province = game.haven;
 
         // create province view
@@ -188,24 +184,28 @@ export default class Play extends Phaser.Scene {
         // create unit image lookup
         let unitImages = [];
         Object.values(province.units).forEach((unit) => {
-            let row = unitImages[unit.position.x];
-            if (!row) {
-                row = [];
-                unitImages[unit.position.x] = row;
-            }
-            row[unit.position.y] = this.imageForUnit(unit);
+            let reference = data.units[unit.kind.category];
+            let displayOffset = reference.display.offset + unit.facing;
+            this.writeTile(unitImages, { x: unit.position.x, y: unit.position.y }, 
+                reference.display.tiles, displayOffset);
         });
 
         // create structure image lookup
         let structureImages = [];
         Object.values(province.structures).forEach((structure) => {
-            let row = structureImages[structure.position.x];
-            if (!row) {
-                row = [];
-                structureImages[structure.position.x] = row;
+            // Each structure can consist of multiple tiles
+            // this is where we turn 1 structure into the many tiles that are 
+            // actually rendered on-screen
+            let reference = data.structures[structure.kind.category];
+            // paint column by column to the height in the y-axis
+            let displayOffset = reference.display.offset;
+            for (let x = 0; x < reference.display.width; x++) {
+                for (let y = 0; y < reference.display.height; y++) {
+                    let pos = { x: structure.position.x + x, y: structure.position.y + y };
+                    this.writeTile(structureImages, pos, reference.display.tiles, displayOffset);
+                    displayOffset += 1;
+                }
             }
-            // TODO: structures span more than 1 tile so this needs to populate multiple [x][y] tiles
-            row[structure.position.y] = this.imageForStructure(structure);
         });
 
         let scanLines = (terrain.height + terrain.width) - 1;
@@ -257,7 +257,7 @@ export default class Play extends Phaser.Scene {
             let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
             if (this.constructionMode) {
                 constructionGraphics.setPosition(pos.x, pos.y);
-                constructionGraphics.visible = this.validForConstruction(tileIndex, map);
+                constructionGraphics.visible = this.validForConstruction(tileIndex, terrain);
 
                 // TODO: remove this debug line
                 roadBlitter.create(pos.x, pos.y, 8);
@@ -279,7 +279,7 @@ export default class Play extends Phaser.Scene {
                 let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
                 let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
                 constructionGraphics.setPosition(pos.x, pos.y);
-                constructionGraphics.visible = this.validForConstruction(tileIndex, map);
+                constructionGraphics.visible = this.validForConstruction(tileIndex, terrain);
             } else {
                 constructionGraphics.visible = false;
             }

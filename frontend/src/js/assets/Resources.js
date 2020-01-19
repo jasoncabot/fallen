@@ -1,16 +1,31 @@
-export const Structures = {
-    neutral: {
-        ssi: require('../../images/structures/neut_ssi.png'),
-        si: require('../../images/structures/neut_ssi.png')
-    },
-    alien: {
-        ssi: require('../../images/structures/alie_ssi.png'),
-        si: require('../../images/structures/alie_ssi.png')
-    },
-    human: {
-        ssi: require('../../images/structures/huma_ssi.png'),
-        si: require('../../images/structures/huma_ssi.png')
-    }
+const structures = {
+    neutral: require('../../images/structures/neut_si.png'),
+    neutral_dropship: require('../../images/structures/neut_ssi.png'),
+    alien: require('../../images/structures/alie_si.png'),
+    alien_dropship: require('../../images/structures/alie_ssi.png'),
+    human: require('../../images/structures/huma_si.png'),
+    human_dropship: require('../../images/structures/huma_ssi.png'),
+}
+
+const units = {
+    alien: require('../../images/units/alie_ui.png'),
+    human: require('../../images/units/alie_ui.png'),
+    neutral: require('../../images/units/alie_ui.png')
+}
+
+export const registerStructures = (scene) => {
+    scene.load.spritesheet('structure-neutral', structures.neutral, { frameWidth: 70, frameHeight: 54 });
+    scene.load.spritesheet('structure-neutral-dropship', structures.neutral_dropship, { frameWidth: 70, frameHeight: 54 });
+    scene.load.spritesheet('structure-alien', structures.alien, { frameWidth: 70, frameHeight: 54 });
+    scene.load.spritesheet('structure-alien-dropship', structures.alien_dropship, { frameWidth: 70, frameHeight: 54 });
+    scene.load.spritesheet('structure-human', structures.human, { frameWidth: 70, frameHeight: 54 });
+    scene.load.spritesheet('structure-human-dropship', structures.human_dropship, { frameWidth: 70, frameHeight: 54 });
+}
+
+export const registerUnits = (scene) => {
+    scene.load.spritesheet('unit-alien', units.alien, { frameWidth: 70, frameHeight: 54 });
+    scene.load.spritesheet('unit-human', units.human, { frameWidth: 70, frameHeight: 54 });
+    scene.load.spritesheet('unit-neutral', units.neutral, { frameWidth: 70, frameHeight: 54 });
 }
 
 /*
