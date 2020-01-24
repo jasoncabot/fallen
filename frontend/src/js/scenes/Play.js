@@ -109,12 +109,14 @@ export default class Play extends Phaser.Scene {
         }
     }
 
-    createButton(name, x, y, callback) {
-        let button = this.add.image(x, y, 'buttons-strategic', name + '_0')
-            .setScrollFactor(0)
-            // TODO: figure out how to have a non-rectangular spritesheet button
-            // .setInteractive(new Phaser.Geom.Polygon([12, 411, 44, 411, 57, 429, 57, 460, 43, 477, 12, 477]), Phaser.Geom.Polygon.Contains);
-            .setInteractive({ useHandCursor: true });
+    createButton(name, config, callback) {
+        let button = this.add.image(config.x, config.y, 'buttons-strategic', name + '_0')
+            .setInteractive({
+                hitArea: new Phaser.Geom.Polygon(config.hitArea),
+                hitAreaCallback: Phaser.Geom.Polygon.Contains,
+                useHandCursor: true
+            })
+            .setScrollFactor(0);
 
         button.on('pointerover', () => { button.setFrame(name + '_1'); });
         button.on('pointerout', () => { button.setFrame(name + '_0'); });
@@ -123,8 +125,6 @@ export default class Play extends Phaser.Scene {
             button.setFrame(name + '_0');
             callback(button);
         });
-
-        this.input.enableDebug(button, 0xffff00);
 
         return button;
     }
@@ -186,7 +186,7 @@ export default class Play extends Phaser.Scene {
         Object.values(province.units).forEach((unit) => {
             let reference = data.units[unit.kind.category];
             let displayOffset = reference.display.offset + unit.facing;
-            this.writeTile(unitImages, { x: unit.position.x, y: unit.position.y }, 
+            this.writeTile(unitImages, { x: unit.position.x, y: unit.position.y },
                 reference.display.tiles, displayOffset);
         });
 
@@ -300,8 +300,9 @@ export default class Play extends Phaser.Scene {
         // Static UI in a container
         let ui = this.add.container(0, 0).setScrollFactor(0);
 
-        ui.add(this.createButton('repair', 12, 410, (button) => { }));
-        ui.add(this.createButton('build', 52, 410, (button) => {
+
+        ui.add(this.createButton('repair', { x: 12, y: 410, hitArea: [0, 0, 32, 0, 46, 19, 46, 50, 33, 69, 0, 69] }, (button) => { }));
+        ui.add(this.createButton('build', { x: 52, y: 410, hitArea: [0, 0, 53, 0, 74, 34, 74, 68, 0, 68, 0, 66, 12, 50, 12, 22, 0, 2] }, (button) => {
             if (this.topDialog) {
                 this.topDialog.dismiss();
                 this.topDialog = null;
@@ -315,7 +316,7 @@ export default class Play extends Phaser.Scene {
                 this.topDialog = window;
             }
         }));
-        ui.add(this.createButton('road', 113, 410, (button) => {
+        ui.add(this.createButton('road', { x: 113, y: 410, hitArea: [0, 0, 80, 0, 80, 2, 41, 68, 19, 68, 19, 32, 0, 2] }, (button) => {
             if (this.constructionMode) {
                 this.constructionMode = null;
             } else {
@@ -323,10 +324,10 @@ export default class Play extends Phaser.Scene {
                 this.activeUnitSelection.visible = false;
             }
         }));
-        ui.add(this.createButton('recycle', 161, 410, (button) => { }));
-        ui.add(this.createButton('map', 424, 410, (button) => { }));
-        ui.add(this.createButton('menu', 486, 410, (button) => { }));
-        ui.add(this.createButton('colony', 563, 410, (button) => { }));
+        ui.add(this.createButton('recycle', { x: 161, y: 410, hitArea: [39, 0, 58, 0, 58, 68, 0, 68, 0, 65,] }, (button) => { }));
+        ui.add(this.createButton('map', { x: 424, y: 410, hitArea: [0, 0, 55, 0, 79, 65, 79, 68, 0, 68,] }, (button) => { }));
+        ui.add(this.createButton('menu', { x: 486, y: 410, hitArea: [0, 0, 82, 0, 82, 2, 71, 18, 71, 52, 82, 66, 82, 68, 24, 68, 0, 1,] }, (button) => { }));
+        ui.add(this.createButton('colony', { x: 563, y: 410, hitArea: [15, 0, 64, 0, 64, 68, 14, 68, 0, 50, 0, 19,] }, (button) => { }));
 
         // TODO: not just logo-alien - depends on which team you are
         ui.add(this.add.image(232, 413, 'logo-alien').setOrigin(0, 0));
