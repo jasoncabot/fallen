@@ -309,7 +309,9 @@ export default class Play extends Phaser.Scene {
         ui.add(createButton(this, 161, 410, buttons.strategic.recycle, (button) => { }));
         ui.add(createButton(this, 424, 410, buttons.strategic.map, (button) => { }));
         ui.add(createButton(this, 486, 410, buttons.strategic.menu, (button) => { }));
-        ui.add(createButton(this, 563, 410, buttons.strategic.colony, (button) => { }));
+        ui.add(createButton(this, 563, 410, buttons.strategic.colony, (button) => {
+            this.scene.start('StrategicView', { gameId: this.gameId });
+        }));
 
         // TODO: not just logo-alien - depends on which team you are
         ui.add(this.add.image(232, 413, 'logo-alien').setOrigin(0, 0));

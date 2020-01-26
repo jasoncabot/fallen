@@ -180,19 +180,19 @@ const world = {
         data: buttonsWorldData,
     },
     menu: {
-        hitArea: []
+        hitArea: [0, 0, 64, 0, 64, 66, 0, 66]
     },
     technology: {
-        hitArea: []
+        hitArea: [0, 0, 70, 0, 70, 2, 27, 67, 0, 67]
     },
     map: {
-        hitArea: []
+        hitArea: [52, 0, 68, 0, 76, 2, 78, 3, 82, 4, 94, 12, 94, 53, 0, 53, 0, 48, 4, 36, 14, 21, 25, 11, 40, 3]
     },
     zoom: {
-        hitArea: []
+        hitArea: [43, 0, 69, 0, 69, 67, 0, 67, 0, 64]
     },
     endTurn: {
-        hitArea: []
+        hitArea: [0, 0, 95, 0, 95, 41, 17, 41, 13, 37, 13, 36, 7, 28, 3, 19, 0, 8]
     }
 };
 
