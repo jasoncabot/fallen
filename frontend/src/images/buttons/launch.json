@@ -1,0 +1,160 @@
+{
+  "frames": [
+    {
+      "filename": "land_0",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "land_1",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "land_2",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "land_3",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "nuke_0",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "nuke_1",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "nuke_2",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "nuke_3",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "cancel_0",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "cancel_1",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "cancel_2",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "filename": "cancel_3",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "anchor": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  ]
+}

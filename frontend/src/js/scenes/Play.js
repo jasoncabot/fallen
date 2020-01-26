@@ -7,8 +7,6 @@ import { api } from '../Config';
 import rocky from '../../images/terrain/rocky.png';
 import desert from '../../images/terrain/desert.png';
 import forest from '../../images/terrain/forest.png';
-import buttonsStrategic from '../../images/buttons/strategic.png';
-import buttonsStrategicData from '../../images/buttons/strategic.json';
 import uiStrategic from '../../images/ui/strategic.png';
 import activeUnitSelection from '../../images/icons/active-unit-selection.png';
 import logoAlien from '../../images/ui/logo-alien.png';
@@ -17,6 +15,7 @@ import logoNeutral from '../../images/ui/logo-neutral.png';
 import roads from '../../images/roads/roads.png';
 
 import { registerUnits, registerStructures } from '../assets/Resources';
+import { registerButtons, createButton, buttons } from '../assets/Buttons';
 
 import customCursor from '../../images/misc/FALLEN_223.cur';
 import customPointer from '../../images/misc/FALLEN_218.cur';
@@ -51,17 +50,17 @@ export default class Play extends Phaser.Scene {
         this.cameras.main.setSize(640, 480);
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        // TODO: register terrain
         this.load.spritesheet('rocky', rocky, { frameWidth: 70, frameHeight: 54 });
         this.load.spritesheet('forest', forest, { frameWidth: 70, frameHeight: 54 });
         this.load.spritesheet('desert', desert, { frameWidth: 70, frameHeight: 54 });
 
-        registerUnits(this);
+        registerButtons(this, buttons.strategic);
 
+        registerUnits(this);
         registerStructures(this);
 
         this.load.spritesheet('roads', roads, { frameWidth: 70, frameHeight: 54 });
-
-        this.load.atlas('buttons-strategic', buttonsStrategic, buttonsStrategicData);
 
         this.load.image('ui-strategic', uiStrategic);
         this.load.image('active-unit-selection', activeUnitSelection);
@@ -107,26 +106,6 @@ export default class Play extends Phaser.Scene {
             x: screenIndex.x * this.tileSize.w,
             y: screenIndex.y * this.tileSize.h
         }
-    }
-
-    createButton(name, config, callback) {
-        let button = this.add.image(config.x, config.y, 'buttons-strategic', name + '_0')
-            .setInteractive({
-                hitArea: new Phaser.Geom.Polygon(config.hitArea),
-                hitAreaCallback: Phaser.Geom.Polygon.Contains,
-                useHandCursor: true
-            })
-            .setScrollFactor(0);
-
-        button.on('pointerover', () => { button.setFrame(name + '_1'); });
-        button.on('pointerout', () => { button.setFrame(name + '_0'); });
-        button.on('pointerdown', () => { button.setFrame(name + '_2'); });
-        button.on('pointerup', () => {
-            button.setFrame(name + '_0');
-            callback(button);
-        });
-
-        return button;
     }
 
     // TODO: all this needs to move to real modules
@@ -248,6 +227,7 @@ export default class Play extends Phaser.Scene {
         this.drawTileSelector(constructionGraphics, false);
 
         this.input.on('pointerdown', (pointer) => {
+            if (this.topDialog) return;
             this.isDragging = true;
             this.touchStart = { x: pointer.x, y: pointer.y };
         }, this);
@@ -259,7 +239,8 @@ export default class Play extends Phaser.Scene {
                 constructionGraphics.setPosition(pos.x, pos.y);
                 constructionGraphics.visible = this.validForConstruction(tileIndex, terrain);
 
-                // TODO: remove this debug line
+                // TODO: remove this debug line - it shouldn't trigger if we have performed another event
+                // such as dragging the map
                 roadBlitter.create(pos.x, pos.y, 8);
             } else {
                 // check if we touched a unit
@@ -300,9 +281,10 @@ export default class Play extends Phaser.Scene {
         // Static UI in a container
         let ui = this.add.container(0, 0).setScrollFactor(0);
 
-
-        ui.add(this.createButton('repair', { x: 12, y: 410, hitArea: [0, 0, 32, 0, 46, 19, 46, 50, 33, 69, 0, 69] }, (button) => { }));
-        ui.add(this.createButton('build', { x: 52, y: 410, hitArea: [0, 0, 53, 0, 74, 34, 74, 68, 0, 68, 0, 66, 12, 50, 12, 22, 0, 2] }, (button) => {
+        ui.add(createButton(this, 12, 410, buttons.strategic.repair, (button) => {
+            alert('No buildings or dropships damaged');
+        }));
+        ui.add(createButton(this, 52, 410, buttons.strategic.build, (button) => {
             if (this.topDialog) {
                 this.topDialog.dismiss();
                 this.topDialog = null;
@@ -316,7 +298,7 @@ export default class Play extends Phaser.Scene {
                 this.topDialog = window;
             }
         }));
-        ui.add(this.createButton('road', { x: 113, y: 410, hitArea: [0, 0, 80, 0, 80, 2, 41, 68, 19, 68, 19, 32, 0, 2] }, (button) => {
+        ui.add(createButton(this, 113, 410, buttons.strategic.road, (button) => {
             if (this.constructionMode) {
                 this.constructionMode = null;
             } else {
@@ -324,10 +306,10 @@ export default class Play extends Phaser.Scene {
                 this.activeUnitSelection.visible = false;
             }
         }));
-        ui.add(this.createButton('recycle', { x: 161, y: 410, hitArea: [39, 0, 58, 0, 58, 68, 0, 68, 0, 65,] }, (button) => { }));
-        ui.add(this.createButton('map', { x: 424, y: 410, hitArea: [0, 0, 55, 0, 79, 65, 79, 68, 0, 68,] }, (button) => { }));
-        ui.add(this.createButton('menu', { x: 486, y: 410, hitArea: [0, 0, 82, 0, 82, 2, 71, 18, 71, 52, 82, 66, 82, 68, 24, 68, 0, 1,] }, (button) => { }));
-        ui.add(this.createButton('colony', { x: 563, y: 410, hitArea: [15, 0, 64, 0, 64, 68, 14, 68, 0, 50, 0, 19,] }, (button) => { }));
+        ui.add(createButton(this, 161, 410, buttons.strategic.recycle, (button) => { }));
+        ui.add(createButton(this, 424, 410, buttons.strategic.map, (button) => { }));
+        ui.add(createButton(this, 486, 410, buttons.strategic.menu, (button) => { }));
+        ui.add(createButton(this, 563, 410, buttons.strategic.colony, (button) => { }));
 
         // TODO: not just logo-alien - depends on which team you are
         ui.add(this.add.image(232, 413, 'logo-alien').setOrigin(0, 0));

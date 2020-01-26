@@ -1,9 +1,9 @@
 import { Scene } from 'phaser';
 
+import { registerButtons, createButton, buttons } from '../assets/Buttons';
+
 import dialogBuild from '../../images/ui/dialog-build.png';
 import dialogStructure from '../../images/ui/dialog-structure.png';
-import buttonsManufacturing from '../../images/buttons/manufacturing.png';
-import buttonsManufacturingData from '../../images/buttons/manufacturing.json';
 
 export default class Dialog extends Scene {
 
@@ -16,7 +16,8 @@ export default class Dialog extends Scene {
     preload() {
         this.load.image('dialog-build', dialogBuild);
         this.load.image('dialog-structure', dialogStructure);
-        this.load.atlas('buttons-manufacturing', buttonsManufacturing, buttonsManufacturingData);
+
+        registerButtons(this, buttons.manufacturing);
     }
 
     create() {
@@ -24,27 +25,11 @@ export default class Dialog extends Scene {
 
         this.add.image(0, 0, 'dialog-build').setOrigin(0, 0).setScrollFactor(0);
 
-        this.createButton('up', 216, 238, () => {});
-        this.createButton('down', 256, 238, () => {});
+        createButton(this, 216, 238, buttons.manufacturing.up, (button) => { });
+        createButton(this, 256, 238, buttons.manufacturing.down, (button) => { });
     }
 
     dismiss() {
         this.scene.sleep();
     }
-
-    createButton(name, x, y, callback) {
-        let button = this.add.image(x, y, 'buttons-manufacturing', name + '_0')
-            .setOrigin(0, 0)
-            .setScrollFactor(0)
-            .setInteractive({ useHandCursor: true });
-
-        button.on('pointerover', () => { button.setFrame(name + '_1'); });
-        button.on('pointerout', () => { button.setFrame(name + '_0'); });
-        button.on('pointerdown', () => { button.setFrame(name + '_2'); });
-        button.on('pointerup', () => {
-            button.setFrame(name + '_0');
-            callback();
-        });
-    }
-
 }
