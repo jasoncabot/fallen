@@ -18,6 +18,11 @@ const config = {
 
 let game = new Game(config);
 
-let app = new App();
+let app = new App(game);
 
 app.registerScenes(game);
+
+window.addEventListener('popstate', e => {
+    app.route(location.pathname, location.search);
+}, false);
+app.route(location.pathname, location.search);

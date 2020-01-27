@@ -15,6 +15,7 @@ export default class MainMenu extends Scene {
     }
 
     create() {
+        history.pushState({}, 'Fallen Haven', '/');
         this.add.image(0, -20, 'background').setOrigin(0, 0);
 
         var y = 210;

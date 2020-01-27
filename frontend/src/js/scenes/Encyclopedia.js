@@ -10,6 +10,7 @@ export default class Encyclopedia extends Scene {
     }
 
     create() {
+        history.pushState({}, 'Fallen Haven', '/encyclopedia');
     }
 
 }

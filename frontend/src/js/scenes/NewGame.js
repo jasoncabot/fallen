@@ -1,5 +1,7 @@
 import { Scene } from 'phaser';
 
+import { api } from '../Config';
+
 import { MenuButton } from '../components/MenuButton';
 import { GameOptions } from '../models/GameOptions';
 
@@ -18,6 +20,7 @@ export default class NewGame extends Scene {
     }
 
     create() {
+        history.pushState({}, 'Fallen Haven', '/games');
         this.add.image(320, 240, 'newgame-background');
 
         this.add.existing(new MenuButton(this, { x: 120, y: 149, width: 210, height: 37 }, 'Race', (scene) => {
@@ -57,6 +60,16 @@ export default class NewGame extends Scene {
     onStart(options) {
         const { race, difficulty, campaign } = options;
         const data = { race, difficulty, campaign };
-        this.scene.start('LoadGameResources', data);
+
+        fetch(api('/game'), {
+            method: "POST",
+            body: JSON.stringify(data)
+        }).then((response) => {
+            return response.json();
+        }).then(game => {
+            this.scene.start('LoadGameResources', { gameId: game.id });
+        }).catch(e => {
+            alert(e);
+        });
     }
 }

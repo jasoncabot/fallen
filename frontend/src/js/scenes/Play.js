@@ -44,6 +44,7 @@ export default class Play extends Phaser.Scene {
 
     init(data) {
         this.gameId = data.gameId;
+        this.colony = data.colony;
     }
 
     preload() {
@@ -70,9 +71,6 @@ export default class Play extends Phaser.Scene {
         this.load.image('logo-human', logoHuman);
 
         this.sounds.preload(this);
-
-        // dynamic content
-        this.load.json('game', api("/games/" + this.gameId));
     }
 
     onUnitSelected(unit, pos) {
@@ -144,7 +142,7 @@ export default class Play extends Phaser.Scene {
     }
 
     create() {
-        let game = this.cache.json.get('game');
+        let game = this.cache.json.get('current-game');
 
         const data = {
             terrain: this.cache.json.get('data-provinces'),
@@ -152,9 +150,10 @@ export default class Play extends Phaser.Scene {
             units: this.cache.json.get('data-units')
         }
 
-        // dummy data let's just show haven
-        let terrain = data.terrain.haven;
-        let province = game.haven;
+        let terrain = data.terrain[this.colony];
+        let province = game[this.colony];
+
+        history.pushState({}, 'Fallen Haven', '/games/' + this.gameId + '/' + this.colony);
 
         // create province view
         let tileBlitter = this.add.blitter(0, 0, terrain.type);

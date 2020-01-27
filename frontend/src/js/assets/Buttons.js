@@ -53,16 +53,16 @@ const confirmCancel = {
         data: buttonsConfirmCancelData,
     },
     confirm: {
-        hitArea: []
+        hitArea: [0, 0, 80, 0, 80, 36, 0, 36]
     },
     ok: {
-        hitArea: []
+        hitArea: [0, 0, 74, 0, 74, 38, 0, 38]
     },
     cancel: {
-        hitArea: []
+        hitArea: [0, 0, 80, 0, 80, 36, 0, 36]
     },
     accept: {
-        hitArea: []
+        hitArea: [0, 0, 79, 0, 79, 27, 0, 27]
     }
 };
 const done = {
