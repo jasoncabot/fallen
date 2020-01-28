@@ -19,7 +19,7 @@ jobs:
     - name: Build frontend
       run: |
         # .env file is copied as part of Dockerfile
-        echo "API_ENDPOINT=$API_ENDPOINT" >> .env
+        echo "API_ENDPOINT=$API_ENDPOINT" >> frontend/.env
 
         docker build frontend -t fallenhaven.azurecr.io/frontend:${{ github.run_id }}
         docker push fallenhaven.azurecr.io/frontend:${{ github.run_id }}
@@ -29,10 +29,10 @@ jobs:
     - name: Build backend
       run: |
         # .env file is copied as part of Dockerfile
-        echo "REDIS_HOST=$REDIS_HOST" >> .env
-        echo "REDIS_KEY=$REDIS_KEY" >> .env
-        echo "REDIS_PORT=$REDIS_PORT" >> .env
-        echo "PORT=$PORT" >> .env
+        echo "REDIS_HOST=$REDIS_HOST" >> backend/.env
+        echo "REDIS_KEY=$REDIS_KEY" >> backend/.env
+        echo "REDIS_PORT=$REDIS_PORT" >> backend/.env
+        echo "PORT=$PORT" >> backend/.env
 
         docker build backend -t fallenhaven.azurecr.io/backend:${{ github.run_id }}
         docker push fallenhaven.azurecr.io/backend:${{ github.run_id }}
