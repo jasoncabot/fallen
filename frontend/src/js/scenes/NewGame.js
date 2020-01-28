@@ -61,7 +61,7 @@ export default class NewGame extends Scene {
         const { race, difficulty, campaign } = options;
         const data = { race, difficulty, campaign };
 
-        fetch(api('/game'), {
+        fetch(api('/games'), {
             method: "POST",
             body: JSON.stringify(data)
         }).then((response) => {

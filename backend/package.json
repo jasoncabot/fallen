@@ -1,0 +1,22 @@
+{
+  "name": "fallen-api",
+  "version": "1.0.0",
+  "description": "Fallen Haven Remake API",
+  "private": true,
+  "scripts": {
+    "start:dev": "nodemon -r dotenv/config src/index.js",
+    "start": "node -r dotenv/config src/index.js"
+  },
+  "author": "Jason Cabot <jasoncabot@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "redis": "^2.8.0",
+    "uuid": "^3.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
