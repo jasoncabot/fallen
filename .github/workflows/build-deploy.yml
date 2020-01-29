@@ -20,6 +20,9 @@ jobs:
       run: |
         # .env file is copied as part of Dockerfile
         echo "API_ENDPOINT=$API_ENDPOINT" >> frontend/.env
+        echo "ASSET_ENDPOINT=/assets/data" >> frontend/.env
+        echo "CANVAS_RENDERER=true" >> frontend/.env
+        echo "WEBGL_RENDERER=true" >> frontend/.env
 
         docker build frontend -t fallenhaven.azurecr.io/frontend:${{ github.run_id }}
         docker push fallenhaven.azurecr.io/frontend:${{ github.run_id }}
