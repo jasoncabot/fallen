@@ -3,6 +3,7 @@ import { Scene } from 'phaser';
 import { MenuButton } from '../components/MenuButton';
 
 import background from '../../images/ui/mainmenu-background.png';
+import { registerScenePath } from './../components/History';
 
 export default class MainMenu extends Scene {
 
@@ -15,7 +16,7 @@ export default class MainMenu extends Scene {
     }
 
     create() {
-        history.pushState({}, 'Fallen Haven', '/');
+        registerScenePath(this, '/');
         this.add.image(0, -20, 'background').setOrigin(0, 0);
 
         var y = 210;

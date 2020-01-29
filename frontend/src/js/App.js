@@ -20,31 +20,35 @@ export class App {
         const [_, resource, id, subresource] = path.split('/');
         const view = new URLSearchParams(query).get("view");
 
+        // Stop any old scenes before starting the new one
+        // this is required as we 'should' be calling scene.start(<key>)
+        // from the current scene, not this.game - so we don't know which
+        // is the current scene that requires being stopped
+        this.game.scene.getScenes(true).forEach(scene => scene.scene.stop());
+
         if (!resource) {
-            this.game.scene.start('MainMenu');
-            return;
+            return this.game.scene.start('MainMenu');
         };
 
         if (resource === 'encyclopedia') {
-            this.game.scene.start('Encyclopedia');
-            return;
+            return this.game.scene.start('Encyclopedia');
         }
 
         if (resource === 'games') {
             if (!id) {
-                this.game.scene.start('NewGame');
+                return this.game.scene.start('NewGame');
             } else {
-                this.game.scene.start('LoadGameResources', {
+                return this.game.scene.start('LoadGameResources', {
                     gameId: id,
                     colony: subresource,
                     view: view
                 });
             }
-            return;
         }
 
         console.error('Unable to match route from ' + JSON.stringify({
             resource, id, subresource, view
         }, null, 2));
+        return null;
     }
 }

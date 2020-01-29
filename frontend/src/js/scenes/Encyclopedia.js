@@ -1,5 +1,7 @@
 import { Scene } from 'phaser';
 
+import { registerScenePath } from './../components/History';
+
 export default class Encyclopedia extends Scene {
 
     constructor() {
@@ -10,7 +12,7 @@ export default class Encyclopedia extends Scene {
     }
 
     create() {
-        history.pushState({}, 'Fallen Haven', '/encyclopedia');
+        registerScenePath(this, '/encyclopedia');
     }
 
 }

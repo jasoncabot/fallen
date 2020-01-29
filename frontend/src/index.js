@@ -20,9 +20,15 @@ let game = new Game(config);
 
 let app = new App(game);
 
+const showSceneMatchingCurrentLocation = () => {
+    app.route(location.pathname, location.search);
+}
+
 app.registerScenes(game);
 
-window.addEventListener('popstate', e => {
-    app.route(location.pathname, location.search);
-}, false);
-app.route(location.pathname, location.search);
+// using the browser to navigate performs the appropriate routing
+window.addEventListener('popstate', e => showSceneMatchingCurrentLocation(), false);
+window.addEventListener('pushstate', e => showSceneMatchingCurrentLocation(), false);
+
+// by default go to the scene for whatever the current pathname is
+showSceneMatchingCurrentLocation();

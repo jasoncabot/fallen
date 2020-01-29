@@ -22,6 +22,7 @@ import customPointer from '../../images/misc/FALLEN_218.cur';
 import structurePointer from '../../images/misc/FALLEN_218.cur';
 
 import { Sounds } from './../assets/Sounds';
+import { registerScenePath } from './../components/History';
 
 export default class Play extends Phaser.Scene {
 
@@ -153,7 +154,7 @@ export default class Play extends Phaser.Scene {
         let terrain = data.terrain[this.colony];
         let province = game[this.colony];
 
-        history.pushState({}, 'Fallen Haven', '/games/' + this.gameId + '/' + this.colony);
+        registerScenePath(this, '/games/' + this.gameId + '/' + this.colony);
 
         // create province view
         let tileBlitter = this.add.blitter(0, 0, terrain.type);

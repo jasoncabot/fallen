@@ -6,6 +6,7 @@ import { MenuButton } from '../components/MenuButton';
 import { GameOptions } from '../models/GameOptions';
 
 import newgameBackground from '../../images/ui/newgame-background.png';
+import { registerScenePath } from './../components/History';
 
 export default class NewGame extends Scene {
     constructor() {
@@ -20,7 +21,7 @@ export default class NewGame extends Scene {
     }
 
     create() {
-        history.pushState({}, 'Fallen Haven', '/games');
+        registerScenePath(this, '/games');
         this.add.image(320, 240, 'newgame-background');
 
         this.add.existing(new MenuButton(this, { x: 120, y: 149, width: 210, height: 37 }, 'Race', (scene) => {

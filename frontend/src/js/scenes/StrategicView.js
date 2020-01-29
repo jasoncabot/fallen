@@ -4,6 +4,7 @@ import { registerButtons, createButton, buttons } from '../assets/Buttons';
 import MessageBox from '../components/MessageBox';
 
 import strategicMap from '../../images/ui/strategic-map.png';
+import { registerScenePath } from './../components/History';
 
 export default class StrategicView extends Scene {
     constructor() {
@@ -24,7 +25,7 @@ export default class StrategicView extends Scene {
     }
 
     create() {
-        history.pushState({}, 'Fallen Haven', '/games/' + this.gameId);
+        registerScenePath(this, '/games/' + this.gameId);
 
         const game = this.cache.json.get('current-game');
         this.selectedColony = 'haven'; // TODO: select this based on province selected
