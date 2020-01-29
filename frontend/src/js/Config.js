@@ -1,6 +1,6 @@
 const config = {
-    endpoint: API_ENDPOINT,
-    assetEndpoint: ASSET_ENDPOINT
+    endpoint: process.env.API_ENDPOINT,
+    assetEndpoint: process.env.ASSET_ENDPOINT
 }
 
 export default config;

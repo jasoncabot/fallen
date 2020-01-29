@@ -1,8 +1,8 @@
 const paths = require('./paths')
-const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const DotenvPlugin = require('dotenv-webpack');
 
 module.exports = {
   entry: [paths.src + '/index.js'],
@@ -25,11 +25,8 @@ module.exports = {
       template: paths.src + '/template.html', // template file
       filename: 'index.html', // output file
     }),
-    new webpack.DefinePlugin({
-      API_ENDPOINT: JSON.stringify(process.env.API_ENDPOINT || '/assets/api'),
-      ASSET_ENDPOINT: JSON.stringify(process.env.ASSET_ENDPOINT || '/assets/data'),
-      CANVAS_RENDERER: JSON.stringify(true),
-      WEBGL_RENDERER: JSON.stringify(true)
+    new DotenvPlugin({
+      safe: true
     })
   ],
   module: {
