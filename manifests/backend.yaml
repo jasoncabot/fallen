@@ -42,9 +42,9 @@ spec:
   tls:
   - hosts:
     - '*.jasoncabot.me'
-    secretName: api-fallenhaven-jasoncabot-me
+    secretName: fallenhaven-jasoncabot-me
   rules:
-  - host: api.fallenhaven.jasoncabot.me
+  - host: fallenhavenapi.jasoncabot.me
     http:
       paths:
       - backend:

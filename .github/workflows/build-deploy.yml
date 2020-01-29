@@ -24,7 +24,7 @@ jobs:
         docker build frontend -t fallenhaven.azurecr.io/frontend:${{ github.run_id }}
         docker push fallenhaven.azurecr.io/frontend:${{ github.run_id }}
       env:
-        API_ENDPOINT: https://api.fallenhaven.jasoncabot.me
+        API_ENDPOINT: https://fallenhavenapi.jasoncabot.me
 
     - name: Build backend
       run: |
