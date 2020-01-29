@@ -14,16 +14,7 @@ module.exports = merge(common, {
     compress: true,
     hot: true,
     host: process.env.HOST,
-    port: 8080,
-    proxy: { // Hacky way of simulating POST to API in dev that creates a game with id = 1
-      '/assets/api/games': {
-        bypass: (req, res) => {
-          if (req.method === 'POST') {
-            res.end(JSON.stringify({ id: 1 }));
-          }
-        }
-      }
-    },
+    port: 8080
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
