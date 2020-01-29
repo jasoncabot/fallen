@@ -42,7 +42,7 @@ spec:
   tls:
   - hosts:
     - '*.jasoncabot.me'
-    secretName: jasoncabot-me
+    secretName: fallenhaven-jasoncabot-me
   rules:
   - host: fallenhaven.jasoncabot.me
     http:
