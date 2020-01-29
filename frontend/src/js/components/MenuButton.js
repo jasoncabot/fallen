@@ -24,9 +24,9 @@ export class MenuButton extends Phaser.GameObjects.Graphics {
         let y = rect.y;
         super(scene, { x, y });
 
-        this.backgroundBounds = new Phaser.Geom.Rectangle(0, 0, rect.width, rect.height);
+        this.backgroundBounds = new Phaser.Geom.Rectangle(1, 1, rect.width - 1, rect.height - 1);
 
-        this.text = scene.add.text(x, y + 8, text, { font: "20px Courier", fill: style.text.rest });
+        this.text = scene.add.text(x, y + 8, text, { font: "16px Verdana", fill: style.text.rest });
         this.text.setAlign('center');
         this.text.setFixedSize(rect.width, rect.height);
         this.text.setDepth(1);

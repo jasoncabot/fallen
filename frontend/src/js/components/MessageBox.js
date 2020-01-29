@@ -14,14 +14,14 @@ export default class MessageBox extends Scene {
     }
 
     preload() {
-        this.load.image('background', background);
+        this.load.image('messagebox', background);
         registerButtons(this, buttons.confirmCancel);
     }
 
     create() {
         this.cameras.main.setViewport(this.zone.x, this.zone.y, this.zone.width, this.zone.height);
 
-        this.add.image(0, 0, 'background').setOrigin(0, 0).setScrollFactor(0);
+        this.add.image(0, 0, 'messagebox').setOrigin(0, 0).setScrollFactor(0);
 
         let font = { color: 'green', fontSize: '12px', fontFamily: 'Courier' };
         this.add.text(14, 11, this.message, font);

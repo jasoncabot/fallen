@@ -26,7 +26,7 @@ export default class MainMenu extends Scene {
             { title: 'Quickplay', scene: 'NewGame' },
             { title: 'Encyclopedia', scene: 'Encyclopedia' }
         ].forEach(config => {
-            this.add.existing(new MenuButton(this, { x: 170, y, width: 300, height: 36 }, config.title, (scene) => {
+            this.add.existing(new MenuButton(this, { x: 170, y, width: 300, height: 38 }, config.title, (scene) => {
                 scene.start(config.scene);
             }));
             y += 54;

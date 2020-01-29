@@ -329,7 +329,7 @@ export default class Play extends Phaser.Scene {
             speed: 0.7
         });
 
-        let font = { color: 'green', fontSize: '12px', fontFamily: 'Courier' };
+        let font = { color: 'green', fontSize: '12px', fontFamily: 'Verdana' };
         ui.add(this.add.text(48, 7, province.research, font));
         ui.add(this.add.text(125, 7, province.energy, font));
         ui.add(this.add.text(300, 7, terrain.name, font));

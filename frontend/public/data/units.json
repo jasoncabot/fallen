@@ -8,6 +8,11 @@
         "display": {
             "tiles": "unit-alien",
             "offset": 41
+        },
+        "encyclopedia": {
+            "image": "encyclopedia-asqu",
+            "next": null,
+            "prev": null
         }
     }
 }

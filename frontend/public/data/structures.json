@@ -27,6 +27,11 @@
         "build": {
             "cost": 800,
             "placement": "ANYWHERE"
+        },
+        "encyclopedia": {
+            "image": "encyclopedia-ashp",
+            "next": "AAIR",
+            "prev": null
         }
     },
     "AAIR": {
@@ -57,6 +62,11 @@
         "build": {
             "cost": 225,
             "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "image": "encyclopedia-aair",
+            "next": null,
+            "prev": "ASHP"
         }
     }
 }

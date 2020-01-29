@@ -36,14 +36,14 @@ export default class NewGame extends Scene {
             this.onStart(this.options);
         }));
 
-        let font = { color: 'white', fontSize: '20px', fontFamily: 'Courier' };
+        let font = { color: 'white', fontSize: '16px', fontFamily: 'Verdana' };
         this.raceText = this.add.text(370, 157, this.options.displayRace(), font);
         this.difficultyText = this.add.text(370, 205, this.options.displayDifficulty(), font);
 
         var y = 264;
         this.campaignOptions = [];
         for (const campaign in this.options.availableCampaigns) {
-            let option = this.add.text(124, y, this.options.displayCampaign(campaign))
+            let option = this.add.text(124, y, this.options.displayCampaign(campaign), font)
                 .setInteractive()
                 .setBackgroundColor(this.options.campaign == campaign ? '#246B6C' : 'black')
                 .on('pointerup', () => {

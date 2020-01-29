@@ -31,7 +31,7 @@ export class App {
         };
 
         if (resource === 'encyclopedia') {
-            return this.game.scene.start('Encyclopedia');
+            return this.game.scene.start('Encyclopedia', { category: id, item: subresource });
         }
 
         if (resource === 'games') {
