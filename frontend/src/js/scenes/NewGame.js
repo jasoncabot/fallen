@@ -64,6 +64,7 @@ export default class NewGame extends Scene {
 
         fetch(api('/games'), {
             method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }).then((response) => {
             return response.json();

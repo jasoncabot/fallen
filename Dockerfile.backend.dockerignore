@@ -1,0 +1,14 @@
+.github
+frontend
+img
+manifests
+.env
+.gitignore
+.git
+.DS_Store
+LICENSE
+README.md
+backend/node_modules
+shared/node_modules
+
+Dockerfile.*

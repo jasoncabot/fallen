@@ -60,8 +60,9 @@ module.exports.register = (app, redis) => {
         // generate a unique id
         const gameId = uuidv4();
         const game = generateGame(gameId);
-        // parse req.params.options
-        console.log('Options: ' + JSON.stringify(req.params.options));
+        console.log('starting game with options: ' + req.body.race);
+        console.log('starting game with options: ' + req.body.difficulty);
+        console.log('starting game with options: ' + req.body.campaign);
         // save game to database
         service.create(redis, gameId, game)
             .then(() => {

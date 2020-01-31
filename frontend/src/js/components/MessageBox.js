@@ -23,7 +23,7 @@ export default class MessageBox extends Scene {
 
         this.add.image(0, 0, 'messagebox').setOrigin(0, 0).setScrollFactor(0);
 
-        let font = { color: 'green', fontSize: '12px', fontFamily: 'Courier' };
+        let font = { color: 'green', fontSize: '12px', fontFamily: 'Verdana' };
         this.add.text(14, 11, this.message, font);
 
         createButton(this, 25, 137, buttons.confirmCancel.confirm, (button) => {

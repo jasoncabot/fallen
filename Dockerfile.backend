@@ -1,0 +1,21 @@
+FROM node:10-alpine
+
+COPY shared/package*.json /src/shared/
+
+WORKDIR /src/shared
+
+RUN npm install --silent
+
+COPY ./shared /src/shared
+
+COPY backend/package*.json /src/backend/
+
+WORKDIR /src/backend
+
+RUN npm install --silent
+
+COPY ./backend /src/backend
+
+EXPOSE 4500
+
+CMD npm start
