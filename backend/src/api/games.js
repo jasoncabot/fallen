@@ -12,7 +12,7 @@ const generateGame = (id) => {
             "units": {
                 "123456": {
                     "kind": {
-                        "category": "ASQU"
+                        "category": "ASQD"
                     },
                     "facing": 0,
                     "position": { "x": 3, "y": 5 },

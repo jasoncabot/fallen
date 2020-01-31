@@ -1,72 +1,14 @@
 {
-    "ASHP": {
-        "kind": {
-            "category": "DROPSHIP",
-            "starship": true
-        },
-        "display": {
-            "width": 3,
-            "height": 3,
-            "tiles": "structure-alien-dropship",
-            "offset": 0
-        },
-        "production": {
-            "category": "NONE",
-            "cash": 0,
-            "energy": 0,
-            "research": 0
-        },
-        "usage": {
-            "cash": 0,
-            "energy": 0
-        },
-        "storage": {
-            "category": "TROOP FACTORY HOVER",
-            "size": 8
-        },
-        "build": {
-            "cost": 800,
-            "placement": "ANYWHERE"
-        },
-        "encyclopedia": {
-            "image": "encyclopedia-ashp",
-            "next": "AAIR",
-            "prev": null
-        }
-    },
-    "AAIR": {
-        "kind": {
-            "category": "AIRPORT",
-            "starship": false
-        },
-        "display": {
-            "width": 3,
-            "height": 4,
-            "tiles": "structure-alien",
-            "offset": 0
-        },
-        "production": {
-            "category": "HOVER",
-            "cash": 0,
-            "energy": 0,
-            "research": 0
-        },
-        "usage": {
-            "cash": 0,
-            "energy": 50
-        },
-        "storage": {
-            "category": "HOVER",
-            "size": 12
-        },
-        "build": {
-            "cost": 225,
-            "placement": "B-ROAD"
-        },
-        "encyclopedia": {
-            "image": "encyclopedia-aair",
-            "next": null,
-            "prev": "ASHP"
-        }
-    }
+    "ATUR": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "AAIR", "prev": "" } },
+    "AAIR": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "ABAR", "prev": "ATUR" } },
+    "ABAR": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "ABAY", "prev": "AAIR" } },
+    "ABAY": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "ADEF", "prev": "ABAR" } },
+    "ADEF": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "AENY", "prev": "ABAY" } },
+    "AENY": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "AFAC", "prev": "ADEF" } },
+    "AFAC": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "ALAB", "prev": "AENY" } },
+    "ALAB": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "AMIN", "prev": "AFAC" } },
+    "AMIN": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "ARAD", "prev": "ALAB" } },
+    "ARAD": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "ASHP", "prev": "AMIN" } },
+    "ASHP": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": true }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "ASIL", "prev": "ARAD" } },
+    "ASIL": { "kind": { "category": "DROPSHIP", "name": "Dropship", "starship": false }, "display": { "width": 3, "height": 3, "tiles": "structure-alien-dropship", "offset": 0 },"production": { "category": "NONE", "cash": 0, "energy": 0, "research": 0 }, "usage": { "cash": 0, "energy": 0 }, "hp": 200, "storage": { "category": "TROOP FACTORY HOVER", "size": 8 }, "build": { "cost": 800, "placement": "ANYWHERE" }, "encyclopedia": { "description": "This is a longer description", "next": "", "prev": "ASHP" } }
 }
