@@ -25,8 +25,14 @@ export default class Encyclopedia extends Scene {
         if (this.category === 'structures') this.load.json('data-structures', data("/structures.json"));
         this.load.image('encyclopedia-background', background);
 
-        // Pre-load all encyclopedia images
-        Object.keys(images).forEach(key => { this.load.image(`encyclopedia-${key}`, images[key]) });
+        if (this.item) {
+            const loweredKey = this.item.toLowerCase();
+            Object.keys(images).forEach(key => {
+                if (loweredKey === key) {
+                    this.load.image(`encyclopedia-${key}`, images[key])
+                }
+            });
+        }
     }
 
     create() {
@@ -60,7 +66,7 @@ export default class Encyclopedia extends Scene {
             this.add.text(18, 261 + offset, "Range", font);
             this.add.text(173, 261 + offset, weapon.range, font);
             this.add.text(18, 296 + offset, "Damage", font);
-            this.add.text(173, 296 + offset, weapon.damage.contact, font);    
+            this.add.text(173, 296 + offset, weapon.damage.contact, font);
         }
 
         addWeaponText(unit.weapons.light, 0);
@@ -68,7 +74,7 @@ export default class Encyclopedia extends Scene {
 
         this.add.text(460, 350, unit.kind.name, { color: 'green', fontSize: '40px', fontFamily: 'Verdana' }).setOrigin(0.5, 0);
         this.add.text(460, 400, `${unit.cost} Credits`, { color: 'green', fontSize: '20px', fontFamily: 'Verdana' }).setOrigin(0.5, 0);
-        
+
     }
 
     showStructure(item) {
