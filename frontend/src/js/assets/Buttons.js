@@ -14,7 +14,7 @@ import buttonsWorld from '../../images/buttons/world.png';
 import buttonsWorldData from '../../images/buttons/world.json';
 
 const createButton = (scene, x, y, config, callback) => {
-    let button = scene.add.image(x, y, config.atlas, config.name + '_0')
+    const button = scene.add.image(x, y, config.atlas, config.name + '_0')
         .setInteractive({
             hitArea: new Phaser.Geom.Polygon(config.hitArea),
             hitAreaCallback: Phaser.Geom.Polygon.Contains,
@@ -23,13 +23,26 @@ const createButton = (scene, x, y, config, callback) => {
         .setOrigin(0, 0)
         .setScrollFactor(0);
 
-    button.on('pointerover', () => { button.setFrame(config.name + '_1'); });
-    button.on('pointerout', () => { button.setFrame(config.name + '_0'); });
+    button.on('pointerover', () => { if (!button.highlighted) button.setFrame(config.name + '_1'); });
+    button.on('pointerout', () => { if (!button.highlighted) button.setFrame(config.name + '_0'); });
     button.on('pointerdown', () => { button.setFrame(config.name + '_2'); });
-    button.on('pointerup', () => {
+    button.on('pointerup', (_pointer, _x, _y, event) => {
         button.setFrame(config.name + '_0');
+        event.stopPropagation();
         callback(button);
     });
+    button.disable = () => {
+        button.disableInteractive();
+        button.setFrame(config.name + '_3');
+    }
+    button.enable = () => {
+        button.setFrame(config.name + '_0');
+        button.setInteractive();
+    }
+    button.setHighlight = (value) => {
+        button.highlighted = value;
+        button.setFrame(config.name + (value ? '_2' : '_0'));
+    }
 
     return button;
 }

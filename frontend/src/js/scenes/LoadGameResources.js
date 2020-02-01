@@ -21,7 +21,7 @@ export default class LoadGameResources extends Scene {
         this.load.json('data-units', data("/units.json"));
 
         // dynamic content
-        this.load.json('current-game', api("/games/" + this.gameId));
+        this.load.json(`game-${this.gameId}`, api("/games/" + this.gameId));
     }
 
     create() {

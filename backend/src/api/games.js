@@ -1,38 +1,66 @@
 const uuidv4 = require('uuid/v4');
 const service = require('../service/game');
 
-const generateGame = (id) => {
+const generateGame = (id, race, difficulty, campaign) => {
+    // TODO: difficulty should change the AI
+    // campaign should change the set of terrains
+    const side = ['HUMAN', 'ALIEN'][race];
     return {
         "id": id,
+        "turn": {
+            "seed": Math.floor(Math.random() * Math.floor(2147483647)),
+            "number": 1,
+            "owner": side // starts on your turn
+        },
         "globalReserve": 4255,
-        "haven": {
-            "energy": 123,
-            "research": 1234,
-            "income": 1421,
-            "units": {
-                "123456": {
-                    "kind": {
-                        "category": "ASQD"
-                    },
-                    "facing": 0,
-                    "position": { "x": 3, "y": 5 },
-                    "hp": 15,
-                    "experience": 1
-                }
+        "provinces": {
+            "cartasone": {
+                "owner": "NEUTRAL",
+                "mission": null,
+                "units": {},
+                "structures": {}
             },
-            "structures": {
-                "23456": {
-                    "position": { "x": 0, "y": 0 },
-                    "hp": 15,
-                    "kind": {
-                        "category": "ASHP"
+            "eagle-nest": {
+                "owner": "NEUTRAL",
+                "mission": {
+                    "description": "Rebels need help",
+                    "objective": "Destroy Rocket Launcher",
+                    "reward": "Rebel forces will join you",
+                },
+                "units": {},
+                "structures": {}
+            },
+            "haven": {
+                "owner": side, // always own haven
+                "mission": null,
+                "energy": 123,
+                "credits": 1421,
+                "research": 1234,
+                "units": {
+                    "123456": {
+                        "kind": {
+                            "category": "ASQD"
+                        },
+                        "facing": 0,
+                        "position": { "x": 3, "y": 5 },
+                        "hp": 15,
+                        "experience": 1
                     }
                 },
-                "34567": {
-                    "position": { "x": 3, "y": 0 },
-                    "hp": 200,
-                    "kind": {
-                        "category": "AAIR"
+                "structures": {
+                    "23456": {
+                        "position": { "x": 0, "y": 0 },
+                        "hp": 15,
+                        "kind": {
+                            "category": "ASHP"
+                        }
+                    },
+                    "34567": {
+                        "position": { "x": 3, "y": 0 },
+                        "hp": 200,
+                        "kind": {
+                            "category": "AAIR"
+                        }
                     }
                 }
             }
@@ -59,10 +87,7 @@ module.exports.register = (app, redis) => {
     app.post('/games', (req, res) => {
         // generate a unique id
         const gameId = uuidv4();
-        const game = generateGame(gameId);
-        console.log('starting game with options: ' + req.body.race);
-        console.log('starting game with options: ' + req.body.difficulty);
-        console.log('starting game with options: ' + req.body.campaign);
+        const game = generateGame(gameId, req.body.race, req.body.difficulty, req.body.campaign);
         // save game to database
         service.create(redis, gameId, game)
             .then(() => {

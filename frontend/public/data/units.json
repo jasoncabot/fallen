@@ -1,11 +1,362 @@
 {
-    "AFLY": { "kind": { "category": "afly", "name": "Flyer" }, "upkeep": 5, "cost": 5, "display": { "tiles": "unit-alien", "offset": 1 }, "weapons": { "light": { "name": "PLASMA LAUNCHER", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }, "heavy": { "name": "EXPLOSIVE MINE", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }}, "encyclopedia": { "next": "AGRV", "prev": null }},
-    "AGRV": { "kind": { "category": "agrv", "name": "Hover Tank" }, "upkeep": 5, "cost": 5, "display": { "tiles": "unit-alien", "offset": 1 }, "weapons": { "light": { "name": "PLASMA LAUNCHER", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }, "heavy": { "name": "EXPLOSIVE MINE", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }}, "encyclopedia": { "next": "ALTK", "prev": "AFLY"}},
-    "ALTK": { "kind": { "category": "altk", "name": "Light Tank" }, "upkeep": 5, "cost": 5, "display": { "tiles": "unit-alien", "offset": 1 }, "weapons": { "light": { "name": "PLASMA LAUNCHER", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }, "heavy": { "name": "EXPLOSIVE MINE", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }}, "encyclopedia": { "next": "AMDT", "prev": "AGRV"}},
-    "AMDT": { "kind": { "category": "amdt", "name": "Tank" }, "upkeep": 5, "cost": 5, "display": { "tiles": "unit-alien", "offset": 1 }, "weapons": { "light": { "name": "PLASMA LAUNCHER", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }, "heavy": { "name": "EXPLOSIVE MINE", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }}, "encyclopedia": { "next": "AMEG", "prev": "ALTK"}},
-    "AMEG": { "kind": { "category": "ameg", "name": "Mega Tank" }, "upkeep": 5, "cost": 5, "display": { "tiles": "unit-alien", "offset": 1 }, "weapons": { "light": { "name": "PLASMA LAUNCHER", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }, "heavy": { "name": "EXPLOSIVE MINE", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }}, "encyclopedia": { "next": "APLA", "prev": "AMDT"}},
-    "APLA": { "kind": { "category": "apla", "name": "Artillery" }, "upkeep": 5, "cost": 5, "display": { "tiles": "unit-alien", "offset": 1 }, "weapons": { "light": { "name": "PLASMA LAUNCHER", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }, "heavy": { "name": "EXPLOSIVE MINE", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }}, "encyclopedia": { "next": "ASNI", "prev": "AMEG"}},
-    "ASNI": { "kind": { "category": "asni", "name": "Sniper" }, "upkeep": 5, "cost": 5, "display": { "tiles": "unit-alien", "offset": 1 }, "weapons": { "light": { "name": "PLASMA LAUNCHER", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }, "heavy": { "name": "EXPLOSIVE MINE", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }}, "encyclopedia": { "next": "ASQD", "prev": "APLA"}},
-    "ASQD": { "kind": { "category": "asqd", "name": "Trooper" }, "upkeep": 2, "cost": 30, "display": { "tiles": "unit-alien", "offset": 41 }, "weapons": { "light": { "name": "PLASMA LAUNCHER", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }, "heavy": { "name": "EXPLOSIVE MINE", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }}, "encyclopedia": { "next": "ASUP", "prev": "ASNI"}},
-    "ASUP": { "kind": { "category": "asup", "name": "S.H.O.G" }, "upkeep": 5, "cost": 5, "display": { "tiles": "unit-alien", "offset": 1 }, "weapons": { "light": { "name": "PLASMA LAUNCHER", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }, "heavy": { "name": "EXPLOSIVE MINE", "range": 4, "damage": { "contact": 15, "close": 4, "far": 0 }, "precision": 1, "percentTimeUnits": 35 }}, "encyclopedia": { "next": null, "prev": "ASQD"}}
+    "ASQD": {
+        "kind": {
+            "category": "asqd",
+            "name": "Trooper"
+        },
+        "upkeep": 2,
+        "cost": 30,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 41
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "ASNI",
+            "prev": null
+        }
+    },
+    "ASNI": {
+        "kind": {
+            "category": "asni",
+            "name": "Sniper"
+        },
+        "upkeep": 5,
+        "cost": 5,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 1
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "ALTK",
+            "prev": "ASQD"
+        }
+    },
+    "ALTK": {
+        "kind": {
+            "category": "altk",
+            "name": "Light Tank"
+        },
+        "upkeep": 5,
+        "cost": 5,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 1
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "APLA",
+            "prev": "ASNI"
+        }
+    },
+    "APLA": {
+        "kind": {
+            "category": "apla",
+            "name": "Artillery"
+        },
+        "upkeep": 5,
+        "cost": 5,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 1
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "AGRV",
+            "prev": "ALTK"
+        }
+    },
+    "AGRV": {
+        "kind": {
+            "category": "agrv",
+            "name": "Hover Tank"
+        },
+        "upkeep": 5,
+        "cost": 5,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 1
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "AFLY",
+            "prev": "APLA"
+        }
+    },
+    "AFLY": {
+        "kind": {
+            "category": "afly",
+            "name": "Flyer"
+        },
+        "upkeep": 5,
+        "cost": 5,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 1
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "AMDT",
+            "prev": "AGRV"
+        }
+    },
+    "AMDT": {
+        "kind": {
+            "category": "amdt",
+            "name": "Tank"
+        },
+        "upkeep": 5,
+        "cost": 5,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 1
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "ASUP",
+            "prev": "AFLY"
+        }
+    },
+    "ASUP": {
+        "kind": {
+            "category": "asup",
+            "name": "S.H.O.G"
+        },
+        "upkeep": 5,
+        "cost": 5,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 1
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "AMEG",
+            "prev": "AMDT"
+        }
+    },
+    "AMEG": {
+        "kind": {
+            "category": "ameg",
+            "name": "Mega Tank"
+        },
+        "upkeep": 5,
+        "cost": 5,
+        "display": {
+            "tiles": "unit-alien",
+            "offset": 1
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentTimeUnits": 35
+            }
+        },
+        "encyclopedia": {
+            "next": null,
+            "prev": "ASUP"
+        }
+    }
 }

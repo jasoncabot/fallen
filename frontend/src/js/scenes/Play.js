@@ -143,7 +143,7 @@ export default class Play extends Phaser.Scene {
     }
 
     create() {
-        let game = this.cache.json.get('current-game');
+        let game = this.cache.json.get(`game-${this.gameId}`);
 
         const data = {
             terrain: this.cache.json.get('data-provinces'),
@@ -152,7 +152,7 @@ export default class Play extends Phaser.Scene {
         }
 
         let terrain = data.terrain[this.colony];
-        let province = game[this.colony];
+        let province = game.provinces[this.colony];
 
         registerScenePath(this, '/games/' + this.gameId + '/' + this.colony);
 
@@ -230,32 +230,35 @@ export default class Play extends Phaser.Scene {
             if (this.topDialog) return;
             this.isDragging = true;
             this.touchStart = { x: pointer.x, y: pointer.y };
+            this.touchStartCamera = { x: Math.round(this.cameras.main.scrollX), y: Math.round(this.cameras.main.scrollY) };
         }, this);
         this.input.on('pointerup', (pointer) => {
 
-            let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
-            let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
-            if (this.constructionMode) {
-                constructionGraphics.setPosition(pos.x, pos.y);
-                constructionGraphics.visible = this.validForConstruction(tileIndex, terrain);
+            if (Math.round(this.cameras.main.scrollX) === this.touchStartCamera.x && Math.round(this.cameras.main.scrollY) === this.touchStartCamera.y) {
+                let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
+                let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
+                if (this.constructionMode) {
+                    constructionGraphics.setPosition(pos.x, pos.y);
+                    constructionGraphics.visible = this.validForConstruction(tileIndex, terrain);
 
-                // TODO: remove this debug line - it shouldn't trigger if we have performed another event
-                // such as dragging the map
-                roadBlitter.create(pos.x, pos.y, 8);
-            } else {
-                // check if we touched a unit
-                let unit = (unitImages[tileIndex.x] || [])[tileIndex.y];
-                if (unit) {
-                    this.onUnitSelected(unit, pos);
+                    // TODO: remove this debug line
+                    roadBlitter.create(pos.x, pos.y, 8);
                 } else {
-                    this.onUnitDeselected(pos);
+                    // check if we touched a unit
+                    let unit = (unitImages[tileIndex.x] || [])[tileIndex.y];
+                    if (unit) {
+                        this.onUnitSelected(unit, pos);
+                    } else {
+                        this.onUnitDeselected(pos);
+                    }
                 }
             }
 
             this.isDragging = false;
             this.touchStart = null;
+            this.touchStartCamera = null;
         }, this);
-        this.input.on('pointermove', (pointer) => {
+        this.input.on('pointermove', (pointer, _localX, _localY, event) => {
             if (this.constructionMode) {
                 let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
                 let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
@@ -275,6 +278,7 @@ export default class Play extends Phaser.Scene {
         this.input.on('pointerout', (pointer) => {
             this.isDragging = false;
             this.touchStart = null;
+            this.touchStartCamera = null;
         }, this);
         this.input.setDefaultCursor('url(' + customCursor + '), pointer');
 
@@ -288,22 +292,28 @@ export default class Play extends Phaser.Scene {
             if (this.topDialog) {
                 this.topDialog.dismiss();
                 this.topDialog = null;
+                button.setHighlight(false);
                 // TODO: if this is a different key, show that instead
             } else if (this.scene.isSleeping('build')) {
+                // TODO: tidy these up - messy
                 this.scene.wake('build');
                 this.topDialog = this.scene.get('build');
+                button.setHighlight(true);
             } else {
                 let window = new Dialog('build', 16, 42, this);
                 this.scene.add(window.key, window, true);
                 this.topDialog = window;
+                button.setHighlight(true);
             }
         }));
         ui.add(createButton(this, 113, 410, buttons.strategic.road, (button) => {
             if (this.constructionMode) {
                 this.constructionMode = null;
+                button.setHighlight(false);
             } else {
                 this.constructionMode = { w: 1, h: 1, name: 'road' };
                 this.activeUnitSelection.visible = false;
+                button.setHighlight(true);
             }
         }));
         ui.add(createButton(this, 161, 410, buttons.strategic.recycle, (button) => { }));
@@ -333,7 +343,7 @@ export default class Play extends Phaser.Scene {
         ui.add(this.add.text(48, 7, province.research, font));
         ui.add(this.add.text(125, 7, province.energy, font));
         ui.add(this.add.text(300, 7, terrain.name, font));
-        ui.add(this.add.text(540, 7, game.globalReserve + "/" + province.income, font));
+        ui.add(this.add.text(540, 7, game.globalReserve + "/" + province.credits, font));
     }
 
     update(time, delta) {
