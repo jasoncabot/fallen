@@ -4,6 +4,10 @@ const service = require('../service/game');
 // TODO: these don't belong here - but it's quick and easy
 const opposite = (side) => { return side === 'HUMAN' ? 'ALIEN' : 'HUMAN' };
 const campaigns = {
+    startingProvinces: [
+        'haven',
+        'free-city'
+    ],
     provinces: [
         // Fallen Haven
         ['cartasone', 'eagle-nest', 'haven'],
@@ -112,6 +116,7 @@ const generateGame = (id, userId, race, difficulty, campaignType) => {
     // We generate the starting information for both campaign types
     // then filter the data we save to the backend for simplicity
     const campaign = campaigns.provinces[campaignType];
+    game.defaultProvince = campaigns.startingProvinces[campaignType];
     game.provinces = Object.keys(game.provinces)
         .filter(province => campaign.includes(province))
         .reduce((provinces, province) => {

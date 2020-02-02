@@ -36,7 +36,7 @@ export default class StrategicView extends Scene {
             .setOrigin(0, 0)
             .setScrollFactor(0);
 
-        this.selectedColony = this.selectedColony ? this.selectedColony : 'haven'; // default to haven being selected
+        this.selectedProvince = this.selectedProvince ? this.selectedProvince : game.defaultProvince;
         this.addProvinces(game);
 
         this.mission = this.add.text(30, 400, "", { color: 'green', fontSize: '14px', fontFamily: 'Verdana' })
@@ -47,7 +47,7 @@ export default class StrategicView extends Scene {
         this.buttonMap = createButton(this, 533, 365, buttons.world.map, (button) => {
             this.scene.start('Play', {
                 gameId: this.gameId,
-                colony: this.selectedColony,
+                colony: this.selectedProvince,
                 view: this.view
             });
         });
@@ -67,7 +67,7 @@ export default class StrategicView extends Scene {
         });
 
         // call this last to ensure that all buttons/missions are in a consistent state
-        this.onSelectedColonyUpdated(game);
+        this.onSelectedProvinceUpdated(game);
     }
 
     addProvinces(game) {
@@ -79,14 +79,14 @@ export default class StrategicView extends Scene {
         Object.keys(game.provinces).forEach((province) => {
             let option = this.add.text(30, y, provinceLookup[province].name, font)
                 .setInteractive()
-                .setBackgroundColor(this.selectedColony === province ? '#246B6C' : 'black')
+                .setBackgroundColor(this.selectedProvince === province ? '#246B6C' : 'black')
                 .on('pointerup', () => {
                     provinceOptions.forEach(selected => {
                         let colour = option === selected ? '#246B6C' : 'black';
                         selected.setBackgroundColor(colour)
                     });
-                    this.selectedColony = province;
-                    this.onSelectedColonyUpdated(game);
+                    this.selectedProvince = province;
+                    this.onSelectedProvinceUpdated(game);
                 });
 
             this.add.text(30, y + 38,
@@ -98,14 +98,14 @@ export default class StrategicView extends Scene {
         });
     }
 
-    onSelectedColonyUpdated(game) {
-        let reference = this.cache.json.get('data-provinces')[this.selectedColony];
-        let data = game.provinces[this.selectedColony];
+    onSelectedProvinceUpdated(game) {
+        let reference = this.cache.json.get('data-provinces')[this.selectedProvince];
+        let data = game.provinces[this.selectedProvince];
 
         // out of scanning range? hide the zoom button
         // TODO: don't just hardcode this :)
         const scannableProvinces = ['haven', 'eagle-nest'];
-        const outOfScanningRange = scannableProvinces.indexOf(this.selectedColony) < 0;
+        const outOfScanningRange = scannableProvinces.indexOf(this.selectedProvince) < 0;
         if (outOfScanningRange) {
             this.buttonZoom.disable();
         } else {
