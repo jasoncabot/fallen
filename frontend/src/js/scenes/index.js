@@ -4,3 +4,4 @@ export { default as MainMenu } from './MainMenu';
 export { default as NewGame } from './NewGame';
 export { default as Play } from './Play';
 export { default as StrategicView } from './StrategicView';
+export { default as CreateGame } from './CreateGame';

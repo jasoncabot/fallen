@@ -1,7 +1,5 @@
 import { Scene } from 'phaser';
 
-import { api } from '../Config';
-
 import { MenuButton } from '../components/MenuButton';
 import { GameOptions } from '../models/GameOptions';
 
@@ -33,7 +31,7 @@ export default class NewGame extends Scene {
             this.difficultyText.setText(this.options.displayDifficulty());
         }));
         this.add.existing(new MenuButton(this, { x: 330, y: 330, width: 190, height: 37 }, 'Ok', (scene) => {
-            this.onStart(this.options);
+            this.scene.start("CreateGame", { options: this.options });
         }));
 
         let font = { color: 'white', fontSize: '16px', fontFamily: 'Verdana' };
@@ -56,22 +54,5 @@ export default class NewGame extends Scene {
             this.campaignOptions.push(option);
             y += 24;
         }
-    }
-
-    onStart(options) {
-        const { race, difficulty, campaign } = options;
-        const data = { race, difficulty, campaign };
-
-        fetch(api('/games'), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        }).then((response) => {
-            return response.json();
-        }).then(game => {
-            this.scene.start('LoadGameResources', { gameId: game.id });
-        }).catch(e => {
-            alert(e);
-        });
     }
 }

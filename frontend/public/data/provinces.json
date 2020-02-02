@@ -90,5 +90,53 @@
             [3,3,3,3,3],
             [3,3,3,3,3]
         ]
+    },
+    "free-city": {
+        "width": 5,
+        "height": 5,
+        "name": "Free City",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "lachine": {
+        "width": 5,
+        "height": 5,
+        "name": "Lachine",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "sutton": {
+        "width": 5,
+        "height": 5,
+        "name": "Sutton",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
     }
 }

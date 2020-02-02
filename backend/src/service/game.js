@@ -1,5 +1,18 @@
 const key = (id) => { return `game-${id}` }
 
+module.exports.findByIdAndUser = async (redis, id, userId) => {
+    // load the game
+    const game = await this.findById(redis, id);
+    // hide information not known by userId
+    game.sides = Object.keys(game.sides)
+        .filter(side => side === userId)
+        .reduce((players, side) => {
+            players[side] = game.sides[side];
+            return players;
+        }, {});
+    return game;
+}
+
 module.exports.findById = async (redis, id) => {
     try {
         const value = await redis.getAsync(key(id))

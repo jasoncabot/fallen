@@ -13,6 +13,9 @@ const config = {
         parent: 'root',
         width: 640,
         height: 480
+    },
+    dom: {
+        createContainer: true
     }
 };
 

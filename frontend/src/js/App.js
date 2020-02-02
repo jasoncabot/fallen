@@ -8,12 +8,9 @@ export class App {
     }
 
     registerScenes() {
-        this.game.scene.add('Encyclopedia', scenes.Encyclopedia);
-        this.game.scene.add('LoadGameResources', scenes.LoadGameResources);
-        this.game.scene.add('MainMenu', scenes.MainMenu);
-        this.game.scene.add('NewGame', scenes.NewGame);
-        this.game.scene.add('Play', scenes.Play);
-        this.game.scene.add('StrategicView', scenes.StrategicView);
+        Object.keys(scenes).forEach( key => { 
+            this.game.scene.add(key, scenes[key]);
+        });
     }
 
     route(path, query) {

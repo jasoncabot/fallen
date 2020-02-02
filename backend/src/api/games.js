@@ -1,18 +1,42 @@
 const uuidv4 = require('uuid/v4');
 const service = require('../service/game');
 
-const generateGame = (id, race, difficulty, campaign) => {
-    // TODO: difficulty should change the AI
-    // campaign should change the set of terrains
+// TODO: these don't belong here - but it's quick and easy
+const opposite = (side) => { return side === 'HUMAN' ? 'ALIEN' : 'HUMAN' };
+const campaigns = {
+    provinces: [
+        // Fallen Haven
+        ['cartasone', 'eagle-nest', 'haven'],
+        // The last hope campaign
+        ['free-city', 'lachine', 'sutton']
+    ]
+}
+const generateGame = (id, userId, race, difficulty, campaignType) => {
     const side = ['HUMAN', 'ALIEN'][race];
-    return {
+    const sides = {};
+    sides[userId] = {
+        "globalReserve": 4255,
+        "type": "PLAYER",
+        "owner": side,
+        "difficulty": difficulty
+    };
+
+    // generate AI opponent
+    const computerId = uuidv4();
+    sides[computerId] = {
+        "globalReserve": 8000,
+        "type": "AI",
+        "owner": opposite(side),
+        "difficulty": difficulty
+    };
+    const game = {
         "id": id,
         "turn": {
             "seed": Math.floor(Math.random() * Math.floor(2147483647)),
             "number": 1,
             "owner": side // starts on your turn
         },
-        "globalReserve": 4255,
+        "sides": sides,
         "provinces": {
             "cartasone": {
                 "owner": "NEUTRAL",
@@ -63,17 +87,56 @@ const generateGame = (id, race, difficulty, campaign) => {
                         }
                     }
                 }
+            },
+            "free-city": {
+                "owner": side, // you only own this side
+                "mission": null,
+                "units": {},
+                "structures": {}
+            },
+            "lachine": {
+                "owner": opposite(side),
+                "mission": null,
+                "units": {},
+                "structures": {}
+            },
+            "sutton": {
+                "owner": opposite(side),
+                "mission": null,
+                "units": {},
+                "structures": {}
             }
         }
     };
+
+    // We generate the starting information for both campaign types
+    // then filter the data we save to the backend for simplicity
+    const campaign = campaigns.provinces[campaignType];
+    game.provinces = Object.keys(game.provinces)
+        .filter(province => campaign.includes(province))
+        .reduce((provinces, province) => {
+            provinces[province] = game.provinces[province];
+            return provinces;
+        }, {});
+    return game;
 };
+
+const requireUser = (req, res, next) => {
+    const token = (req.headers.authorization || "").split(' ')[1];
+    if (!token) {
+        return res.status(403).json({ error: 'No user found' });
+    }
+
+    req.user = Buffer.from(token, 'base64').toString('ascii');
+    next();
+}
 
 module.exports.register = (app, redis) => {
 
     // GET /games/:id
     // Read game
-    app.get('/games/:id', (req, res) => {
-        service.findById(redis, req.params.id)
+    app.get('/games/:id', requireUser, (req, res) => {
+        service.findByIdAndUser(redis, req.params.id, req.user)
             .then((game) => {
                 res.status(200).json(game);
             })
@@ -84,10 +147,10 @@ module.exports.register = (app, redis) => {
 
     // POST /games
     // Create game
-    app.post('/games', (req, res) => {
+    app.post('/games', requireUser, (req, res) => {
         // generate a unique id
         const gameId = uuidv4();
-        const game = generateGame(gameId, req.body.race, req.body.difficulty, req.body.campaign);
+        const game = generateGame(gameId, req.user, req.body.race, req.body.difficulty, req.body.campaign);
         // save game to database
         service.create(redis, gameId, game)
             .then(() => {

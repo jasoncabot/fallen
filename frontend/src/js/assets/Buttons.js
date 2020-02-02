@@ -23,9 +23,16 @@ const createButton = (scene, x, y, config, callback) => {
         .setOrigin(0, 0)
         .setScrollFactor(0);
 
-    button.on('pointerover', () => { if (!button.highlighted) button.setFrame(config.name + '_1'); });
+    button.on('pointerover', (_pointer, _x, _y, event) => { 
+        if (!button.highlighted) {
+            button.setFrame(config.name + '_1');
+        }
+    });
     button.on('pointerout', () => { if (!button.highlighted) button.setFrame(config.name + '_0'); });
-    button.on('pointerdown', () => { button.setFrame(config.name + '_2'); });
+    button.on('pointerdown', (_pointer, _x, _y, event) => {
+        button.setFrame(config.name + '_2');
+        event.stopPropagation();
+    });
     button.on('pointerup', (_pointer, _x, _y, event) => {
         button.setFrame(config.name + '_0');
         event.stopPropagation();
