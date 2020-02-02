@@ -150,6 +150,18 @@ module.exports.register = (app, redis) => {
             });
     });
 
+    // GET /games
+    // Find in-progress games
+    app.get('/games', requireUser, (req, res) => {
+        service.findByUser(redis, req.user)
+            .then((games) => {
+                res.status(200).json(games);
+            })
+            .catch((error) => {
+                res.status(404).json({ error: error.message });
+            });
+    });
+
     // POST /games
     // Create game
     app.post('/games', requireUser, (req, res) => {

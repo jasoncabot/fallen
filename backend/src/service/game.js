@@ -13,6 +13,12 @@ module.exports.findByIdAndUser = async (redis, id, userId) => {
     return game;
 }
 
+module.exports.findByUser = async (redis, userId) => {
+    // TODO: when creating a game, store games[user.id] = [...].append(gameId)
+    // convert to name + id
+    return [{ name: 'First game', date: new Date(), id: '124213' }];
+}
+
 module.exports.findById = async (redis, id) => {
     try {
         const value = await redis.getAsync(key(id))
