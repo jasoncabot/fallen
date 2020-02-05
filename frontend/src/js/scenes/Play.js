@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 import Dialog from '../components/Dialog';
-import { api } from '../Config';
+import LayerBuilder from '../components/LayerBuilder';
 
 // TODO: come up with a better way of referencing these images
 import rocky from '../../images/terrain/rocky.png';
@@ -11,7 +11,6 @@ import uiStrategic from '../../images/ui/strategic.png';
 import activeUnitSelection from '../../images/icons/active-unit-selection.png';
 import logoAlien from '../../images/ui/logo-alien.png';
 import logoHuman from '../../images/ui/logo-human.png';
-import logoNeutral from '../../images/ui/logo-neutral.png';
 import roads from '../../images/roads/roads.png';
 
 import { registerUnits, registerStructures } from '../assets/Resources';
@@ -23,6 +22,8 @@ import structurePointer from '../../images/misc/FALLEN_218.cur';
 
 import { Sounds } from './../assets/Sounds';
 import { registerScenePath } from './../components/History';
+
+const EventEmitter = require('eventemitter3');
 
 export default class Play extends Phaser.Scene {
 
@@ -45,7 +46,16 @@ export default class Play extends Phaser.Scene {
 
     init(data) {
         this.gameId = data.gameId;
-        this.colony = data.colony;
+        this.province = data.province;
+
+        const emitter = new EventEmitter();
+        this.layerBuilder = new LayerBuilder(emitter, this.province);
+        emitter.on('roadsUpdated', (roads) => {
+            roads.forEach(road => {
+                let { x, y } = this.screenCoordinates(road.x, road.y);
+                this.roadBlitter.create(x, y, road.tileId);
+            });
+        });
     }
 
     preload() {
@@ -67,9 +77,9 @@ export default class Play extends Phaser.Scene {
         this.load.image('ui-strategic', uiStrategic);
         this.load.image('active-unit-selection', activeUnitSelection);
 
-        this.load.image('logo-alien', logoAlien);
-        this.load.image('logo-neutral', logoNeutral);
-        this.load.image('logo-human', logoHuman);
+        let game = this.cache.json.get(`game-${this.gameId}`);
+        const logo = game.player.owner === 'HUMAN' ? logoHuman : logoAlien;
+        this.load.image('logo', logo);
 
         this.sounds.preload(this);
     }
@@ -108,97 +118,73 @@ export default class Play extends Phaser.Scene {
     }
 
     // TODO: all this needs to move to real modules
-    drawTileSelector(graphics, enabled) {
-        // enabled == whether to draw a cross through it or not for construction
+    createTileSelector(enabled, size) {
+        let width = 70 * size.x;
+        let height = 54 * size.y;
+        let tileHeight = height / 3;
+        let graphics = this.add.graphics(width, height);
         graphics.lineStyle(1, 0xFFFFFF, 1.0);
         graphics.beginPath();
-        graphics.moveTo(34, 18);
-        graphics.lineTo(0, 35);
-        graphics.lineTo(0, 36);
-        graphics.lineTo(34, 54);
-        graphics.lineTo(35, 54);
-        graphics.lineTo(70, 36);
-        graphics.lineTo(70, 35);
-        graphics.lineTo(35, 18);
+        graphics.moveTo((width / 2) - 1, tileHeight);
+        graphics.lineTo(0, (tileHeight * 2) - 1);
+        graphics.lineTo(0, tileHeight * 2);
+        graphics.lineTo((width / 2) - 1, height);
+        graphics.lineTo((width / 2), height);
+        graphics.lineTo(width, tileHeight * 2);
+        graphics.lineTo(width, (tileHeight * 2) - 1);
+        graphics.lineTo((width / 2), tileHeight);
         graphics.closePath();
         graphics.strokePath();
-    }
 
-    validForConstruction(tileIndex, map) {
-        if (tileIndex.x < 0) return false;
-        if (tileIndex.y < 0) return false;
-        if (tileIndex.y >= map.height) return false;
-        if (tileIndex.x >= map.height) return false;
-        // TODO: if it's something that can't be 'constructed' hide the cursor
-        return true;
-    }
-
-    writeTile(dest, position, spritesheet, index) {
-        let row = dest[position.x];
-        if (!row) {
-            row = [];
-            dest[position.x] = row;
+        // enabled == whether to draw a cross through it or not for construction
+        if (!enabled) {
+            graphics.beginPath();
+            graphics.moveTo((width / 2) - 1, tileHeight);
+            graphics.lineTo((width / 2) - 1, height);
+            graphics.moveTo(0, (tileHeight * 2) - 1);
+            graphics.lineTo(width, (tileHeight * 2) - 1);
+            graphics.closePath();
+            graphics.strokePath();
         }
-        row[position.y] = { spritesheet, name: "" + index }
+        return graphics;
     }
 
-    create() {
-        let game = this.cache.json.get(`game-${this.gameId}`);
+    pointerUpNearPointerDown() {
+        const tolerance = 5;
+        const movedX = Math.abs(Math.round(this.cameras.main.scrollX) - (this.touchStartCamera ? this.touchStartCamera.x : 0)) > tolerance;
+        const movedY = Math.abs(Math.round(this.cameras.main.scrollY) - (this.touchStartCamera.y ? this.touchStartCamera.y : 0)) > tolerance;
+        return !movedX && !movedY
+    }
 
-        const data = {
-            terrain: this.cache.json.get('data-provinces'),
-            structures: this.cache.json.get('data-structures'),
-            units: this.cache.json.get('data-units')
+    dispatch(command) {
+        switch (command.action) {
+            case 'ROAD':
+                this.layerBuilder.buildRoad(command.position);
+                return;
+            default:
+                throw new Error('No handler for action of type ' + command.action);
         }
+    }
 
-        let terrain = data.terrain[this.colony];
-        let province = game.provinces[this.colony];
-
-        registerScenePath(this, '/games/' + this.gameId + '/' + this.colony);
-
-        // create province view
-        let tileBlitter = this.add.blitter(0, 0, terrain.type);
-        let roadBlitter = this.add.blitter(0, 0, 'roads');
-
-        // create unit image lookup
-        let unitImages = [];
-        Object.values(province.units).forEach((unit) => {
-            let reference = data.units[unit.kind.category];
-            let displayOffset = reference.display.offset + unit.facing;
-            this.writeTile(unitImages, { x: unit.position.x, y: unit.position.y },
-                reference.display.tiles, displayOffset);
-        });
-
-        // create structure image lookup
-        let structureImages = [];
-        Object.values(province.structures).forEach((structure) => {
-            // Each structure can consist of multiple tiles
-            // this is where we turn 1 structure into the many tiles that are 
-            // actually rendered on-screen
-            let reference = data.structures[structure.kind.category];
-            // paint column by column to the height in the y-axis
-            let displayOffset = reference.display.offset;
-            for (let x = 0; x < reference.display.width; x++) {
-                for (let y = 0; y < reference.display.height; y++) {
-                    let pos = { x: structure.position.x + x, y: structure.position.y + y };
-                    this.writeTile(structureImages, pos, reference.display.tiles, displayOffset);
-                    displayOffset += 1;
-                }
-            }
-        });
-
-        let scanLines = (terrain.height + terrain.width) - 1;
+    renderTileLayers(layerBuilder) {
+        let scanLines = (layerBuilder.height + layerBuilder.width) - 1;
         var line = 0;
         while (line < scanLines) {
-            for (let j = 0, i = line; j <= line; j++ , i--) {
-                if (j >= terrain.width) continue;
-                if (i >= terrain.height) continue;
+            for (let i = 0, j = line; i <= line; i++ , j--) {
+                if (i >= layerBuilder.width) continue;
+                if (j >= layerBuilder.height) continue;
 
-                let pos = this.screenCoordinates(j, i);
-                tileBlitter.create(pos.x, pos.y, terrain.tiles[i][j]);
+                let pos = this.screenCoordinates(i, j);
+
+                // render terrain
+                this.terrainBlitter.create(pos.x, pos.y, layerBuilder.terrainAt({ x: i, y: j }));
+
+                // render roads and walls
+                this.roadBlitter.create(pos.x, pos.y, layerBuilder.roadAt({ x: i, y: j }));
+                this.roadBlitter.create(pos.x, pos.y, layerBuilder.wallAt({ x: i, y: j }));
 
                 // render structures
-                let structure = (structureImages[j] || [])[i];
+                let structure = layerBuilder.structureAt({ x: i, y: j });
                 if (structure) {
                     this.add.image(pos.x, pos.y, structure.spritesheet, structure.name)
                         .setOrigin(0, 0)
@@ -206,7 +192,7 @@ export default class Play extends Phaser.Scene {
                 }
 
                 // render units
-                let unit = (unitImages[j] || [])[i];
+                let unit = layerBuilder.unitAt({ x: i, y: j })
                 if (unit) {
                     this.add.image(pos.x, pos.y, unit.spritesheet, unit.name)
                         .setOrigin(0, 0)
@@ -215,16 +201,39 @@ export default class Play extends Phaser.Scene {
             }
             line++;
         }
+    }
+
+    create() {
+        registerScenePath(this, '/games/' + this.gameId + '/' + this.province);
+
+        let game = this.cache.json.get(`game-${this.gameId}`);
+
+        const data = {
+            terrain: this.cache.json.get('data-provinces'),
+            structures: this.cache.json.get('data-structures'),
+            units: this.cache.json.get('data-units')
+        }
+
+        let province = game.provinces[this.province];
+        let terrain = data.terrain[this.province];
+
+        this.terrainBlitter = this.add.blitter(0, 0, terrain.type);
+        this.roadBlitter = this.add.blitter(0, 0, 'roads');
+
+        this.layerBuilder.initialise(province, data, terrain);
+        this.renderTileLayers(this.layerBuilder);
 
         // Render active unit selection
-        this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0);
+        this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0).setDepth(1);
         this.activeUnitSelection.visible = false;
 
         // Render tile selection
-
-        let constructionGraphics = this.add.graphics(70, 54);
-        constructionGraphics.visible = false;
-        this.drawTileSelector(constructionGraphics, false);
+        // TODO: this should be specific to building a road, when exiting it should be destroyed
+        // when entering building mode we should just create a new one and assign it to constructionGraphics
+        // we should also have another one that is disabled
+        const constructionGraphics = this.createTileSelector(true, { x: 1, y: 1 })
+            .setDepth(1)
+            .setVisible(false);
 
         this.input.on('pointerdown', (pointer) => {
             if (this.topDialog) return;
@@ -234,18 +243,24 @@ export default class Play extends Phaser.Scene {
         }, this);
         this.input.on('pointerup', (pointer) => {
 
-            if (Math.round(this.cameras.main.scrollX) === this.touchStartCamera.x && Math.round(this.cameras.main.scrollY) === this.touchStartCamera.y) {
+            if (this.pointerUpNearPointerDown()) {
                 let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
                 let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
                 if (this.constructionMode) {
                     constructionGraphics.setPosition(pos.x, pos.y);
-                    constructionGraphics.visible = this.validForConstruction(tileIndex, terrain);
+                    constructionGraphics.visible = this.layerBuilder.validForConstruction(tileIndex);
 
                     // TODO: remove this debug line
-                    roadBlitter.create(pos.x, pos.y, 8);
+                    this.dispatch({
+                        action: 'ROAD',
+                        province: this.province,
+                        targetId: null,
+                        targetType: null,
+                        position: tileIndex
+                    })
                 } else {
                     // check if we touched a unit
-                    let unit = (unitImages[tileIndex.x] || [])[tileIndex.y];
+                    let unit = this.layerBuilder.unitAt(tileIndex);
                     if (unit) {
                         this.onUnitSelected(unit, pos);
                     } else {
@@ -263,7 +278,7 @@ export default class Play extends Phaser.Scene {
                 let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
                 let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
                 constructionGraphics.setPosition(pos.x, pos.y);
-                constructionGraphics.visible = this.validForConstruction(tileIndex, terrain);
+                constructionGraphics.visible = this.layerBuilder.validForConstruction(tileIndex);
             } else {
                 constructionGraphics.visible = false;
             }
@@ -277,13 +292,11 @@ export default class Play extends Phaser.Scene {
         }, this);
         this.input.on('pointerout', (pointer) => {
             this.isDragging = false;
-            this.touchStart = null;
-            this.touchStartCamera = null;
         }, this);
         this.input.setDefaultCursor('url(' + customCursor + '), pointer');
 
         // Static UI in a container
-        let ui = this.add.container(0, 0).setScrollFactor(0);
+        let ui = this.add.container(0, 0).setScrollFactor(0).setDepth(1);
 
         ui.add(createButton(this, 12, 410, buttons.strategic.repair, (button) => {
             alert('No buildings or dropships damaged');
@@ -323,8 +336,7 @@ export default class Play extends Phaser.Scene {
             this.scene.start('StrategicView', { gameId: this.gameId });
         }));
 
-        // TODO: not just logo-alien - depends on which team you are
-        ui.add(this.add.image(232, 413, 'logo-alien').setOrigin(0, 0));
+        ui.add(this.add.image(232, 413, 'logo').setOrigin(0, 0));
 
         ui.add(this.add.image(0, 0, 'ui-strategic').setOrigin(0, 0));
 
@@ -343,7 +355,7 @@ export default class Play extends Phaser.Scene {
         ui.add(this.add.text(48, 7, province.research, font));
         ui.add(this.add.text(125, 7, province.energy, font));
         ui.add(this.add.text(300, 7, terrain.name, font));
-        ui.add(this.add.text(540, 7, game.globalReserve + "/" + province.credits, font));
+        ui.add(this.add.text(540, 7, game.player.globalReserve + "/" + province.credits, font));
     }
 
     update(time, delta) {

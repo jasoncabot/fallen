@@ -64,6 +64,8 @@ const generateGame = (id, userId, race, difficulty, campaignType) => {
                 "energy": 123,
                 "credits": 1421,
                 "research": 1234,
+                "walls": [{ "x": 18, "y": 5 }, { "x": 3, "y": 9 }],
+                "roads": [{ "x": 7, "y": 5 }, { "x": 8, "y": 5 }, { "x": 9, "y": 5 }],
                 "units": {
                     "123456": {
                         "kind": {
@@ -153,7 +155,7 @@ module.exports.register = (app, redis) => {
     // GET /games
     // Find in-progress games
     app.get('/games', requireUser, (req, res) => {
-        service.findByUser(redis, req.user)
+        service.findAllByUser(redis, req.user)
             .then((games) => {
                 res.status(200).json(games);
             })

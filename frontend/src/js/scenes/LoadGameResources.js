@@ -14,7 +14,7 @@ export default class LoadGameResources extends Scene {
 
     init(data) {
         this.gameId = data.gameId;
-        this.colony = data.colony;
+        this.province = data.province;
         this.view = data.view;
     }
 
@@ -31,13 +31,13 @@ export default class LoadGameResources extends Scene {
     }
 
     create() {
-        const data = { gameId: this.gameId, colony: this.colony, view: this.view };
+        const data = { gameId: this.gameId, province: this.province, view: this.view };
 
-        // if we don't have a specific colony to view
-        if (!this.colony) {
+        // if we don't have a specific province to view
+        if (!this.province) {
             // must be an overview
             this.game.scene.start('StrategicView', data);
-        } else if (this.colony) {
+        } else if (this.province) {
             // otherwise it's most likely the Play view
             this.game.scene.start('Play', data);
         } else {

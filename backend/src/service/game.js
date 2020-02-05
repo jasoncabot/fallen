@@ -4,16 +4,13 @@ module.exports.findByIdAndUser = async (redis, id, userId) => {
     // load the game
     const game = await this.findById(redis, id);
     // hide information not known by userId
-    game.sides = Object.keys(game.sides)
-        .filter(side => side === userId)
-        .reduce((players, side) => {
-            players[side] = game.sides[side];
-            return players;
-        }, {});
+    let user = game.sides[userId];
+    delete game.sides;
+    game['player'] = user;
     return game;
 }
 
-module.exports.findByUser = async (redis, userId) => {
+module.exports.findAllByUser = async (redis, userId) => {
     // TODO: when creating a game, store games[user.id] = [...].append(gameId)
     // convert to name + id
     return [{ name: 'First game', date: new Date(), id: '124213' }];

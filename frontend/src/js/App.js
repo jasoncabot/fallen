@@ -37,7 +37,7 @@ export class App {
             } else {
                 return this.game.scene.start('LoadGameResources', {
                     gameId: id,
-                    colony: subresource,
+                    province: subresource,
                     view: view
                 });
             }

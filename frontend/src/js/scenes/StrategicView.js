@@ -47,7 +47,7 @@ export default class StrategicView extends Scene {
         this.buttonMap = createButton(this, 533, 365, buttons.world.map, (button) => {
             this.scene.start('Play', {
                 gameId: this.gameId,
-                colony: this.selectedProvince,
+                province: this.selectedProvince,
                 view: this.view
             });
         });
@@ -113,10 +113,7 @@ export default class StrategicView extends Scene {
         }
 
         // not owned? hide the map button
-        // TODO: this isn't correct - it should be data.owner === game.me
-        // but until we have a root game with 2 player specific views (and seeds)
-        // this will be fine
-        const owned = data.owner === game.turn.owner;
+        const owned = data.owner === game.player.owner;
         if (owned) {
             this.buttonMap.enable();
         } else {
