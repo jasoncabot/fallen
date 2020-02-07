@@ -8,7 +8,7 @@
         "cost": 30,
         "display": {
             "tiles": "unit-alien",
-            "offset": 41
+            "offset": 40
         },
         "weapons": {
             "light": {
@@ -48,7 +48,7 @@
         "cost": 5,
         "display": {
             "tiles": "unit-alien",
-            "offset": 1
+            "offset": 72
         },
         "weapons": {
             "light": {
@@ -88,7 +88,7 @@
         "cost": 5,
         "display": {
             "tiles": "unit-alien",
-            "offset": 1
+            "offset": 8
         },
         "weapons": {
             "light": {
@@ -128,7 +128,7 @@
         "cost": 5,
         "display": {
             "tiles": "unit-alien",
-            "offset": 1
+            "offset": 32
         },
         "weapons": {
             "light": {
@@ -168,7 +168,7 @@
         "cost": 5,
         "display": {
             "tiles": "unit-alien",
-            "offset": 1
+            "offset": 48
         },
         "weapons": {
             "light": {
@@ -208,7 +208,7 @@
         "cost": 5,
         "display": {
             "tiles": "unit-alien",
-            "offset": 1
+            "offset": 0
         },
         "weapons": {
             "light": {
@@ -248,7 +248,7 @@
         "cost": 5,
         "display": {
             "tiles": "unit-alien",
-            "offset": 1
+            "offset": 16
         },
         "weapons": {
             "light": {
@@ -288,7 +288,7 @@
         "cost": 5,
         "display": {
             "tiles": "unit-alien",
-            "offset": 1
+            "offset": 64
         },
         "weapons": {
             "light": {
@@ -328,7 +328,7 @@
         "cost": 5,
         "display": {
             "tiles": "unit-alien",
-            "offset": 1
+            "offset": 24
         },
         "weapons": {
             "light": {

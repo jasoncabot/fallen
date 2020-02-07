@@ -21,28 +21,43 @@ export default class LayerBuilder {
             this.writeTileValue(this.walls, wall, true);
         });
 
-        // create unit image lookup
-        this.unitImages = [];
-        Object.values(province.units).forEach((unit) => {
+        // create unit lookup
+        this.unitModels = [];
+        this.unitLookup = province.units;
+        Object.keys(this.unitLookup).forEach(unitId => {
+            let unit = this.unitLookup[unitId];
             let reference = data.units[unit.kind.category];
-            let displayOffset = reference.display.offset + unit.facing;
-            this.writeTile(this.unitImages, { x: unit.position.x, y: unit.position.y },
-                reference.display.tiles, displayOffset);
+            let model = {
+                id: unitId,
+                position: unit.position,
+                facing: unit.facing,
+                spritesheet: reference.display.tiles,
+                offset: reference.display.offset,
+            };
+            this.writeTileValue(this.unitModels, unit.position, model);
         });
 
-        // create structure image lookup
-        this.structureImages = [];
-        Object.values(province.structures).forEach((structure) => {
+        // create structure lookup
+        this.structureModels = [];
+        this.structureLookup = province.structures;
+        Object.keys(this.structureLookup).forEach((structureId) => {
             // Each structure can consist of multiple tiles
             // this is where we turn 1 structure into the many tiles that are 
             // actually rendered on-screen
+            let structure = this.structureLookup[structureId];
             let reference = data.structures[structure.kind.category];
             // paint column by column to the height in the y-axis
             let displayOffset = reference.display.offset;
             for (let x = 0; x < reference.display.width; x++) {
                 for (let y = 0; y < reference.display.height; y++) {
                     let pos = { x: structure.position.x + x, y: structure.position.y + y };
-                    this.writeTile(this.structureImages, pos, reference.display.tiles, displayOffset);
+                    let model = {
+                        id: structureId,
+                        position: structure.position,
+                        spritesheet: reference.display.tiles,
+                        offset: displayOffset
+                    };
+                    this.writeTileValue(this.structureModels, pos, model);
                     displayOffset += 1;
                 }
             }
@@ -83,11 +98,20 @@ export default class LayerBuilder {
     }
 
     unitAt(index) {
-        return (this.unitImages[index.x] || [])[index.y];
+        return (this.unitModels[index.x] || [])[index.y];
+    }
+
+    unitCanOccupy(index) {
+        // TODO: validation that a unit can occupy this space
+        // terrain != water | forest | mountain
+        // no unit exists
+        // no structure exists
+        // no wall exists
+        return true;
     }
 
     structureAt(index) {
-        return (this.structureImages[index.x] || [])[index.y];
+        return (this.structureModels[index.x] || [])[index.y];
     }
 
     validForConstruction(tileIndex) {
@@ -99,10 +123,6 @@ export default class LayerBuilder {
         return true;
     }
 
-    writeTile(dest, position, spritesheet, index) {
-        this.writeTileValue(dest, position, { spritesheet, name: "" + index });
-    }
-
     writeTileValue(dest, position, value) {
         let row = dest[position.x];
         if (!row) {
@@ -110,6 +130,54 @@ export default class LayerBuilder {
             dest[position.x] = row;
         }
         row[position.y] = value;
+    }
+
+    findTarget(command) {
+        let type = command.targetType;
+        if (type === 'unit') {
+            return this.unitLookup[command.targetId];
+        } else if (type === 'structure') {
+            return this.structureLookup[command.targetId];
+        }
+        return null;
+    }
+
+    processCommand(command) {
+        switch (command.action) {
+            case 'ROAD':
+                this.buildRoad(command.position);
+                return;
+            case 'TURN':
+                this.turnUnit(this.findTarget(command));
+                return;
+            case 'MOVE':
+                this.moveUnit(this.findTarget(command), command.position);
+                return;
+            default:
+                throw new Error('No handler for action of type ' + command.action);
+        }
+    }
+
+    moveUnit(target, position) {
+        let oldPosition = target.position;
+        let unit = this.unitAt(oldPosition);
+        this.writeTileValue(this.unitModels, oldPosition, null);
+        unit.position = position;
+        target.position = unit.position;
+        this.writeTileValue(this.unitModels, position, unit);
+        this.emitter.emit('unitMoved', unit);
+    }
+
+    turnUnit(target) {
+        let oldPosition = target.position;
+        let unit = this.unitAt(oldPosition);
+        if (unit.facing === 7) {
+            unit.facing = 0;
+        } else {
+            unit.facing += 1;
+        }
+        target.facing = unit.facing;
+        this.emitter.emit('unitTurned', unit);
     }
 
     buildRoad(position) {

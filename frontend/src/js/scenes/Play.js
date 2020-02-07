@@ -42,6 +42,7 @@ export default class Play extends Phaser.Scene {
         };
 
         this.sounds = new Sounds();
+        this.unitViews = {};
     }
 
     init(data) {
@@ -55,6 +56,20 @@ export default class Play extends Phaser.Scene {
                 let { x, y } = this.screenCoordinates(road.x, road.y);
                 this.roadBlitter.create(x, y, road.tileId);
             });
+            this.sound.play('road');
+        });
+        emitter.on('unitTurned', (unit) => {
+            let view = this.unitViews[unit.id];
+            view.setFrame(unit.offset + unit.facing)
+        });
+        emitter.on('unitMoved', (unit) => {
+            let view = this.unitViews[unit.id];
+            let { x, y } = this.screenCoordinates(unit.position.x, unit.position.y);
+            view.setPosition(x, y);
+            this.sound.play('telep');
+            this.activeUnitSelection.setPosition(view.x, view.y);
+            this.activeUnitSelection.visible = false;
+            this.currentlySelectedUnit = null;
         });
     }
 
@@ -84,14 +99,41 @@ export default class Play extends Phaser.Scene {
         this.sounds.preload(this);
     }
 
-    onUnitSelected(unit, pos) {
-        this.sound.play('yessir');
-        this.activeUnitSelection.visible = true;
-        this.activeUnitSelection.setPosition(pos.x, pos.y);
+    onStructureSelected(model, view, pos) {
+        console.log(`onStructureSelected('${JSON.stringify(model, null, 2)}', '${JSON.stringify(view, null, 2)}', '${JSON.stringify(pos, null, 2)}')`)
     }
 
-    onUnitDeselected(pos) {
-        this.activeUnitSelection.visible = false;
+    onUnitSelected(model, pos) {
+        this.sound.play('yessir');
+        if (this.currentlySelectedUnit && this.currentlySelectedUnit === model) {
+            this.layerBuilder.processCommand({
+                action: 'TURN',
+                province: this.province,
+                targetId: model.id,
+                targetType: 'unit',
+                position: pos,
+                facing: model.facing
+            });
+            return;
+        }
+
+        this.currentlySelectedUnit = model;
+        this.activeUnitSelection.visible = true;
+        let view = this.unitViews[model.id];
+        this.activeUnitSelection.setPosition(view.x, view.y);
+    }
+
+    onUnitMoved(model, pos) {
+        this.layerBuilder.processCommand(
+            {
+                action: 'MOVE',
+                province: this.province,
+                targetId: model.id,
+                targetType: 'unit',
+                position: pos,
+                facing: model.facing
+            }
+        );
     }
 
     // Converts pointer coordinates to tile x, y
@@ -152,18 +194,8 @@ export default class Play extends Phaser.Scene {
     pointerUpNearPointerDown() {
         const tolerance = 5;
         const movedX = Math.abs(Math.round(this.cameras.main.scrollX) - (this.touchStartCamera ? this.touchStartCamera.x : 0)) > tolerance;
-        const movedY = Math.abs(Math.round(this.cameras.main.scrollY) - (this.touchStartCamera.y ? this.touchStartCamera.y : 0)) > tolerance;
+        const movedY = Math.abs(Math.round(this.cameras.main.scrollY) - (this.touchStartCamera ? this.touchStartCamera.y : 0)) > tolerance;
         return !movedX && !movedY
-    }
-
-    dispatch(command) {
-        switch (command.action) {
-            case 'ROAD':
-                this.layerBuilder.buildRoad(command.position);
-                return;
-            default:
-                throw new Error('No handler for action of type ' + command.action);
-        }
     }
 
     renderTileLayers(layerBuilder) {
@@ -174,29 +206,41 @@ export default class Play extends Phaser.Scene {
                 if (i >= layerBuilder.width) continue;
                 if (j >= layerBuilder.height) continue;
 
+                let tileIndex = { x: i, y: j };
                 let pos = this.screenCoordinates(i, j);
 
                 // render terrain
-                this.terrainBlitter.create(pos.x, pos.y, layerBuilder.terrainAt({ x: i, y: j }));
+                this.terrainBlitter.create(pos.x, pos.y, layerBuilder.terrainAt(tileIndex));
 
                 // render roads and walls
-                this.roadBlitter.create(pos.x, pos.y, layerBuilder.roadAt({ x: i, y: j }));
-                this.roadBlitter.create(pos.x, pos.y, layerBuilder.wallAt({ x: i, y: j }));
+                this.roadBlitter.create(pos.x, pos.y, layerBuilder.roadAt(tileIndex));
+                this.roadBlitter.create(pos.x, pos.y, layerBuilder.wallAt(tileIndex));
 
                 // render structures
-                let structure = layerBuilder.structureAt({ x: i, y: j });
+                let structure = layerBuilder.structureAt(tileIndex);
                 if (structure) {
-                    this.add.image(pos.x, pos.y, structure.spritesheet, structure.name)
+                    const structureImage = this.add.image(pos.x, pos.y, structure.spritesheet, structure.offset)
                         .setOrigin(0, 0)
                         .setInteractive({ cursor: 'url(' + structurePointer + '), pointer' });
+
+                    structureImage.on('pointerdown', (_pointer, _x, _y, event) => {
+                        event.stopPropagation();
+                        this.onStructureSelected(structure, structureImage, tileIndex);
+                    });
                 }
 
                 // render units
-                let unit = layerBuilder.unitAt({ x: i, y: j })
+                let unit = layerBuilder.unitAt(tileIndex);
                 if (unit) {
-                    this.add.image(pos.x, pos.y, unit.spritesheet, unit.name)
+                    const unitImage = this.add.image(pos.x, pos.y, unit.spritesheet, unit.offset + unit.facing)
                         .setOrigin(0, 0)
                         .setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
+
+                    this.unitViews[unit.id] = unitImage;
+                    unitImage.on('pointerdown', (_pointer, _x, _y, event) => {
+                        event.stopPropagation();
+                        this.onUnitSelected(unit, tileIndex);
+                    });
                 }
             }
             line++;
@@ -224,7 +268,7 @@ export default class Play extends Phaser.Scene {
         this.renderTileLayers(this.layerBuilder);
 
         // Render active unit selection
-        this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0).setDepth(1);
+        this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0).setDepth(2);
         this.activeUnitSelection.visible = false;
 
         // Render tile selection
@@ -242,29 +286,27 @@ export default class Play extends Phaser.Scene {
             this.touchStartCamera = { x: Math.round(this.cameras.main.scrollX), y: Math.round(this.cameras.main.scrollY) };
         }, this);
         this.input.on('pointerup', (pointer) => {
-
             if (this.pointerUpNearPointerDown()) {
                 let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
                 let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
+
+                // if we are building a road
                 if (this.constructionMode) {
                     constructionGraphics.setPosition(pos.x, pos.y);
                     constructionGraphics.visible = this.layerBuilder.validForConstruction(tileIndex);
 
                     // TODO: remove this debug line
-                    this.dispatch({
+                    this.layerBuilder.processCommand({
                         action: 'ROAD',
                         province: this.province,
                         targetId: null,
                         targetType: null,
                         position: tileIndex
-                    })
-                } else {
-                    // check if we touched a unit
-                    let unit = this.layerBuilder.unitAt(tileIndex);
-                    if (unit) {
-                        this.onUnitSelected(unit, pos);
-                    } else {
-                        this.onUnitDeselected(pos);
+                    });
+                } else if (this.currentlySelectedUnit) {
+                    // if we already have a selected unit
+                    if (this.layerBuilder.unitCanOccupy(tileIndex)) {
+                        this.onUnitMoved(this.currentlySelectedUnit, tileIndex);
                     }
                 }
             }
