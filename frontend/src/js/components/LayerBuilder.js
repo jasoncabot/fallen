@@ -1,3 +1,9 @@
+const objectExistsAt = (list) => {
+    return (x, y) => {
+        return (list[x] || [])[y];
+    }
+}
+
 export default class LayerBuilder {
 
     constructor(emitter) {
@@ -13,18 +19,20 @@ export default class LayerBuilder {
         this.terrainTiles = terrain.tiles;
 
         this.roads = [];
-        Object.values(province.roads).forEach((road) => {
+        this.roadLookup = province.roads;
+        Object.values(province.roads || {}).forEach((road) => {
             this.writeTileValue(this.roads, road, true);
         });
         this.walls = [];
-        Object.values(province.walls).forEach((wall) => {
+        this.wallLookup = province.walls;
+        Object.values(province.walls || {}).forEach((wall) => {
             this.writeTileValue(this.walls, wall, true);
         });
 
         // create unit lookup
         this.unitModels = [];
         this.unitLookup = province.units;
-        Object.keys(this.unitLookup).forEach(unitId => {
+        Object.keys(this.unitLookup || {}).forEach(unitId => {
             let unit = this.unitLookup[unitId];
             let reference = data.units[unit.kind.category];
             let model = {
@@ -40,7 +48,7 @@ export default class LayerBuilder {
         // create structure lookup
         this.structureModels = [];
         this.structureLookup = province.structures;
-        Object.keys(this.structureLookup).forEach((structureId) => {
+        Object.keys(this.structureLookup || {}).forEach((structureId) => {
             // Each structure can consist of multiple tiles
             // this is where we turn 1 structure into the many tiles that are 
             // actually rendered on-screen
@@ -69,18 +77,41 @@ export default class LayerBuilder {
     }
 
     roadAt(index) {
-        return this.objectAt(index, this.roads, [16, 11, 12, 9, 13, 1, 3, 7, 14, 2, 4, 8, 10, 5, 6, 15]);
+        return this.objectAt(index, [16, 11, 12, 9, 13, 1, 3, 7, 14, 2, 4, 8, 10, 5, 6, 15], objectExistsAt(this.roads));
+    }
+
+    roadOverviewAt(index) {
+        // TODO: correct tileset
+        return this.objectAt(index, [101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101], objectExistsAt(this.roads));
     }
 
     wallAt(index) {
-        return this.objectAt(index, this.walls, [32, 27, 28, 25, 29, 17, 19, 23, 30, 18, 20, 24, 26, 21, 22, 31]);
+        return this.objectAt(index, [32, 27, 28, 25, 29, 17, 19, 23, 30, 18, 20, 24, 26, 21, 22, 31], objectExistsAt(this.walls));
     }
 
-    objectAt(pos, list, tileIds) {
-        const objectExistsAt = (x, y) => {
-            return (list[x] || [])[y];
-        }
-        if (!objectExistsAt(pos.x, pos.y)) return undefined;
+    wallOverviewAt(index) {
+        // TODO: correct tileset
+        return this.objectAt(index, [118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118], objectExistsAt(this.walls));
+    }
+
+    structureOverviewAt(index) {
+        let reference = (this.structureModels[index.x] || [])[index.y];
+        if (!reference) return null;
+        return this.objectAt(index, [32, 32, 32, 32, 32, 17, 19, 18, 32, 23, 25, 24, 32, 20, 22, 21], (x, y) => {
+            let model = (this.structureModels[x] || [])[y];
+            if (!model) return false;
+            return reference.id === model.id;
+        });
+    }
+
+    unitOverviewAt(index) {
+        // touching units don't matter for the overview
+        // we should return 0, 1, 2 depending on owner
+        return 0;
+    }
+
+    objectAt(pos, tileIds, evaluator) {
+        if (!evaluator(pos.x, pos.y)) return undefined;
 
         // find all touching tiles
         // - | O | -
@@ -88,10 +119,11 @@ export default class LayerBuilder {
         // - | O | -
         // and create a bitmask - e.g if touching on all sides
         // we create 1111 and not touching anything is 0000
-        const offset = (objectExistsAt(pos.x - 0, pos.y - 1) ? 8 : 0)
-            | (objectExistsAt(pos.x - 0, pos.y + 1) ? 4 : 0)
-            | (objectExistsAt(pos.x - 1, pos.y - 0) ? 2 : 0)
-            | (objectExistsAt(pos.x + 1, pos.y - 0) ? 1 : 0);
+        // <up><down><left><right>
+        const offset = (evaluator(pos.x - 0, pos.y - 1) ? 8 : 0)
+            | (evaluator(pos.x - 0, pos.y + 1) ? 4 : 0)
+            | (evaluator(pos.x - 1, pos.y - 0) ? 2 : 0)
+            | (evaluator(pos.x + 1, pos.y - 0) ? 1 : 0);
 
         // use this unique id to load the correct tile based on it's surroundings
         return tileIds[offset];
@@ -182,6 +214,7 @@ export default class LayerBuilder {
 
     buildRoad(position) {
         this.writeTileValue(this.roads, position, true);
+        this.roadLookup.push(position);
 
         // When building a road, it affects (potentially) all 4 touching tiles
         // so here we just try and find ones that have explicitly been affected
@@ -198,6 +231,26 @@ export default class LayerBuilder {
         this.emitter.emit('roadsUpdated', positions.map(pos => {
             let { x, y } = pos;
             var tileId = this.roadAt(pos);
+            return { x, y, tileId };
+        }));
+    }
+
+    buildWall(position) {
+        this.writeTileValue(this.walls, position, true);
+        this.wallLookup.push(position);
+
+        let positions = [
+            { x: position.x - 1, y: position.y + 0 },
+            { x: position.x + 1, y: position.y + 0 },
+            { x: position.x + 0, y: position.y - 1 },
+            { x: position.x + 0, y: position.y + 1 }
+        ].filter(pos => {
+            return (this.walls[pos.x] || [])[pos.y];
+        });
+        positions.push(position);
+        this.emitter.emit('wallsUpdated', positions.map(pos => {
+            let { x, y } = pos;
+            var tileId = this.wallAt(pos);
             return { x, y, tileId };
         }));
     }

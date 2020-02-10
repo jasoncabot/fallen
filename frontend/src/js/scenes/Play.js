@@ -50,13 +50,20 @@ export default class Play extends Phaser.Scene {
         this.province = data.province;
 
         const emitter = new EventEmitter();
-        this.layerBuilder = new LayerBuilder(emitter, this.province);
+        this.layerBuilder = new LayerBuilder(emitter);
         emitter.on('roadsUpdated', (roads) => {
             roads.forEach(road => {
                 let { x, y } = this.screenCoordinates(road.x, road.y);
                 this.roadBlitter.create(x, y, road.tileId);
             });
             this.sound.play('road');
+        });
+        emitter.on('wallsUpdated', (walls) => {
+            walls.forEach(wall => {
+                let { x, y } = this.screenCoordinates(wall.x, wall.y);
+                this.roadBlitter.create(x, y, wall.tileId);
+            });
+            this.sound.play('wbuild');
         });
         emitter.on('unitTurned', (unit) => {
             let view = this.unitViews[unit.id];
@@ -213,8 +220,12 @@ export default class Play extends Phaser.Scene {
                 this.terrainBlitter.create(pos.x, pos.y, layerBuilder.terrainAt(tileIndex));
 
                 // render roads and walls
-                this.roadBlitter.create(pos.x, pos.y, layerBuilder.roadAt(tileIndex));
-                this.roadBlitter.create(pos.x, pos.y, layerBuilder.wallAt(tileIndex));
+                if (layerBuilder.roadAt(tileIndex)) {
+                    this.roadBlitter.create(pos.x, pos.y, layerBuilder.roadAt(tileIndex));
+                }
+                if (layerBuilder.wallAt(tileIndex)) {
+                    this.roadBlitter.create(pos.x, pos.y, layerBuilder.wallAt(tileIndex));
+                }
 
                 // render structures
                 let structure = layerBuilder.structureAt(tileIndex);
@@ -268,7 +279,7 @@ export default class Play extends Phaser.Scene {
         this.renderTileLayers(this.layerBuilder);
 
         // Render active unit selection
-        this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0).setDepth(2);
+        this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0).setDepth(1);
         this.activeUnitSelection.visible = false;
 
         // Render tile selection

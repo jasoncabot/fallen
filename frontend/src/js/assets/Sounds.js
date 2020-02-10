@@ -49,9 +49,10 @@ import yessir from '../../sounds/SOUNDS/YESSIR.WAV';
 
 export class Sounds {
     preload(scene) {
-        scene.load.audio('aargh', [ aargh ]);
-        scene.load.audio('yessir', [ yessir ]);
-        scene.load.audio('road', [ road ]);
-        scene.load.audio('telep', [ telep ]);
+        scene.load.audio('aargh', [aargh]);
+        scene.load.audio('yessir', [yessir]);
+        scene.load.audio('road', [road]);
+        scene.load.audio('telep', [telep]);
+        scene.load.audio('wbuild', [wbuild]);
     }
 }
