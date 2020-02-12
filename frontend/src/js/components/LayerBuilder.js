@@ -146,12 +146,12 @@ export default class LayerBuilder {
         return (this.structureModels[index.x] || [])[index.y];
     }
 
-    validForConstruction(tileIndex) {
+    validForConstruction(tileIndex, size, kind) {
         if (tileIndex.x < 0) return false;
         if (tileIndex.y < 0) return false;
-        if (tileIndex.y >= this.height) return false;
-        if (tileIndex.x >= this.width) return false;
-        // TODO: if it's something that can't be 'constructed' hide the cursor
+        if (tileIndex.y + size.y >= this.height) return false;
+        if (tileIndex.x + size.x >= this.width) return false;
+        // TODO: look at kind and check for collisions with units, structures, walls, roads and terrain
         return true;
     }
 
@@ -175,6 +175,7 @@ export default class LayerBuilder {
     }
 
     processCommand(command) {
+        // This makes no attempt to validate the command, that should have already been done
         switch (command.action) {
             case 'ROAD':
                 this.buildRoad(command.position);

@@ -43,6 +43,7 @@ export default class Play extends Phaser.Scene {
 
         this.sounds = new Sounds();
         this.unitViews = {};
+        this.cachedTileSelectors = {};
     }
 
     init(data) {
@@ -143,6 +144,14 @@ export default class Play extends Phaser.Scene {
         );
     }
 
+    onConstructionModeUpdated() {
+        if (this.constructionMode) {
+            this.logo.visible = false;
+        } else {
+            this.logo.visible = true;
+        }
+    }
+
     // Converts pointer coordinates to tile x, y
     tileIndexFromCoordinates(x, y) {
         let h = this.tileSize.h;
@@ -167,34 +176,42 @@ export default class Play extends Phaser.Scene {
     }
 
     // TODO: all this needs to move to real modules
-    createTileSelector(enabled, size) {
-        let width = 70 * size.x;
-        let height = 54 * size.y;
-        let tileHeight = height / 3;
-        let graphics = this.add.graphics(width, height);
+    loadTileSelector(enabled, size) {
+        let { x, y } = size;
+        let key = `${x}-${y}-${enabled}`;
+
+        if (this.cachedTileSelectors[key]) {
+            return this.cachedTileSelectors[key];
+        }
+
+        let graphics = this.add.graphics((35 + (35 * x)) - (35 - (35 * y)), 19 + (18 * x) + (18 * y));
         graphics.lineStyle(1, 0xFFFFFF, 1.0);
         graphics.beginPath();
-        graphics.moveTo((width / 2) - 1, tileHeight);
-        graphics.lineTo(0, (tileHeight * 2) - 1);
-        graphics.lineTo(0, tileHeight * 2);
-        graphics.lineTo((width / 2) - 1, height);
-        graphics.lineTo((width / 2), height);
-        graphics.lineTo(width, tileHeight * 2);
-        graphics.lineTo(width, (tileHeight * 2) - 1);
-        graphics.lineTo((width / 2), tileHeight);
+        // top middle
+        graphics.moveTo(35, 18);
+        graphics.lineTo(36, 18);
+        // right based on width
+        graphics.lineTo(35 + (35 * x), 18 + (18 * x));
+        // bottom based on height
+        graphics.lineTo(35 + (35 * x) - (35 * y), 19 + (18 * x) + (18 * y));
+        // left based on height
+        graphics.lineTo(35 - (35 * y), 19 + (18 * y));
+        graphics.lineTo(35 - (35 * y), 18 + (18 * y));
         graphics.closePath();
         graphics.strokePath();
 
         // enabled == whether to draw a cross through it or not for construction
         if (!enabled) {
             graphics.beginPath();
-            graphics.moveTo((width / 2) - 1, tileHeight);
-            graphics.lineTo((width / 2) - 1, height);
-            graphics.moveTo(0, (tileHeight * 2) - 1);
-            graphics.lineTo(width, (tileHeight * 2) - 1);
-            graphics.closePath();
+            graphics.moveTo(35, 18);
+            graphics.lineTo(35 + (35 * x) - (35 * y), 19 + (18 * x) + (18 * y));
+            graphics.moveTo(35 - (35 * y), 19 + (18 * y));
+            graphics.lineTo(35 + (35 * x), 18 + (18 * x));
             graphics.strokePath();
         }
+
+        graphics.setDepth(1);
+        this.cachedTileSelectors[key] = graphics;
         return graphics;
     }
 
@@ -235,6 +252,8 @@ export default class Play extends Phaser.Scene {
                         .setInteractive({ cursor: 'url(' + structurePointer + '), pointer' });
 
                     structureImage.on('pointerdown', (_pointer, _x, _y, event) => {
+                        if (this.constructionMode) return;
+
                         event.stopPropagation();
                         this.onStructureSelected(structure, structureImage, tileIndex);
                     });
@@ -249,12 +268,52 @@ export default class Play extends Phaser.Scene {
 
                     this.unitViews[unit.id] = unitImage;
                     unitImage.on('pointerdown', (_pointer, _x, _y, event) => {
+                        if (this.constructionMode) return;
+
                         event.stopPropagation();
                         this.onUnitSelected(unit, tileIndex);
                     });
                 }
             }
             line++;
+        }
+    }
+
+    updateCurrentConstructionGraphics(tileIndex) {
+
+        if (!this.constructionMode) {
+            // hide all tile selectors
+            Object.values(this.cachedTileSelectors).forEach(graphics => { graphics.visible = false });
+            return;
+        }
+
+        let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
+
+        let size = { x: this.constructionMode.w, y: this.constructionMode.h };
+        let validForConstruction = this.layerBuilder.validForConstruction(tileIndex, size);
+
+        let graphics = this.loadTileSelector(validForConstruction, size);
+        graphics.setPosition(pos.x, pos.y);
+
+        // Only show the current tile selector graphic
+        Object.values(this.cachedTileSelectors).forEach(g => { g.visible = (graphics === g) });
+
+        // TODO: Update the text down the bottom based on this.constructionMode.kind
+        // Construction
+        // Road
+        // Cost 5 Credits
+    }
+
+    constructionCommand(mode, tileIndex) {
+        switch (mode.kind) {
+            case 'road':
+                return {
+                    action: 'ROAD',
+                    province: this.province,
+                    targetId: null,
+                    targetType: null,
+                    position: tileIndex
+                }
         }
     }
 
@@ -282,14 +341,6 @@ export default class Play extends Phaser.Scene {
         this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0).setDepth(1);
         this.activeUnitSelection.visible = false;
 
-        // Render tile selection
-        // TODO: this should be specific to building a road, when exiting it should be destroyed
-        // when entering building mode we should just create a new one and assign it to constructionGraphics
-        // we should also have another one that is disabled
-        const constructionGraphics = this.createTileSelector(true, { x: 1, y: 1 })
-            .setDepth(1)
-            .setVisible(false);
-
         this.input.on('pointerdown', (pointer) => {
             if (this.topDialog) return;
             this.isDragging = true;
@@ -299,21 +350,12 @@ export default class Play extends Phaser.Scene {
         this.input.on('pointerup', (pointer) => {
             if (this.pointerUpNearPointerDown()) {
                 let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
-                let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
 
-                // if we are building a road
                 if (this.constructionMode) {
-                    constructionGraphics.setPosition(pos.x, pos.y);
-                    constructionGraphics.visible = this.layerBuilder.validForConstruction(tileIndex);
-
-                    // TODO: remove this debug line
-                    this.layerBuilder.processCommand({
-                        action: 'ROAD',
-                        province: this.province,
-                        targetId: null,
-                        targetType: null,
-                        position: tileIndex
-                    });
+                    let command = this.constructionCommand(this.constructionMode, tileIndex);
+                    if (command) {
+                        this.layerBuilder.processCommand(command);
+                    }
                 } else if (this.currentlySelectedUnit) {
                     // if we already have a selected unit
                     if (this.layerBuilder.unitCanOccupy(tileIndex)) {
@@ -327,14 +369,8 @@ export default class Play extends Phaser.Scene {
             this.touchStartCamera = null;
         }, this);
         this.input.on('pointermove', (pointer, _localX, _localY, event) => {
-            if (this.constructionMode) {
-                let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
-                let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
-                constructionGraphics.setPosition(pos.x, pos.y);
-                constructionGraphics.visible = this.layerBuilder.validForConstruction(tileIndex);
-            } else {
-                constructionGraphics.visible = false;
-            }
+            let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
+            this.updateCurrentConstructionGraphics(tileIndex);
 
             // move the map
             if (!this.isDragging) return;
@@ -349,7 +385,7 @@ export default class Play extends Phaser.Scene {
         this.input.setDefaultCursor('url(' + customCursor + '), pointer');
 
         // Static UI in a container
-        let ui = this.add.container(0, 0).setScrollFactor(0).setDepth(1);
+        let ui = this.add.container(0, 0).setScrollFactor(0).setDepth(2);
 
         ui.add(createButton(this, 12, 410, buttons.strategic.repair, (button) => {
             alert('No buildings or dropships damaged');
@@ -377,10 +413,11 @@ export default class Play extends Phaser.Scene {
                 this.constructionMode = null;
                 button.setHighlight(false);
             } else {
-                this.constructionMode = { w: 1, h: 1, name: 'road' };
+                this.constructionMode = { w: 1, h: 1, kind: 'road' };
                 this.activeUnitSelection.visible = false;
                 button.setHighlight(true);
             }
+            this.onConstructionModeUpdated();
         }));
         ui.add(createButton(this, 161, 410, buttons.strategic.recycle, (button) => { }));
         ui.add(createButton(this, 424, 410, buttons.strategic.map, (button) => { }));
@@ -389,9 +426,10 @@ export default class Play extends Phaser.Scene {
             this.scene.start('StrategicView', { gameId: this.gameId });
         }));
 
-        ui.add(this.add.image(232, 413, 'logo').setOrigin(0, 0));
-
         ui.add(this.add.image(0, 0, 'ui-strategic').setOrigin(0, 0));
+
+        this.logo = this.add.image(232, 413, 'logo').setOrigin(0, 0);
+        ui.add(this.logo);
 
         var cursors = this.input.keyboard.createCursorKeys();
 
