@@ -37,6 +37,10 @@ export default class LayerBuilder {
             let reference = data.units[unit.kind.category];
             let model = {
                 id: unitId,
+                type: 'unit',
+                name: reference.kind.name,
+                upkeep: reference.upkeep,
+                experience: unit.experience,
                 position: unit.position,
                 facing: unit.facing,
                 spritesheet: reference.display.tiles,
@@ -61,6 +65,7 @@ export default class LayerBuilder {
                     let pos = { x: structure.position.x + x, y: structure.position.y + y };
                     let model = {
                         id: structureId,
+                        type: 'structure',
                         position: structure.position,
                         spritesheet: reference.display.tiles,
                         offset: displayOffset
@@ -185,6 +190,19 @@ export default class LayerBuilder {
                 return;
             case 'MOVE':
                 this.moveUnit(this.findTarget(command), command.position);
+                return;
+            case 'DEMOLISH':
+                switch (command.targetType) {
+                    // TODO: make the appropriate adjustment to the model
+                    case 'road':
+                        return;
+                    case 'wall':
+                        return;
+                    case 'structure':
+                        return;
+                    case 'unit':
+                        return;
+                }
                 return;
             default:
                 throw new Error('No handler for action of type ' + command.action);

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 
 import Dialog from '../components/Dialog';
+import InfoText from '../components/InfoText';
 import LayerBuilder from '../components/LayerBuilder';
 
 // TODO: come up with a better way of referencing these images
@@ -76,8 +77,7 @@ export default class Play extends Phaser.Scene {
             view.setPosition(x, y);
             this.sound.play('telep');
             this.activeUnitSelection.setPosition(view.x, view.y);
-            this.activeUnitSelection.visible = false;
-            this.currentlySelectedUnit = null;
+            this.onConstructionModeUpdated();
         });
     }
 
@@ -111,6 +111,34 @@ export default class Play extends Phaser.Scene {
         console.log(`onStructureSelected('${JSON.stringify(model, null, 2)}', '${JSON.stringify(view, null, 2)}', '${JSON.stringify(pos, null, 2)}')`)
     }
 
+    onButtonsUpdated() {
+        // based on the current state
+        // show the appropriate button states
+
+        if (this.constructionMode) {
+            switch (this.constructionMode.kind) {
+                case 'road':
+                    this.buttonBuild.setHighlight(false);
+                    this.buttonRoad.setHighlight(true);
+                    this.buttonRecycle.setHighlight(false);
+                    break;
+                case 'recycle':
+                    this.buttonBuild.setHighlight(false);
+                    this.buttonRoad.setHighlight(false);
+                    this.buttonRecycle.setHighlight(true);
+                    break;
+            }
+        } else if (this.buildDialog) {
+            this.buttonBuild.setHighlight(true);
+            this.buttonRoad.setHighlight(false);
+            this.buttonRecycle.setHighlight(false);
+        } else {
+            this.buttonBuild.setHighlight(false);
+            this.buttonRoad.setHighlight(false);
+            this.buttonRecycle.setHighlight(false);
+        }
+    }
+
     onUnitSelected(model, pos) {
         this.sound.play('yessir');
         if (this.currentlySelectedUnit && this.currentlySelectedUnit === model) {
@@ -126,9 +154,9 @@ export default class Play extends Phaser.Scene {
         }
 
         this.currentlySelectedUnit = model;
-        this.activeUnitSelection.visible = true;
         let view = this.unitViews[model.id];
         this.activeUnitSelection.setPosition(view.x, view.y);
+        this.onConstructionModeUpdated();
     }
 
     onUnitMoved(model, pos) {
@@ -145,10 +173,36 @@ export default class Play extends Phaser.Scene {
     }
 
     onConstructionModeUpdated() {
+        if (this.infoKey) this.scene.remove(this.infoKey);
+        this.infoKey = null;
+
         if (this.constructionMode) {
             this.logo.visible = false;
+            let kind = this.constructionMode.kind;
+            this.infoKey = `infokey-${kind}`;
+
+            const titles = {
+                'road': 'Construction',
+                'recycle': 'Recycling'
+            }
+
+            let infoText = new InfoText(this.infoKey, titles[kind]);
+            this.scene.add(this.infoKey, infoText, true);
+
+            this.currentlySelectedUnit = null;
+            this.activeUnitSelection.visible = false;
+        } else if (this.currentlySelectedUnit) {
+            this.logo.visible = false;
+            // name, upkeep, experience
+            this.activeUnitSelection.visible = true;
+            this.infoKey = `infokey-${this.currentlySelectedUnit.id}`;
+            let infoText = new InfoText(this.infoKey, this.currentlySelectedUnit.name);
+            this.scene.add(this.infoKey, infoText, true);
+
         } else {
             this.logo.visible = true;
+            this.currentlySelectedUnit = null;
+            this.activeUnitSelection.visible = false;
         }
     }
 
@@ -314,6 +368,35 @@ export default class Play extends Phaser.Scene {
                     targetType: null,
                     position: tileIndex
                 }
+            case 'recycle':
+                // units and structures sit above everything else
+                // so first try and remove those
+                let topMost = this.layerBuilder.unitAt(tileIndex) ||
+                    this.layerBuilder.structureAt(tileIndex);
+
+                // if we didn't get one of those, fall back to a road
+                // or wall
+                if (!topMost) {
+                    // check for wall or road
+                    if (this.layerBuilder.wallAt(tileIndex)) {
+                        topMost = { id: tileIndex, type: 'wall' }
+                    } else if (this.layerBuilder.roadAt(tileIndex)) {
+                        topMost = { id: tileIndex, type: 'road' }
+                    }
+                }
+
+                // still nothing? then we probably just selected
+                // and empty square so just ignore it and don't 
+                // generate a command
+                if (!topMost) return null;
+
+                return {
+                    action: 'DEMOLISH',
+                    province: this.province,
+                    targetId: topMost.id,
+                    targetType: topMost.type,
+                    position: tileIndex
+                }
         }
     }
 
@@ -341,8 +424,14 @@ export default class Play extends Phaser.Scene {
         this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0).setDepth(1);
         this.activeUnitSelection.visible = false;
 
+        const onDraggingCancelled = (pointer) => {
+            this.isDragging = false;
+            this.touchStart = null;
+            this.touchStartCamera = null;
+        }
+
         this.input.on('pointerdown', (pointer) => {
-            if (this.topDialog) return;
+            if (this.buildDialog) return;
             this.isDragging = true;
             this.touchStart = { x: pointer.x, y: pointer.y };
             this.touchStartCamera = { x: Math.round(this.cameras.main.scrollX), y: Math.round(this.cameras.main.scrollY) };
@@ -364,9 +453,7 @@ export default class Play extends Phaser.Scene {
                 }
             }
 
-            this.isDragging = false;
-            this.touchStart = null;
-            this.touchStartCamera = null;
+            onDraggingCancelled(pointer);
         }, this);
         this.input.on('pointermove', (pointer, _localX, _localY, event) => {
             let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
@@ -379,52 +466,73 @@ export default class Play extends Phaser.Scene {
             this.cameras.main.scrollY += (this.touchStart.y - pointer.y);
             this.touchStart = { x: pointer.x, y: pointer.y };
         }, this);
-        this.input.on('pointerout', (pointer) => {
-            this.isDragging = false;
-        }, this);
-        this.input.setDefaultCursor('url(' + customCursor + '), pointer');
+        this.input.on('pointerout', onDraggingCancelled, this);
+        this.input.on('gameout', onDraggingCancelled, this);
+        this.input.setDefaultCursor(`url('${customCursor}'), pointer`);
 
         // Static UI in a container
         let ui = this.add.container(0, 0).setScrollFactor(0).setDepth(2);
 
-        ui.add(createButton(this, 12, 410, buttons.strategic.repair, (button) => {
+        this.buttonRepair = createButton(this, 12, 410, buttons.strategic.repair, (button) => {
             alert('No buildings or dropships damaged');
-        }));
-        ui.add(createButton(this, 52, 410, buttons.strategic.build, (button) => {
-            if (this.topDialog) {
-                this.topDialog.dismiss();
-                this.topDialog = null;
-                button.setHighlight(false);
-                // TODO: if this is a different key, show that instead
+        })
+        ui.add(this.buttonRepair);
+        this.buttonBuild = createButton(this, 52, 410, buttons.strategic.build, (button) => {
+            if (this.buildDialog) {
+                this.buildDialog.dismiss();
+                this.buildDialog = null;
             } else if (this.scene.isSleeping('build')) {
-                // TODO: tidy these up - messy
+                this.constructionMode = null;
                 this.scene.wake('build');
-                this.topDialog = this.scene.get('build');
-                button.setHighlight(true);
+                this.buildDialog = this.scene.get('build');
             } else {
+                this.constructionMode = null;
                 let window = new Dialog('build', 16, 42, this);
                 this.scene.add(window.key, window, true);
-                this.topDialog = window;
-                button.setHighlight(true);
+                this.buildDialog = window;
             }
-        }));
-        ui.add(createButton(this, 113, 410, buttons.strategic.road, (button) => {
-            if (this.constructionMode) {
+            this.onButtonsUpdated();
+            this.onConstructionModeUpdated();
+        })
+        ui.add(this.buttonBuild);
+        this.buttonRoad = createButton(this, 113, 410, buttons.strategic.road, (button) => {
+            if (this.buildDialog) {
+                this.buildDialog.dismiss();
+                this.buildDialog = null;
+            }
+            
+            if (this.constructionMode && this.constructionMode.kind === 'road') {
                 this.constructionMode = null;
-                button.setHighlight(false);
             } else {
                 this.constructionMode = { w: 1, h: 1, kind: 'road' };
-                this.activeUnitSelection.visible = false;
-                button.setHighlight(true);
             }
+            this.onButtonsUpdated();
             this.onConstructionModeUpdated();
-        }));
-        ui.add(createButton(this, 161, 410, buttons.strategic.recycle, (button) => { }));
-        ui.add(createButton(this, 424, 410, buttons.strategic.map, (button) => { }));
-        ui.add(createButton(this, 486, 410, buttons.strategic.menu, (button) => { }));
-        ui.add(createButton(this, 563, 410, buttons.strategic.colony, (button) => {
+        })
+        ui.add(this.buttonRoad);
+        this.buttonRecycle = createButton(this, 161, 410, buttons.strategic.recycle, (button) => {
+            if (this.buildDialog) {
+                this.buildDialog.dismiss();
+                this.buildDialog = null;
+            }
+
+            if (this.constructionMode && this.constructionMode.kind === 'recycle') {
+                this.constructionMode = null;
+            } else {
+                this.constructionMode = { w: 1, h: 1, kind: 'recycle' };
+            }
+            this.onButtonsUpdated();
+            this.onConstructionModeUpdated();
+        })
+        ui.add(this.buttonRecycle);
+        this.buttonMap = createButton(this, 424, 410, buttons.strategic.map, (button) => { })
+        ui.add(this.buttonMap);
+        this.buttonMenu = createButton(this, 486, 410, buttons.strategic.menu, (button) => { });
+        ui.add(this.buttonMenu);
+        this.buttonColony = createButton(this, 563, 410, buttons.strategic.colony, (button) => {
             this.scene.start('StrategicView', { gameId: this.gameId });
-        }));
+        })
+        ui.add(this.buttonColony);
 
         ui.add(this.add.image(0, 0, 'ui-strategic').setOrigin(0, 0));
 
