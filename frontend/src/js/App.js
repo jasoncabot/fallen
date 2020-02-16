@@ -1,14 +1,14 @@
 
 import * as scenes from './scenes';
-
 export class App {
 
     constructor(game) {
         this.game = game;
     }
 
-    registerScenes() {
-        Object.keys(scenes).forEach( key => { 
+    initialise() {
+        // prepare scenes
+        Object.keys(scenes).forEach(key => {
             this.game.scene.add(key, scenes[key]);
         });
     }
@@ -33,6 +33,8 @@ export class App {
 
         if (resource === 'games') {
             if (!id) {
+                return this.game.scene.start('ListGames');
+            } else if (id === 'new') {
                 return this.game.scene.start('NewGame');
             } else {
                 return this.game.scene.start('LoadGameResources', {

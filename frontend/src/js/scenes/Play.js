@@ -500,7 +500,7 @@ export default class Play extends Phaser.Scene {
                 this.buildDialog.dismiss();
                 this.buildDialog = null;
             }
-            
+
             if (this.constructionMode && this.constructionMode.kind === 'road') {
                 this.constructionMode = null;
             } else {
@@ -527,7 +527,9 @@ export default class Play extends Phaser.Scene {
         ui.add(this.buttonRecycle);
         this.buttonMap = createButton(this, 424, 410, buttons.strategic.map, (button) => { })
         ui.add(this.buttonMap);
-        this.buttonMenu = createButton(this, 486, 410, buttons.strategic.menu, (button) => { });
+        this.buttonMenu = createButton(this, 486, 410, buttons.strategic.menu, (button) => {
+            this.scene.start('MainMenu');
+        });
         ui.add(this.buttonMenu);
         this.buttonColony = createButton(this, 563, 410, buttons.strategic.colony, (button) => {
             this.scene.start('StrategicView', { gameId: this.gameId });
@@ -551,10 +553,10 @@ export default class Play extends Phaser.Scene {
         });
 
         let font = { color: 'green', fontSize: '12px', fontFamily: 'Verdana' };
-        ui.add(this.add.text(48, 7, province.research, font));
-        ui.add(this.add.text(125, 7, province.energy, font));
-        ui.add(this.add.text(300, 7, terrain.name, font));
-        ui.add(this.add.text(540, 7, game.player.globalReserve + "/" + province.credits, font));
+        ui.add(this.add.text(58, 6, province.research, font).setOrigin(0.5, 0));
+        ui.add(this.add.text(133, 6, province.energy, font).setOrigin(0.5, 0));
+        ui.add(this.add.text(320, 6, terrain.name, font).setOrigin(0.5, 0));
+        ui.add(this.add.text(569, 6, game.player.globalReserve + "/" + province.credits, font).setOrigin(0.5, 0));
     }
 
     update(time, delta) {

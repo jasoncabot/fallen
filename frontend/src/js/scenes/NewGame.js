@@ -19,7 +19,7 @@ export default class NewGame extends Scene {
     }
 
     create() {
-        registerScenePath(this, '/games');
+        registerScenePath(this, '/games/new');
         this.add.image(320, 240, 'newgame-background');
 
         this.add.existing(new MenuButton(this, { x: 120, y: 149, width: 210, height: 37 }, 'Race', (scene) => {

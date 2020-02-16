@@ -1,149 +1,18 @@
 const uuidv4 = require('uuid/v4');
-const service = require('../service/game');
-
-// TODO: these don't belong here - but it's quick and easy
-const opposite = (side) => { return side === 'HUMAN' ? 'ALIEN' : 'HUMAN' };
-const campaigns = {
-    startingProvinces: [
-        'haven',
-        'free-city'
-    ],
-    provinces: [
-        // Fallen Haven
-        ['cartasone', 'eagle-nest', 'haven'],
-        // The last hope campaign
-        ['free-city', 'lachine', 'sutton']
-    ]
-}
-const generateGame = (id, userId, race, difficulty, campaignType) => {
-    const side = ['HUMAN', 'ALIEN'][race];
-    const sides = {};
-    sides[userId] = {
-        "globalReserve": 4255,
-        "type": "PLAYER",
-        "owner": side,
-        "difficulty": difficulty
-    };
-
-    // generate AI opponent
-    const computerId = uuidv4();
-    sides[computerId] = {
-        "globalReserve": 8000,
-        "type": "AI",
-        "owner": opposite(side),
-        "difficulty": difficulty
-    };
-    const game = {
-        "id": id,
-        "turn": {
-            "seed": Math.floor(Math.random() * Math.floor(2147483647)),
-            "number": 1,
-            "owner": side // starts on your turn
-        },
-        "sides": sides,
-        "provinces": {
-            "cartasone": {
-                "owner": "NEUTRAL",
-                "mission": null,
-                "units": {},
-                "structures": {}
-            },
-            "eagle-nest": {
-                "owner": "NEUTRAL",
-                "mission": {
-                    "description": "Rebels need help",
-                    "objective": "Destroy Rocket Launcher",
-                    "reward": "Rebel forces will join you",
-                },
-                "units": {},
-                "structures": {}
-            },
-            "haven": {
-                "owner": side, // always own haven
-                "mission": null,
-                "energy": 123,
-                "credits": 1421,
-                "research": 1234,
-                "walls": [{ "x": 18, "y": 5 }, { "x": 3, "y": 9 }],
-                "roads": [{ "x": 7, "y": 5 }, { "x": 8, "y": 5 }, { "x": 9, "y": 5 }],
-                "units": {
-                    "123456": {
-                        "kind": {
-                            "category": "ASQD"
-                        },
-                        "facing": 0,
-                        "position": { "x": 3, "y": 5 },
-                        "hp": 15,
-                        "experience": 1
-                    }
-                },
-                "structures": {
-                    "23456": {
-                        "position": { "x": 0, "y": 0 },
-                        "hp": 15,
-                        "kind": {
-                            "category": "ASHP"
-                        }
-                    },
-                    "34567": {
-                        "position": { "x": 3, "y": 0 },
-                        "hp": 200,
-                        "kind": {
-                            "category": "AAIR"
-                        }
-                    }
-                }
-            },
-            "free-city": {
-                "owner": side, // you only own this side
-                "mission": null,
-                "units": {},
-                "structures": {}
-            },
-            "lachine": {
-                "owner": opposite(side),
-                "mission": null,
-                "units": {},
-                "structures": {}
-            },
-            "sutton": {
-                "owner": opposite(side),
-                "mission": null,
-                "units": {},
-                "structures": {}
-            }
-        }
-    };
-
-    // We generate the starting information for both campaign types
-    // then filter the data we save to the backend for simplicity
-    const campaign = campaigns.provinces[campaignType];
-    game.defaultProvince = campaigns.startingProvinces[campaignType];
-    game.provinces = Object.keys(game.provinces)
-        .filter(province => campaign.includes(province))
-        .reduce((provinces, province) => {
-            provinces[province] = game.provinces[province];
-            return provinces;
-        }, {});
-    return game;
-};
-
-const requireUser = (req, res, next) => {
-    const token = (req.headers.authorization || "").split(' ')[1];
-    if (!token) {
-        return res.status(403).json({ error: 'No user found' });
-    }
-
-    req.user = Buffer.from(token, 'base64').toString('ascii');
-    next();
-}
+const gameService = require('../service/game');
+const information = require('../service/information');
+const initialise = require('../service/initialise');
+const auth = require('./auth');
 
 module.exports.register = (app, redis) => {
 
     // GET /games/:id
     // Read game
-    app.get('/games/:id', requireUser, (req, res) => {
-        service.findByIdAndUser(redis, req.params.id, req.user)
+    app.get('/games/:id', auth.requireUser, (req, res) => {
+        gameService.findByIdAndUser(redis, req.params.id, req.user)
+            .then((game) => {
+                return information.removeUnknown(game, req.user);
+            })
             .then((game) => {
                 res.status(200).json(game);
             })
@@ -154,8 +23,8 @@ module.exports.register = (app, redis) => {
 
     // GET /games
     // Find in-progress games
-    app.get('/games', requireUser, (req, res) => {
-        service.findAllByUser(redis, req.user)
+    app.get('/games', auth.requireUser, (req, res) => {
+        gameService.findAllByUser(redis, req.user)
             .then((games) => {
                 res.status(200).json(games);
             })
@@ -166,17 +35,59 @@ module.exports.register = (app, redis) => {
 
     // POST /games
     // Create game
-    app.post('/games', requireUser, (req, res) => {
-        // generate a unique id
-        const gameId = uuidv4();
-        const game = generateGame(gameId, req.user, req.body.race, req.body.difficulty, req.body.campaign);
+    app.post('/games', auth.requireUser, (req, res) => {
+        const game = initialise.generateGame(req.user, req.body.name, req.body.race, req.body.difficulty, req.body.campaign);
         // save game to database
-        service.create(redis, gameId, game)
-            .then(() => {
-                res.status(201).json({ id: gameId });
+        gameService.create(redis, game, req.user)
+            .then((id) => {
+                res.status(201).json({ id });
             })
             .catch((error) => {
                 res.status(500).json({ error: error.message });
             })
+    });
+
+    // POST /games/:id/action
+    // Performs a serialised action without ending your turn
+    app.post('/games/:id/action', auth.requireUser, (req, res) => {
+        // TODO: this needs to actually apply the changes to the game and return
+        res.status(201).json({ id: req.params.id });
+    });
+
+    // POST /games/:id/turn
+    // Ends your current turn and ensures validating all actions have been sent
+    app.post('/games/:id/turn', auth.requireUser, (req, res) => {
+        gameService.findByIdAndUser(redis, req.params.id, req.user)
+            .then((game) => {
+                // perform some validation to ensure user has submitted all moves for this turn
+                if (game.sides[req.user].owner !== game.turn.owner) {
+                    throw new Error('Not your turn');
+                }
+                if (req.body.turn !== game.turn.number) {
+                    throw new Error('Turn is not correct');
+                }
+                if (req.body.action !== game.turn.action) {
+                    if (!req.body.actions) {
+                        throw new Error('Not all actions have been submitted');
+                    }
+                    if (game.turn.action + req.body.actions.length !== req.body.action) {
+                        throw new Error('Not all actions have been submitted while ending turn');
+                    }
+                }
+                return game;
+            })
+            .catch((error) => {
+                res.status(400).json({ error: error.message });
+            })
+            .then((game) => {
+                // update game
+                gameService.nextTurn(game);
+                gameService.save(redis, game);
+
+                res.status(201).json({ id: game.id, turn: game.turn.number });
+            })
+            .catch((error) => {
+                res.status(404).json({ error: error.message });
+            });
     });
 }

@@ -22,14 +22,13 @@ export default class MainMenu extends Scene {
         var y = 210;
         [
             { title: 'New', scene: 'NewGame' },
-            { title: 'Resume', scene: 'NewGame' },
-            { title: 'Quickplay', scene: 'NewGame' },
+            { title: 'Resume', scene: 'ListGames' },
             { title: 'Encyclopedia', scene: 'Encyclopedia' }
         ].forEach(config => {
             this.add.existing(new MenuButton(this, { x: 170, y, width: 300, height: 38 }, config.title, (scene) => {
                 scene.start(config.scene);
             }));
-            y += 54;
+            y += 74;
         });
     }
 

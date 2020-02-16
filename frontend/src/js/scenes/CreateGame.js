@@ -1,9 +1,8 @@
 import { Scene } from 'phaser';
 
-import { api } from '../Config';
+import * as api from '../models/API';
 
 import { MenuButton } from '../components/MenuButton';
-import { Authenticator } from '../models/Authenticator';
 
 import creategameBackground from '../../images/ui/creategame-background.png';
 import { registerScenePath } from './../components/History';
@@ -13,11 +12,11 @@ export default class CreateGame extends Scene {
         super({
             key: 'CreateGame'
         });
-        this.auth = new Authenticator();
     }
 
     init(data) {
         this.options = data.options;
+        this.auth = api.auth;
     }
 
     preload() {
@@ -25,36 +24,35 @@ export default class CreateGame extends Scene {
     }
 
     create() {
-        registerScenePath(this, '/games');
+        registerScenePath(this, '/games/new');
         this.add.image(320, 240, 'creategame-background');
 
-        this.add.text(130, 213, 'Name your colony', { color: 'white', fontSize: '14px', fontFamily: 'Verdana' });
+        this.add.text(130, 213, 'Your name', { color: 'white', fontSize: '14px', fontFamily: 'Verdana' });
 
         let inputName = `<input type="text" name="name" value="${this.auth.name}" placeholder="Enter your name" style="font-size: 14px; width: 225px; height: 30px; position: absolute; top: 233px; left: 131px; padding-left: 8px;">`;
-        this.add.dom().createFromHTML(inputName);
+        let element = this.add.dom().createFromHTML(inputName);
 
         this.add.existing(new MenuButton(this, { x: 386, y: 231, width: 126, height: 38 }, 'Start', (scene) => {
+            let name = element.getChildByName('name').value;
+            this.options['name'] = name;
+            this.auth.updateName(name);
             this.onStart(this.options);
         }));
     }
 
     onStart(options) {
-        const { race, difficulty, campaign } = options;
-        const headers = { 
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + btoa(this.auth.id)
+        const data = {
+            name: options.name,
+            race: options.race,
+            difficulty: options.difficulty,
+            campaign: options.campaign
         };
-        const data = { race, difficulty, campaign };
-        fetch(api('/games'), {
-            method: "POST",
-            headers,
-            body: JSON.stringify(data)
-        }).then((response) => {
-            return response.json();
-        }).then(game => {
-            this.scene.start('LoadGameResources', { gameId: game.id });
-        }).catch(e => {
-            alert(e);
-        });
+        api.post('/games', data)
+            .then(game => {
+                this.scene.start('LoadGameResources', { gameId: game.id });
+            })
+            .catch(e => {
+                alert(e);
+            });
     }
 }

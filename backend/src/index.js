@@ -22,9 +22,11 @@ const initialise = async () => {
     });
 }
 
-initialise().then(() => {
-    console.log(`Application initialised`);
-}).catch((e) => {
-    console.error(`Failed to initialise`);
-    console.error(e);
-});
+initialise()
+    .then(() => {
+        console.log(`Application initialised`);
+    })
+    .catch((e) => {
+        console.error(`Failed to initialise`);
+        console.error(e);
+    });

@@ -27,7 +27,7 @@ const showSceneMatchingCurrentLocation = () => {
     app.route(location.pathname, location.search);
 }
 
-app.registerScenes(game);
+app.initialise();
 
 // using the browser to navigate performs the appropriate routing
 window.addEventListener('popstate', e => showSceneMatchingCurrentLocation(), false);

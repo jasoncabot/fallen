@@ -1,15 +1,13 @@
 import { Scene } from 'phaser';
 
-import { data, api } from '../Config';
-
-import { Authenticator } from '../models/Authenticator';
+import { data } from '../Config';
+import * as api from '../models/API';
 
 export default class LoadGameResources extends Scene {
     constructor() {
         super({
             key: 'LoadGameResources'
         });
-        this.auth = new Authenticator();
     }
 
     init(data) {
@@ -24,10 +22,7 @@ export default class LoadGameResources extends Scene {
         this.load.json('data-units', data("/units.json"));
 
         // dynamic content
-        this.load.json(`game-${this.gameId}`, api("/games/" + this.gameId), null, {
-            header: 'Authorization',
-            headerValue: 'Bearer ' + btoa(this.auth.id)
-        });
+        api.getAndCache(`/games/${this.gameId}`, this, `game-${this.gameId}`);
     }
 
     create() {
@@ -36,10 +31,10 @@ export default class LoadGameResources extends Scene {
         // if we don't have a specific province to view
         if (!this.province) {
             // must be an overview
-            this.game.scene.start('StrategicView', data);
+            this.scene.start('StrategicView', data);
         } else if (this.province) {
             // otherwise it's most likely the Play view
-            this.game.scene.start('Play', data);
+            this.scene.start('Play', data);
         } else {
             console.error('Unable to navigate to correct game scene');
         }

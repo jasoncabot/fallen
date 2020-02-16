@@ -3,6 +3,7 @@ import { Scene } from 'phaser';
 import { registerButtons, createButton, buttons } from '../assets/Buttons';
 import MessageBox from '../components/MessageBox';
 import { data } from '../Config';
+import * as api from '../models/API';
 
 import strategicMap from '../../images/ui/strategic-map.png';
 import { registerScenePath } from './../components/History';
@@ -52,7 +53,18 @@ export default class StrategicView extends Scene {
 
         this.overviewProvince = this.add.container(32, 34).setScrollFactor(0).setVisible(false);
 
-        this.buttonMenu = createButton(this, 246, 401, buttons.world.menu, (button) => { alert('menu'); });
+        let topFont = { color: 'green', fontSize: '14px', fontFamily: 'Verdana' };
+        this.add.text(112, 4, `Year ${game.turn.number}`, topFont).setOrigin(0.5, 0);
+        this.add.text(320, 4, game.player.name, topFont).setOrigin(0.5, 0);
+        let totalIncome = Object.values(game.provinces)
+            .filter(p => p.owner === game.player.owner)
+            .map(p => p.credits)
+            .reduce((total, current) => total + current);
+        this.add.text(538, 4, game.player.globalReserve + "/" + totalIncome, topFont).setOrigin(0.5, 0);
+
+        this.buttonMenu = createButton(this, 246, 401, buttons.world.menu, (button) => {
+            this.scene.start('MainMenu');
+        });
         this.buttonTechnology = createButton(this, 349, 399, buttons.world.technology, (button) => { alert('tech'); });
         this.buttonMap = createButton(this, 533, 365, buttons.world.map, (button) => {
             this.scene.start('Play', {
@@ -73,8 +85,8 @@ export default class StrategicView extends Scene {
             const key = 'end-turn-key';
             let box = new MessageBox(key, 160, 150, this, 'End Strategic Turn?');
             box.confirm = () => {
-                alert('ending turn');
                 this.scene.remove(key);
+                this.onTurnEnded(game);
             }
             box.cancel = () => {
                 this.scene.remove(key);
@@ -83,6 +95,22 @@ export default class StrategicView extends Scene {
         });
 
         this.onCurrentViewChanged('overview', game);
+    }
+
+    onTurnEnded(game) {
+        const data = {
+            action: game.turn.action,
+            actions: [], // TODO: submit the actual actions we performed this turn
+            turn: game.turn.number
+        }
+        api.post(`/games/${game.id}/turn`, data)
+            .then(turn => {
+                this.cache.json.remove(`game-${game.id}`);
+                this.scene.start('LoadGameResources', { gameId: game.id });
+            })
+            .catch(e => {
+                alert(e);
+            });
     }
 
     renderProvinceOverview(game) {
@@ -191,9 +219,7 @@ export default class StrategicView extends Scene {
         this.overviewProvince.add(this.overlayBlitter);
 
         // out of scanning range? hide the zoom button
-        // TODO: don't just hardcode this :)
-        const scannableProvinces = ['haven', 'eagle-nest'];
-        const outOfScanningRange = scannableProvinces.indexOf(this.selectedProvince) < 0;
+        const outOfScanningRange = game.scannableProvinces.indexOf(this.selectedProvince) < 0;
         if (outOfScanningRange) {
             this.buttonZoom.disable();
         } else {

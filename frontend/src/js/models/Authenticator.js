@@ -10,4 +10,9 @@ export class Authenticator {
         }
     }
 
+    updateName(name) {
+        this.name = name;
+        localStorage.setItem('name', name);
+    }
+
 }

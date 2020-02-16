@@ -5,10 +5,6 @@ const config = {
 
 export default config;
 
-export const api = (path) => {
-    return config.endpoint + path;
-}
-
 export const data = (path) => {
     return config.assetEndpoint + path;
 }
