@@ -27,7 +27,8 @@ export default class InfoText extends GameObjects.Container {
 
         this.dots = [];
         for (let idx = 0; idx < 4; idx++) {
-            let dot = scene.add.circle(3 + 5 + (idx * 3) + (idx * 10), 25, 5, 0x00FF00).setOrigin(0.5, 0.5).setVisible(true);
+            // x position is overidden when displayed
+            let dot = scene.add.circle(0, 25, 5, 0x00FF00).setOrigin(0.5, 0.5).setVisible(true);
             this.add(dot);
             this.dots.push(dot);
         }
@@ -43,12 +44,14 @@ export default class InfoText extends GameObjects.Container {
     }
 
     setUnitMode(unit) {
-        this.titleText.setText(unit.name).setVisible(true);
-        // TODO: look at experience and create dots
+        this.titleText.setText(unit.name).setVisible(unit.name);
         this.subtext1.setText('').setVisible(false);
-        this.subtext2.setText(`Upkeep: ${unit.upkeep} Credits`).setVisible(true);
+        this.subtext2.setText(`Upkeep: ${unit.upkeep} Credits`).setVisible(unit.upkeep);
+        // center the dots depending on how much experience the unit has
+        let totalDotWidth = (unit.experience * 10) + ((unit.experience - 1) * 3);
+        let leftOffset = 91 - (totalDotWidth / 2);
         this.dots.forEach((dot, idx) => {
-            dot.setVisible(idx <= unit.experience);
+            dot.setVisible(idx < unit.experience).setPosition(leftOffset + 5 + (idx * 3) + (idx * 10), dot.y);
         });
         return this;
     }

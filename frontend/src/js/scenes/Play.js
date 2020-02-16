@@ -95,7 +95,6 @@ export default class Play extends Phaser.Scene {
             this.onConstructionModeUpdated();
         });
 
-        // TODO: register terrain
         this.load.spritesheet('rocky', rocky, { frameWidth: 70, frameHeight: 54 });
         this.load.spritesheet('forest', forest, { frameWidth: 70, frameHeight: 54 });
         this.load.spritesheet('desert', desert, { frameWidth: 70, frameHeight: 54 });
