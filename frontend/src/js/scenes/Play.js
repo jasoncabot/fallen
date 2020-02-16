@@ -85,6 +85,16 @@ export default class Play extends Phaser.Scene {
         this.cameras.main.setSize(640, 480);
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC).on('down', (_event) => {
+            if (this.buildDialog) {
+                this.buildDialog.dismiss();
+                this.buildDialog = null;
+            }
+            this.currentlySelectedUnit = null;
+            this.constructionMode = null;
+            this.onConstructionModeUpdated();
+        });
+
         // TODO: register terrain
         this.load.spritesheet('rocky', rocky, { frameWidth: 70, frameHeight: 54 });
         this.load.spritesheet('forest', forest, { frameWidth: 70, frameHeight: 54 });
@@ -173,37 +183,24 @@ export default class Play extends Phaser.Scene {
     }
 
     onConstructionModeUpdated() {
-        if (this.infoKey) this.scene.remove(this.infoKey);
-        this.infoKey = null;
-
+        // TODO: consolidate currentlySelectedUnit and constructionMode into cursorMode?
         if (this.constructionMode) {
             this.logo.visible = false;
-            let kind = this.constructionMode.kind;
-            this.infoKey = `infokey-${kind}`;
-
-            const titles = {
-                'road': 'Construction',
-                'recycle': 'Recycling'
-            }
-
-            let infoText = new InfoText(this.infoKey, titles[kind]);
-            this.scene.add(this.infoKey, infoText, true);
-
-            this.currentlySelectedUnit = null;
+            this.infoText.setConstructionMode(this.constructionMode).setVisible(true);
             this.activeUnitSelection.visible = false;
+            this.currentlySelectedUnit = null;
         } else if (this.currentlySelectedUnit) {
             this.logo.visible = false;
-            // name, upkeep, experience
+            this.infoText.setUnitMode(this.currentlySelectedUnit).setVisible(true);
             this.activeUnitSelection.visible = true;
-            this.infoKey = `infokey-${this.currentlySelectedUnit.id}`;
-            let infoText = new InfoText(this.infoKey, this.currentlySelectedUnit.name);
-            this.scene.add(this.infoKey, infoText, true);
-
         } else {
             this.logo.visible = true;
-            this.currentlySelectedUnit = null;
+            this.infoText.visible = false;
             this.activeUnitSelection.visible = false;
+            this.currentlySelectedUnit = null;
+            this.updateCurrentConstructionGraphics(null);
         }
+        this.onButtonsUpdated();
     }
 
     // Converts pointer coordinates to tile x, y
@@ -351,11 +348,6 @@ export default class Play extends Phaser.Scene {
 
         // Only show the current tile selector graphic
         Object.values(this.cachedTileSelectors).forEach(g => { g.visible = (graphics === g) });
-
-        // TODO: Update the text down the bottom based on this.constructionMode.kind
-        // Construction
-        // Road
-        // Cost 5 Credits
     }
 
     constructionCommand(mode, tileIndex) {
@@ -455,7 +447,7 @@ export default class Play extends Phaser.Scene {
 
             onDraggingCancelled(pointer);
         }, this);
-        this.input.on('pointermove', (pointer, _localX, _localY, event) => {
+        this.input.on('pointermove', (pointer, _localX, _localY, _event) => {
             let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
             this.updateCurrentConstructionGraphics(tileIndex);
 
@@ -491,7 +483,7 @@ export default class Play extends Phaser.Scene {
                 this.scene.add(window.key, window, true);
                 this.buildDialog = window;
             }
-            this.onButtonsUpdated();
+            this.currentlySelectedUnit = null;
             this.onConstructionModeUpdated();
         })
         ui.add(this.buttonBuild);
@@ -506,7 +498,6 @@ export default class Play extends Phaser.Scene {
             } else {
                 this.constructionMode = { w: 1, h: 1, kind: 'road' };
             }
-            this.onButtonsUpdated();
             this.onConstructionModeUpdated();
         })
         ui.add(this.buttonRoad);
@@ -521,7 +512,6 @@ export default class Play extends Phaser.Scene {
             } else {
                 this.constructionMode = { w: 1, h: 1, kind: 'recycle' };
             }
-            this.onButtonsUpdated();
             this.onConstructionModeUpdated();
         })
         ui.add(this.buttonRecycle);
@@ -538,17 +528,18 @@ export default class Play extends Phaser.Scene {
 
         ui.add(this.add.image(0, 0, 'ui-strategic').setOrigin(0, 0));
 
-        this.logo = this.add.image(232, 413, 'logo').setOrigin(0, 0);
+        this.logo = this.add.image(232, 413, 'logo').setOrigin(0, 0).setVisible(true);
         ui.add(this.logo);
 
-        var cursors = this.input.keyboard.createCursorKeys();
+        this.infoText = new InfoText(this, 232, 413).setVisible(false);
+        ui.add(this.infoText);
 
         this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
             camera: this.cameras.main,
-            left: cursors.left,
-            right: cursors.right,
-            up: cursors.up,
-            down: cursors.down,
+            left: this.cursors.left,
+            right: this.cursors.right,
+            up: this.cursors.up,
+            down: this.cursors.down,
             speed: 0.7
         });
 
