@@ -18,6 +18,7 @@ export default class ListGames extends Scene {
         registerScenePath(this, '/games');
 
         let font = { color: 'green', fontSize: '18px', fontFamily: 'Verdana' };
+        let small = { color: 'green', fontSize: '11px', fontFamily: 'Verdana' };
         this.add.text(320, 0, 'Load Game', { color: font.color, fontSize: '24px', fontFamily: font.fontFamily }).setOrigin(0.5, 0);
 
         let y = 50;
@@ -31,10 +32,12 @@ export default class ListGames extends Scene {
             this.renderRow(graphics, y, colour.default);
             allRows.push(graphics);
 
-            this.add.text(75, y, idx + 1, font).setOrigin(0.5, 0.5);
-            this.add.text(105, y, game.name, font).setOrigin(0, 0.5);
-            this.add.text(310, y, new Date(game.date).toLocaleString(), font).setOrigin(0, 0.5);
-            this.add.text(550, y, `${game.kind}-${game.owner}-${game.number}`, font).setOrigin(0, 0.5);
+            this.add.text(30, y, idx + 1, font).setOrigin(0.5, 0.5);
+            this.add.text(55, y, game.name, font).setOrigin(0, 0.5);
+            this.add.text(260, y, new Date(game.date).toLocaleString(), small).setOrigin(0, 0.5);
+            this.add.text(400, y, game.kind, small).setOrigin(0, 0.5);
+            this.add.text(480, y, game.owner, small).setOrigin(0, 0.5);
+            this.add.text(540, y, `Year ${game.number}`, small).setOrigin(0, 0.5);
 
             this.add.zone(0, y, 640, 30)
                 .setInteractive()
@@ -58,14 +61,18 @@ export default class ListGames extends Scene {
         graphics.clear();
         graphics.fillStyle(colour, 1);
         graphics.lineStyle(1, colour, 1.0);
-        graphics.slice(50, y, 10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(90), true);
+        graphics.slice(10, y, 10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(90), true);
         graphics.fillPath();
 
-        graphics.strokeRectShape(new Phaser.Geom.Rectangle(55, y - 10, 40, 20));
-        graphics.strokeRectShape(new Phaser.Geom.Rectangle(100, y - 10, 200, 20));
-        graphics.strokeRectShape(new Phaser.Geom.Rectangle(305, y - 10, 240, 20));
+        graphics.strokeRectShape(new Phaser.Geom.Rectangle(15, y - 10, 30, 20));
+        graphics.strokeRectShape(new Phaser.Geom.Rectangle(50, y - 10, 200, 20));
+        graphics.strokeRectShape(new Phaser.Geom.Rectangle(255, y - 10, 135, 20));
 
-        graphics.slice(550, y, 10, Phaser.Math.DegToRad(90), Phaser.Math.DegToRad(270), true);
+        graphics.strokeRectShape(new Phaser.Geom.Rectangle(395, y - 10, 75, 20));
+        graphics.strokeRectShape(new Phaser.Geom.Rectangle(475, y - 10, 55, 20));
+        graphics.strokeRectShape(new Phaser.Geom.Rectangle(535, y - 10, 55, 20));
+
+        graphics.slice(595, y, 10, Phaser.Math.DegToRad(90), Phaser.Math.DegToRad(270), true);
         graphics.fillPath();
     }
 

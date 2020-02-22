@@ -21,7 +21,15 @@ module.exports.generateGame = (userId, name, race, difficulty, campaignType) => 
         "name": name,
         "type": "PLAYER",
         "owner": side,
-        "difficulty": difficulty
+        "difficulty": difficulty,
+        "technology": {
+            "energy-efficiency": 0,
+            "armour": 0,
+            "speed": 0,
+            "weapon-damage": 0,
+            "rate-of-fire": 0,
+            "rocketry": 0
+        }
     };
 
     // generate AI opponent
@@ -32,7 +40,15 @@ module.exports.generateGame = (userId, name, race, difficulty, campaignType) => 
         "name": "Computer",
         "type": "AI",
         "owner": gameService.opposite(side),
-        "difficulty": difficulty
+        "difficulty": difficulty,
+        "technology": {
+            "energy-efficiency": 0,
+            "armour": 0,
+            "speed": 0,
+            "weapon-damage": 0,
+            "rate-of-fire": 0,
+            "rocketry": 0
+        }
     };
     const game = {
         "id": uuidv4(),

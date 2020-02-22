@@ -50,6 +50,7 @@ export default class Play extends Phaser.Scene {
     init(data) {
         this.gameId = data.gameId;
         this.province = data.province;
+        this.view = data.view;
 
         const emitter = new EventEmitter();
         this.layerBuilder = new LayerBuilder(emitter);
@@ -521,7 +522,9 @@ export default class Play extends Phaser.Scene {
         });
         ui.add(this.buttonMenu);
         this.buttonColony = createButton(this, 563, 410, buttons.strategic.colony, (button) => {
-            this.scene.start('StrategicView', { gameId: this.gameId });
+            this.scene.start('LoadGameResources', {
+                gameId: this.gameId
+            });
         })
         ui.add(this.buttonColony);
 

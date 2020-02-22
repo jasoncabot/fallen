@@ -20,6 +20,7 @@ export default class LoadGameResources extends Scene {
         this.load.json('data-provinces', data("/provinces.json"));
         this.load.json('data-structures', data("/structures.json"));
         this.load.json('data-units', data("/units.json"));
+        this.load.json('data-technology', data("/technology.json"));
 
         // dynamic content
         api.getAndCache(`/games/${this.gameId}`, this, `game-${this.gameId}`);

@@ -1,6 +1,5 @@
 @font-face {
-  font-family: 'Roboto';
-  src: url(../fonts/Roboto-Regular.ttf)
+  font-family: 'Verdana';
 }
 
 @import 'variables';
@@ -33,4 +32,14 @@ p {
   max-width: $page-width;
   margin: 0 auto;
   text-align: left;
+}
+
+.tech-slider {
+  color: green;
+  padding-left: 5px;
+  width: 50px;
+  background-color: black;
+  border: 1px solid green;
+  box-shadow: none ! important;
+  outline: none ! important;
 }

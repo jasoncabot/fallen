@@ -2,6 +2,8 @@ import { Scene } from 'phaser';
 
 import { registerButtons, createButton, buttons } from '../assets/Buttons';
 import MessageBox from '../components/MessageBox';
+import ProvinceOverview from '../components/ProvinceOverview';
+import TechnologyOverview from '../components/TechnologyOverview';
 import { data } from '../Config';
 import * as api from '../models/API';
 
@@ -21,7 +23,7 @@ export default class StrategicView extends Scene {
 
     init(data) {
         this.gameId = data.gameId;
-        this.view = data.view;
+        this.view = data.view || 'overview';
     }
 
     preload() {
@@ -51,11 +53,13 @@ export default class StrategicView extends Scene {
         this.mission = this.add.text(16, 380, "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana', wordWrap: { width: 142, useAdvancedWrap: true } })
             .setVisible(false);
 
-        this.overviewProvince = this.add.container(32, 34).setScrollFactor(0).setVisible(false);
+        this.overviewProvince = this.add.existing(new ProvinceOverview(this, 32, 34, game).setScrollFactor(0).setVisible(false));
+        this.technologyOverview = this.add.existing(new TechnologyOverview(this, 32, 34, game).setScrollFactor(0).setVisible(false));
 
         let topFont = { color: 'green', fontSize: '14px', fontFamily: 'Verdana' };
         this.add.text(112, 4, `Year ${game.turn.number}`, topFont).setOrigin(0.5, 0);
         this.add.text(320, 4, game.player.name, topFont).setOrigin(0.5, 0);
+        // TODO: move this calculation somewhere sensible
         let totalIncome = Object.values(game.provinces)
             .filter(p => p.owner === game.player.owner)
             .map(p => p.credits)
@@ -65,7 +69,13 @@ export default class StrategicView extends Scene {
         this.buttonMenu = createButton(this, 246, 401, buttons.world.menu, (button) => {
             this.scene.start('MainMenu');
         });
-        this.buttonTechnology = createButton(this, 349, 399, buttons.world.technology, (button) => { alert('tech'); });
+        this.buttonTechnology = createButton(this, 349, 399, buttons.world.technology, (button) => {
+            if (this.view === 'technology') {
+                this.onCurrentViewChanged('overview', game);
+            } else {
+                this.onCurrentViewChanged('technology', game);
+            }
+        });
         this.buttonMap = createButton(this, 533, 365, buttons.world.map, (button) => {
             this.scene.start('Play', {
                 gameId: this.gameId,
@@ -74,7 +84,7 @@ export default class StrategicView extends Scene {
             });
         });
         this.buttonZoom = createButton(this, 411, 400, buttons.world.zoom, (button) => {
-            if (this.currentState === 'zoom') {
+            if (this.view === 'zoom') {
                 this.onCurrentViewChanged('overview', game);
             } else {
                 this.onCurrentViewChanged('zoom', game);
@@ -94,7 +104,7 @@ export default class StrategicView extends Scene {
             this.scene.add(key, box, true);
         });
 
-        this.onCurrentViewChanged('overview', game);
+        this.onCurrentViewChanged(this.view, game);
     }
 
     onTurnEnded(game) {
@@ -113,65 +123,47 @@ export default class StrategicView extends Scene {
             });
     }
 
-    renderProvinceOverview(game) {
-        let builder = new LayerBuilder(null);
-
-        const data = {
-            terrain: this.cache.json.get('data-provinces'),
-            structures: this.cache.json.get('data-structures'),
-            units: this.cache.json.get('data-units')
-        }
-
-        let province = game.provinces[this.selectedProvince];
-        let terrain = data.terrain[this.selectedProvince];
-
-        builder.initialise(province, data, terrain);
-
-        for (let i = 0; i < terrain.height; i++) {
-            for (let j = 0; j < terrain.width; j++) {
-                let tileIndex = { x: i, y: j };
-                this.terrainBlitter.create(i * 7, j * 7, builder.terrainAt(tileIndex));
-                if (builder.roadAt(tileIndex)) {
-                    this.overlayBlitter.create(i * 7, j * 7, builder.roadOverviewAt(tileIndex));
-                }
-                if (builder.wallAt(tileIndex)) {
-                    this.overlayBlitter.create(i * 7, j * 7, builder.wallOverviewAt(tileIndex));
-                }
-                if (builder.structureAt(tileIndex)) {
-                    this.overlayBlitter.create(i * 7, j * 7, builder.structureOverviewAt(tileIndex));
-                }
-                if (builder.unitAt(tileIndex)) {
-                    this.overlayBlitter.create(i * 7, j * 7, builder.unitOverviewAt(tileIndex));
-                }
-            }
-        }
-    }
-
-    onCurrentViewChanged(state, game) {
-        switch (state) {
+    onCurrentViewChanged(view, game) {
+        switch (view) {
             case 'zoom':
                 this.overviewMap.visible = false;
-                this.renderProvinceOverview(game);
                 this.overviewProvince.visible = true;
                 this.buttonMenu.disable();
                 this.buttonTechnology.disable();
                 this.buttonZoom.setHighlight(true);
                 this.buttonMap.disable();
                 this.buttonEndTurn.disable();
+                this.overviewProvince.show(this.selectedProvince);
+                break;
+            case 'technology':
+                this.overviewMap.visible = false;
+                this.technologyOverview.visible = true;
+                this.buttonMenu.disable();
+                this.buttonTechnology.setHighlight(true);
+                this.buttonZoom.disable();
+                this.buttonMap.disable();
+                this.buttonEndTurn.disable();
+                this.technologyOverview.show();
                 break;
             default:
                 this.overviewMap.visible = true;
                 this.overviewProvince.visible = false;
+                this.technologyOverview.visible = false;
                 this.buttonMenu.enable();
                 this.buttonTechnology.enable();
-                this.buttonZoom.setHighlight(false);
+                this.buttonZoom.enable();
                 this.buttonMap.enable();
                 this.buttonEndTurn.enable();
+
                 // ensure that all buttons/missions are in a consistent state
+                this.buttonZoom.setHighlight(false);
+                this.buttonTechnology.setHighlight(false);
+                this.overviewProvince.hide();
+                this.technologyOverview.hide();
                 this.onSelectedProvinceUpdated(game);
                 break;
         }
-        this.currentState = state;
+        this.view = view;
     }
 
     addProvinces(game) {
@@ -207,16 +199,7 @@ export default class StrategicView extends Scene {
     }
 
     onSelectedProvinceUpdated(game) {
-        let reference = this.cache.json.get('data-provinces')[this.selectedProvince];
         let data = game.provinces[this.selectedProvince];
-
-        if (this.terrainBlitter) this.terrainBlitter.clear();
-        if (this.overlayBlitter) this.overlayBlitter.clear();
-
-        this.terrainBlitter = this.add.blitter(0, 0, reference.type + '-overview');
-        this.overlayBlitter = this.add.blitter(0, 0, 'overlay-overview');
-        this.overviewProvince.add(this.terrainBlitter);
-        this.overviewProvince.add(this.overlayBlitter);
 
         // out of scanning range? hide the zoom button
         const outOfScanningRange = game.scannableProvinces.indexOf(this.selectedProvince) < 0;
