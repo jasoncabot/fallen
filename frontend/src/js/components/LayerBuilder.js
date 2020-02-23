@@ -86,8 +86,25 @@ export default class LayerBuilder {
     }
 
     roadOverviewAt(index) {
-        // TODO: correct tileset
-        return this.objectAt(index, [101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101], objectExistsAt(this.roads));
+        // 86 - 101
+        // up-down-left-right
+        // 0000 = 101
+        // 0001 = 94
+        // 0010 = 94
+        // 0011 = 94
+        // 0100 = 95
+        // 0101 = 86
+        // 0110 = 88
+        // 0111 = 92
+        // 1000 = 95
+        // 1001 = 87
+        // 1010 = 89
+        // 1011 = 93
+        // 1100 = 95
+        // 1101 = 90
+        // 1110 = 91
+        // 1111 = 101
+        return this.objectAt(index, [101, 94, 94, 94, 95, 86, 88, 92, 95, 87, 89, 93, 95, 90, 91, 101], objectExistsAt(this.roads));
     }
 
     wallAt(index) {
@@ -95,8 +112,7 @@ export default class LayerBuilder {
     }
 
     wallOverviewAt(index) {
-        // TODO: correct tileset
-        return this.objectAt(index, [118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118, 118], objectExistsAt(this.walls));
+        return this.objectAt(index, [118, 111, 111, 111, 112, 103, 105, 109, 112, 104, 106, 110, 112, 107, 108, 118], objectExistsAt(this.walls));
     }
 
     structureOverviewAt(index) {
