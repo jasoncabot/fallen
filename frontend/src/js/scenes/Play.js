@@ -340,7 +340,7 @@ export default class Play extends Phaser.Scene {
                         .setInteractive({ cursor: 'url(' + structurePointer + '), pointer' });
                     container.add(structureImage);
 
-                    structureImage.on('pointerdown', (_pointer, _x, _y, event) => {
+                    structureImage.on('pointerup', (_pointer, _x, _y, event) => {
                         if (this.constructionMode) return;
 
                         event.stopPropagation();
@@ -604,6 +604,8 @@ export default class Play extends Phaser.Scene {
         ui.add(this.add.text(133, 6, province.energy, font).setOrigin(0.5, 0));
         ui.add(this.add.text(320, 6, reference.name, font).setOrigin(0.5, 0));
         ui.add(this.add.text(569, 6, game.player.globalReserve + "/" + province.credits, font).setOrigin(0.5, 0));
+
+        this.centerCameraAtPoint({ x: reference.width / 2, y: reference.height / 2 });
     }
 
     update(time, delta) {
