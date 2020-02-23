@@ -10,27 +10,22 @@ export default class ProvinceOverview extends GameObjects.Container {
     }
 
     show(provinceId) {
-        let reference = this.scene.cache.json.get('data-provinces')[provinceId];
-
         let builder = new LayerBuilder(null);
 
-        const data = {
-            terrain: this.scene.cache.json.get('data-provinces'),
-            structures: this.scene.cache.json.get('data-structures'),
-            units: this.scene.cache.json.get('data-units')
-        }
+        let reference = this.scene.cache.json.get('data-provinces')[provinceId];
+        let units = this.scene.cache.json.get('data-units');
+        let structures = this.scene.cache.json.get('data-structures');
 
         let province = this.game.provinces[provinceId];
-        let terrain = data.terrain[provinceId];
 
-        builder.initialise(province, data, terrain);
+        builder.initialise(province, units, structures, reference);
 
         // This requires the owning scene to have preloaded the appropriate -overview resources
-        this.terrainBlitter = this.scene.add.blitter(this.x, this.y, reference.type + '-overview');
-        this.overlayBlitter = this.scene.add.blitter(this.x, this.y, 'overlay-overview');
+        this.terrainBlitter = this.scene.add.blitter(this.x, this.y, reference.type + '-overview').setScrollFactor(0);
+        this.overlayBlitter = this.scene.add.blitter(this.x, this.y, 'overlay-overview').setScrollFactor(0);
 
-        for (let i = 0; i < terrain.height; i++) {
-            for (let j = 0; j < terrain.width; j++) {
+        for (let i = 0; i < reference.height; i++) {
+            for (let j = 0; j < reference.width; j++) {
                 let tileIndex = { x: i, y: j };
                 this.terrainBlitter.create(i * 7, j * 7, builder.terrainAt(tileIndex));
                 if (builder.roadAt(tileIndex)) {

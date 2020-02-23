@@ -10,8 +10,6 @@ import * as api from '../models/API';
 import strategicMap from '../../images/ui/strategic-map.png';
 import { registerScenePath } from './../components/History';
 
-import LayerBuilder from '../components/LayerBuilder';
-
 import terrain from './../../images/terrain';
 
 export default class StrategicView extends Scene {

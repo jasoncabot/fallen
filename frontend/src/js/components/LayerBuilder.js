@@ -12,7 +12,7 @@ export default class LayerBuilder {
 
     // converts a game in a nested format
     // into a set of tiles that can be rendered
-    initialise(province, data, terrain) {
+    initialise(province, units, structures, terrain) {
 
         this.width = terrain.width;
         this.height = terrain.height;
@@ -34,7 +34,7 @@ export default class LayerBuilder {
         this.unitLookup = province.units;
         Object.keys(this.unitLookup || {}).forEach(unitId => {
             let unit = this.unitLookup[unitId];
-            let reference = data.units[unit.kind.category];
+            let reference = units[unit.kind.category];
             let model = {
                 id: unitId,
                 type: 'unit',
@@ -57,7 +57,7 @@ export default class LayerBuilder {
             // this is where we turn 1 structure into the many tiles that are 
             // actually rendered on-screen
             let structure = this.structureLookup[structureId];
-            let reference = data.structures[structure.kind.category];
+            let reference = structures[structure.kind.category];
             // paint column by column to the height in the y-axis
             let displayOffset = reference.display.offset;
             for (let x = 0; x < reference.display.width; x++) {
@@ -138,8 +138,17 @@ export default class LayerBuilder {
         return (this.unitModels[index.x] || [])[index.y];
     }
 
+    inBounds(index, size) {
+        if (index.x < 0) return false;
+        if (index.y < 0) return false;
+        if (index.y + size.y >= this.height) return false;
+        if (index.x + size.x >= this.width) return false;
+        return true;
+    }
+
     unitCanOccupy(index) {
         // TODO: validation that a unit can occupy this space
+        if (!this.inBounds(index, { x: 1, y: 1 })) return false;
         // terrain != water | forest | mountain
         // no unit exists
         // no structure exists
@@ -151,12 +160,9 @@ export default class LayerBuilder {
         return (this.structureModels[index.x] || [])[index.y];
     }
 
-    validForConstruction(tileIndex, size, kind) {
-        if (tileIndex.x < 0) return false;
-        if (tileIndex.y < 0) return false;
-        if (tileIndex.y + size.y >= this.height) return false;
-        if (tileIndex.x + size.x >= this.width) return false;
+    validForConstruction(index, size, kind) {
         // TODO: look at kind and check for collisions with units, structures, walls, roads and terrain
+        if (!this.inBounds(index, size)) return false;
         return true;
     }
 

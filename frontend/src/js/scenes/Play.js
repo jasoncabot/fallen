@@ -3,16 +3,15 @@ import Phaser from 'phaser';
 import Dialog from '../components/Dialog';
 import InfoText from '../components/InfoText';
 import LayerBuilder from '../components/LayerBuilder';
+import ProvinceOverview from '../components/ProvinceOverview';
 
-// TODO: come up with a better way of referencing these images
-import rocky from '../../images/terrain/rocky.png';
-import desert from '../../images/terrain/desert.png';
-import forest from '../../images/terrain/forest.png';
 import uiStrategic from '../../images/ui/strategic.png';
 import activeUnitSelection from '../../images/icons/active-unit-selection.png';
 import logoAlien from '../../images/ui/logo-alien.png';
 import logoHuman from '../../images/ui/logo-human.png';
 import roads from '../../images/roads/roads.png';
+
+import terrain from './../../images/terrain';
 
 import { registerUnits, registerStructures } from '../assets/Resources';
 import { registerButtons, createButton, buttons } from '../assets/Buttons';
@@ -96,9 +95,14 @@ export default class Play extends Phaser.Scene {
             this.onConstructionModeUpdated();
         });
 
-        this.load.spritesheet('rocky', rocky, { frameWidth: 70, frameHeight: 54 });
-        this.load.spritesheet('forest', forest, { frameWidth: 70, frameHeight: 54 });
-        this.load.spritesheet('desert', desert, { frameWidth: 70, frameHeight: 54 });
+        this.load.spritesheet('rocky', terrain.rocky.isometric, { frameWidth: 70, frameHeight: 54 });
+        this.load.spritesheet('forest', terrain.forest.isometric, { frameWidth: 70, frameHeight: 54 });
+        this.load.spritesheet('desert', terrain.desert.isometric, { frameWidth: 70, frameHeight: 54 });
+
+        this.load.spritesheet('rocky-overview', terrain.rocky.overview, { frameWidth: 7, frameHeight: 7 });
+        this.load.spritesheet('forest-overview', terrain.forest.overview, { frameWidth: 7, frameHeight: 7 });
+        this.load.spritesheet('desert-overview', terrain.desert.overview, { frameWidth: 7, frameHeight: 7 });
+        this.load.spritesheet('overlay-overview', terrain.overlay, { frameWidth: 7, frameHeight: 7 });
 
         registerButtons(this, buttons.strategic);
 
@@ -125,6 +129,7 @@ export default class Play extends Phaser.Scene {
         // based on the current state
         // show the appropriate button states
 
+        this.input.setDefaultCursor(`url('${customCursor}'), pointer`);
         if (this.constructionMode) {
             switch (this.constructionMode.kind) {
                 case 'road':
@@ -142,10 +147,22 @@ export default class Play extends Phaser.Scene {
             this.buttonBuild.setHighlight(true);
             this.buttonRoad.setHighlight(false);
             this.buttonRecycle.setHighlight(false);
+        } else if (this.overviewProvince && this.overviewProvince.visible) {
+            this.buttonMap.setHighlight(true);
+            this.buttonRepair.disable();
+            this.buttonBuild.disable();
+            this.buttonRoad.disable();
+            this.buttonRecycle.disable();
+            this.input.setDefaultCursor(`auto`);
         } else {
+            this.buttonRepair.enable();
+            this.buttonBuild.enable();
+            this.buttonRoad.enable();
+            this.buttonRecycle.enable();
             this.buttonBuild.setHighlight(false);
             this.buttonRoad.setHighlight(false);
             this.buttonRecycle.setHighlight(false);
+            this.buttonMap.setHighlight(false);
         }
     }
 
@@ -201,6 +218,22 @@ export default class Play extends Phaser.Scene {
             this.updateCurrentConstructionGraphics(null);
         }
         this.onButtonsUpdated();
+    }
+
+    onOverviewToggled() {
+        if (this.overviewProvince.visible) {
+            this.overviewProvince.visible = false;
+            this.overviewProvince.hide();
+            this.mapContainer.visible = true;
+        } else {
+            this.constructionMode = null;
+            this.currentlySelectedUnit = null;
+            this.overviewProvince.visible = true;
+            this.overviewProvince.show(this.province);
+            this.mapContainer.visible = false;
+        }
+
+        this.onConstructionModeUpdated();
     }
 
     // Converts pointer coordinates to tile x, y
@@ -273,7 +306,11 @@ export default class Play extends Phaser.Scene {
         return !movedX && !movedY
     }
 
-    renderTileLayers(layerBuilder) {
+    renderTileLayers(container, layerBuilder) {
+
+        container.add(this.terrainBlitter);
+        container.add(this.roadBlitter);
+
         let scanLines = (layerBuilder.height + layerBuilder.width) - 1;
         var line = 0;
         while (line < scanLines) {
@@ -301,6 +338,7 @@ export default class Play extends Phaser.Scene {
                     const structureImage = this.add.image(pos.x, pos.y, structure.spritesheet, structure.offset)
                         .setOrigin(0, 0)
                         .setInteractive({ cursor: 'url(' + structurePointer + '), pointer' });
+                    container.add(structureImage);
 
                     structureImage.on('pointerdown', (_pointer, _x, _y, event) => {
                         if (this.constructionMode) return;
@@ -316,6 +354,7 @@ export default class Play extends Phaser.Scene {
                     const unitImage = this.add.image(pos.x, pos.y, unit.spritesheet, unit.offset + unit.facing)
                         .setOrigin(0, 0)
                         .setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
+                    container.add(unitImage);
 
                     this.unitViews[unit.id] = unitImage;
                     unitImage.on('pointerdown', (_pointer, _x, _y, event) => {
@@ -328,6 +367,12 @@ export default class Play extends Phaser.Scene {
             }
             line++;
         }
+    }
+
+    centerCameraAtPoint(tileIndex) {
+        let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
+        this.cameras.main.scrollX = ((pos.x + this.tileSize.w) - this.cameras.main.width / 2);
+        this.cameras.main.scrollY = ((pos.y + this.tileSize.h) - this.cameras.main.height / 2);
     }
 
     updateCurrentConstructionGraphics(tileIndex) {
@@ -397,20 +442,17 @@ export default class Play extends Phaser.Scene {
 
         let game = this.cache.json.get(`game-${this.gameId}`);
 
-        const data = {
-            terrain: this.cache.json.get('data-provinces'),
-            structures: this.cache.json.get('data-structures'),
-            units: this.cache.json.get('data-units')
-        }
-
         let province = game.provinces[this.province];
-        let terrain = data.terrain[this.province];
+        let units = this.cache.json.get('data-units');
+        let structures = this.cache.json.get('data-structures');
+        let reference = this.cache.json.get('data-provinces')[this.province];
 
-        this.terrainBlitter = this.add.blitter(0, 0, terrain.type);
+        this.layerBuilder.initialise(province, units, structures, reference);
+
+        this.mapContainer = this.add.container(0, 0);
+        this.terrainBlitter = this.add.blitter(0, 0, reference.type);
         this.roadBlitter = this.add.blitter(0, 0, 'roads');
-
-        this.layerBuilder.initialise(province, data, terrain);
-        this.renderTileLayers(this.layerBuilder);
+        this.renderTileLayers(this.mapContainer, this.layerBuilder);
 
         // Render active unit selection
         this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0).setDepth(1);
@@ -442,6 +484,16 @@ export default class Play extends Phaser.Scene {
                     if (this.layerBuilder.unitCanOccupy(tileIndex)) {
                         this.onUnitMoved(this.currentlySelectedUnit, tileIndex);
                     }
+                } else if (this.overviewProvince.visible) {
+                    // find the selected tile
+                    tileIndex = {
+                        x: Math.floor((pointer.x - this.overviewProvince.x) / 7),
+                        y: Math.floor((pointer.y - this.overviewProvince.y) / 7),
+                    }
+                    // center it on the screen
+                    this.centerCameraAtPoint(tileIndex);
+                    // and hide the overview
+                    this.onOverviewToggled();
                 }
             }
 
@@ -460,12 +512,14 @@ export default class Play extends Phaser.Scene {
         }, this);
         this.input.on('pointerout', onDraggingCancelled, this);
         this.input.on('gameout', onDraggingCancelled, this);
-        this.input.setDefaultCursor(`url('${customCursor}'), pointer`);
 
         // Static UI in a container
         let ui = this.add.container(0, 0).setScrollFactor(0).setDepth(2);
 
+        this.overviewProvince = new ProvinceOverview(this, 32, 34, game).setScrollFactor(0).setVisible(false);
+        ui.add(this.overviewProvince);
         this.buttonRepair = createButton(this, 12, 410, buttons.strategic.repair, (button) => {
+            // TODO: submit a repair command
             alert('No buildings or dropships damaged');
         })
         ui.add(this.buttonRepair);
@@ -515,7 +569,7 @@ export default class Play extends Phaser.Scene {
             this.onConstructionModeUpdated();
         })
         ui.add(this.buttonRecycle);
-        this.buttonMap = createButton(this, 424, 410, buttons.strategic.map, (button) => { })
+        this.buttonMap = createButton(this, 424, 410, buttons.strategic.map, (button) => { this.onOverviewToggled() });
         ui.add(this.buttonMap);
         this.buttonMenu = createButton(this, 486, 410, buttons.strategic.menu, (button) => {
             this.scene.start('MainMenu');
@@ -548,7 +602,7 @@ export default class Play extends Phaser.Scene {
         let font = { color: 'green', fontSize: '12px', fontFamily: 'Verdana' };
         ui.add(this.add.text(58, 6, province.research, font).setOrigin(0.5, 0));
         ui.add(this.add.text(133, 6, province.energy, font).setOrigin(0.5, 0));
-        ui.add(this.add.text(320, 6, terrain.name, font).setOrigin(0.5, 0));
+        ui.add(this.add.text(320, 6, reference.name, font).setOrigin(0.5, 0));
         ui.add(this.add.text(569, 6, game.player.globalReserve + "/" + province.credits, font).setOrigin(0.5, 0));
     }
 
@@ -556,6 +610,4 @@ export default class Play extends Phaser.Scene {
         this.controls.update(delta);
     }
 
-    render() {
-    }
 }
