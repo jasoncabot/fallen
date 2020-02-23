@@ -7,6 +7,7 @@
         "energy": "RICH",
         "credits": "RICH",
         "research": "RICH",
+        "touching": ["cartasone", "eagle-nest"],
         "tiles": [
             [0,48,95,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
             [1,49,96,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
@@ -66,6 +67,7 @@
         "energy": "RICH",
         "credits": "RICH",
         "research": "RICH",
+        "touching": ["haven", "eagle-nest", "high-point", "milos"],
         "tiles": [
             [2,3,4,5,6],
             [2,3,4,5,6],
@@ -82,6 +84,7 @@
         "energy": "RICH",
         "credits": "RICH",
         "research": "RICH",
+        "touching": ["haven", "cartasone", "high-point", "ayden", "snake-river"],
         "tiles": [
             [3,3,3,3,3],
             [3,3,3,3,3],
@@ -98,6 +101,7 @@
         "energy": "RICH",
         "credits": "RICH",
         "research": "RICH",
+        "touching": ["lachine", "sutton", "rolland"],
         "tiles": [
             [3,3,3,3,3],
             [3,3,3,3,3],
@@ -114,6 +118,7 @@
         "energy": "RICH",
         "credits": "RICH",
         "research": "RICH",
+        "touching": ["free-city", "sutton", "bromont"],
         "tiles": [
             [3,3,3,3,3],
             [3,3,3,3,3],
@@ -130,6 +135,602 @@
         "energy": "RICH",
         "credits": "RICH",
         "research": "RICH",
+        "touching": ["free-city", "rolland", "chertsy", "rawdon", "bromont", "lachine"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "milos": {
+        "width": 5,
+        "height": 5,
+        "name": "Milos",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["cartasone", "high-point", "sparta", "elkin"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "high-point": {
+        "width": 5,
+        "height": 5,
+        "name": "High Point",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["rock-castle", "ayden", "eagle-nest", "cartasone", "milos", "sparta"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "ayden": {
+        "width": 5,
+        "height": 5,
+        "name": "Ayden",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["rock-castle", "high-point", "eagle-nest", "snake-river", "canuck"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "snake-river": {
+        "width": 5,
+        "height": 5,
+        "name": "Snake River",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["eagle-nest", "ayden", "canuck", "point-harbour"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "canuck": {
+        "width": 5,
+        "height": 5,
+        "name": "Canuck",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["ayden", "snake-river", "point-harbour"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "point-harbour": {
+        "width": 5,
+        "height": 5,
+        "name": "Point Harbour",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["snake-river", "canuck"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "rock-castle": {
+        "width": 5,
+        "height": 5,
+        "name": "Rock Castle",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["aberdeen", "sparta", "high-point", "ayden"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "sparta": {
+        "width": 5,
+        "height": 5,
+        "name": "Sparta",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["elkin", "milos", "high-point", "rock-castle", "aberdeen", "marshall", "delos"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "aberdeen": {
+        "width": 5,
+        "height": 5,
+        "name": "Aberdeen",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["rock-castle", "sparta", "marshall", "roanoke", "creedmoor", "garland"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "delos": {
+        "width": 5,
+        "height": 5,
+        "name": "Delos",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["sparta", "marshall", "kinabal", "norwood"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "norwood": {
+        "width": 5,
+        "height": 5,
+        "name": "Norwood",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["kinabal", "delos"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "kinabal": {
+        "width": 5,
+        "height": 5,
+        "name": "Kinabal",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["norwood", "delos", "marshall"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "marshall": {
+        "width": 5,
+        "height": 5,
+        "name": "Marshall",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["kinabal", "delos", "sparta", "aberdeen", "roanoke"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "roanoke": {
+        "width": 5,
+        "height": 5,
+        "name": "Roanoke",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["marshall", "aberdeen", "creedmoor"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "creedmoor": {
+        "width": 5,
+        "height": 5,
+        "name": "Creedmoor",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["roanoke", "aberdeen", "garland", "chaos"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "garland": {
+        "width": 5,
+        "height": 5,
+        "name": "Garland",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["aberdeen", "creedmoor", "chaos"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "chaos": {
+        "width": 5,
+        "height": 5,
+        "name": "Chaos",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["garland", "creedmoor"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "rolland": {
+        "width": 5,
+        "height": 5,
+        "name": "Rolland",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["free-city", "sutton", "chertsy"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "chertsy": {
+        "width": 5,
+        "height": 5,
+        "name": "Chertsy",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["rolland", "sutton", "rawdon", "masson-lake"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "bromont": {
+        "width": 5,
+        "height": 5,
+        "name": "Bromont",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["lachine", "sutton", "rawdon", "granby", "alma"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+        "rawdon": {
+        "width": 5,
+        "height": 5,
+        "name": "Rawdon",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["chertsy", "sutton", "bromont", "granby"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+        "granby": {
+        "width": 5,
+        "height": 5,
+        "name": "Granby",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["rawdon", "bromont", "alma", "brome-lake"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "alma": {
+        "width": 5,
+        "height": 5,
+        "name": "Alma",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["bromont", "granby", "brome-lake"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "brome-lake": {
+        "width": 5,
+        "height": 5,
+        "name": "Brome Lake",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["granby", "alma", "hull", "norenda"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "hull": {
+        "width": 5,
+        "height": 5,
+        "name": "Hull",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["brome-lake", "norenda", "thetfordmines", "sherbrooke"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "norenda": {
+        "width": 5,
+        "height": 5,
+        "name": "Norenda",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["brome-lake", "hull", "thetfordmines", "brimstone"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "brimstone": {
+        "width": 5,
+        "height": 5,
+        "name": "Brimstone",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["norenda", "thetfordmines"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "thetfordmines": {
+        "width": 5,
+        "height": 5,
+        "name": "Thetfordmines",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["three-rivers", "sherbrooke", "hull", "norenda", "brimstone"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "sherbrooke": {
+        "width": 5,
+        "height": 5,
+        "name": "Sherbrooke",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["masson-lake", "hull", "thetfordmines", "three-rivers", "kamouraska"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "masson-lake": {
+        "width": 5,
+        "height": 5,
+        "name": "Masson Lake",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["chertsy", "sherbrooke"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "kamouraska": {
+        "width": 5,
+        "height": 5,
+        "name": "Kamouraska",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["esterel", "orford", "three-rivers", "sherbrooke"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "esterel": {
+        "width": 5,
+        "height": 5,
+        "name": "Esterel",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["kamouraska", "orford", "valleyfield"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "valleyfield": {
+        "width": 5,
+        "height": 5,
+        "name": "Valleyfield",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["esterel", "orford", "three-rivers"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "orford": {
+        "width": 5,
+        "height": 5,
+        "name": "Orford",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["esterel", "valleyfield", "three-rivers", "kamouraska"],
+        "tiles": [
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3],
+            [3,3,3,3,3]
+        ]
+    },
+    "three-rivers": {
+        "width": 5,
+        "height": 5,
+        "name": "Three Rivers",
+        "type": "desert",
+        "energy": "RICH",
+        "credits": "RICH",
+        "research": "RICH",
+        "touching": ["valleyfield", "orford", "kamouraska", "sherbrooke", "thetfordmines"],
         "tiles": [
             [3,3,3,3,3],
             [3,3,3,3,3],
