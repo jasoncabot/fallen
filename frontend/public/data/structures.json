@@ -6,10 +6,10 @@
             "starship": false
         },
         "display": {
-            "width": 3,
-            "height": 3,
+            "width": 1,
+            "height": 1,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 66
         },
         "production": {
             "category": "NONE",
@@ -80,10 +80,10 @@
             "starship": false
         },
         "display": {
-            "width": 3,
-            "height": 3,
+            "width": 2,
+            "height": 2,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 12
         },
         "production": {
             "category": "NONE",
@@ -118,9 +118,9 @@
         },
         "display": {
             "width": 3,
-            "height": 3,
+            "height": 4,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 16
         },
         "production": {
             "category": "NONE",
@@ -130,7 +130,7 @@
         },
         "usage": {
             "cash": 0,
-            "energy": 0
+            "energy": 50
         },
         "hp": 200,
         "storage": {
@@ -154,10 +154,10 @@
             "starship": false
         },
         "display": {
-            "width": 3,
-            "height": 3,
+            "width": 2,
+            "height": 2,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 28
         },
         "production": {
             "category": "NONE",
@@ -191,10 +191,10 @@
             "starship": false
         },
         "display": {
-            "width": 3,
-            "height": 3,
+            "width": 2,
+            "height": 2,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 32
         },
         "production": {
             "category": "NONE",
@@ -231,7 +231,7 @@
             "width": 3,
             "height": 3,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 36
         },
         "production": {
             "category": "NONE",
@@ -265,10 +265,10 @@
             "starship": false
         },
         "display": {
-            "width": 3,
-            "height": 3,
+            "width": 2,
+            "height": 2,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 45
         },
         "production": {
             "category": "NONE",
@@ -305,7 +305,7 @@
             "width": 3,
             "height": 3,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 49
         },
         "production": {
             "category": "NONE",
@@ -339,10 +339,10 @@
             "starship": false
         },
         "display": {
-            "width": 3,
-            "height": 3,
+            "width": 2,
+            "height": 2,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 58
         },
         "production": {
             "category": "NONE",
@@ -413,10 +413,10 @@
             "starship": false
         },
         "display": {
-            "width": 3,
-            "height": 3,
+            "width": 2,
+            "height": 2,
             "tiles": "structure-alien",
-            "offset": 0
+            "offset": 62
         },
         "production": {
             "category": "NONE",

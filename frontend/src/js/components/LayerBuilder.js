@@ -157,8 +157,8 @@ export default class LayerBuilder {
     inBounds(index, size) {
         if (index.x < 0) return false;
         if (index.y < 0) return false;
-        if (index.y + size.y >= this.height) return false;
-        if (index.x + size.x >= this.width) return false;
+        if (index.y + size.y > this.height) return false;
+        if (index.x + size.x > this.width) return false;
         return true;
     }
 
