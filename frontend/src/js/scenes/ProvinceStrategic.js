@@ -25,11 +25,11 @@ import { registerScenePath } from './../components/History';
 
 const EventEmitter = require('eventemitter3');
 
-export default class Play extends Phaser.Scene {
+export default class ProvinceStrategic extends Phaser.Scene {
 
     constructor() {
         super({
-            key: 'Play'
+            key: 'ProvinceStrategic'
         });
 
         this.isDragging = false;

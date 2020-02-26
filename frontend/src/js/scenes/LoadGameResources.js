@@ -32,10 +32,10 @@ export default class LoadGameResources extends Scene {
         // if we don't have a specific province to view
         if (!this.province) {
             // must be an overview
-            this.scene.start('StrategicView', data);
+            this.scene.start('StrategicOverview', data);
         } else if (this.province) {
-            // otherwise it's most likely the Play view
-            this.scene.start('Play', data);
+            // otherwise it's most likely the strategic view
+            this.scene.start('ProvinceStrategic', data);
         } else {
             console.error('Unable to navigate to correct game scene');
         }

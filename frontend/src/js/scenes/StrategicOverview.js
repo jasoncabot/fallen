@@ -12,10 +12,10 @@ import { registerScenePath } from './../components/History';
 
 import terrain from './../../images/terrain';
 
-export default class StrategicView extends Scene {
+export default class StrategicOverview extends Scene {
     constructor() {
         super({
-            key: 'StrategicView'
+            key: 'StrategicOverview'
         });
     }
 
@@ -75,7 +75,7 @@ export default class StrategicView extends Scene {
             }
         });
         this.buttonMap = createButton(this, 533, 365, buttons.world.map, (button) => {
-            this.scene.start('Play', {
+            this.scene.start('ProvinceStrategic', {
                 gameId: this.gameId,
                 province: this.selectedProvince,
                 view: this.view
