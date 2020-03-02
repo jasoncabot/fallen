@@ -8,7 +8,7 @@ const campaigns = {
     ],
     provinces: [
         // Fallen Haven
-        ['cartasone', 'eagle-nest', 'haven', 'milos', 'high-point', 'ayden', 'snake-river', 'canuck', 'point-harbour', 'rock-castle', 'sparta', 'aberdeen', 'delos', 'norwood', 'kinabal', 'marshall', 'roanoke', 'creedmoor', 'garland', 'chaos'],
+        ['cartasone', 'eagle-nest', 'haven', 'milos', 'high-point', 'ayden', 'snake-river', 'canuck', 'point-harbour', 'rock-castle', 'sparta', 'aberdeen', 'delos', 'elkin', 'norwood', 'kinabal', 'marshall', 'roanoke', 'creedmoor', 'garland', 'chaos'],
         // The last hope campaign
         ['free-city', 'lachine', 'sutton', 'rolland', 'chertsy', 'bromont', 'rawdon', 'granby', 'alma', 'brome-lake', 'hull', 'norenda', 'brimstone', 'thetfordmines', 'sherbrooke', 'masson-lake', 'kamouraska', 'esterel', 'valleyfield', 'orford', 'three-rivers']
     ]
@@ -19,6 +19,21 @@ const missions = {
         "description": "Rebels need help",
         "objective": "Destroy Rocket Launcher",
         "reward": "Rebel forces will join you",
+    },
+    "milos": {
+        "description": "Annihilate their research capacity",
+        "objective": "Destroy the Laboratory",
+        "reward": "5000 R. Pts",
+    },
+    'canuck': {
+        "description": "Special units under attack by the enemy",
+        "objective": "Destroy all enemy units",
+        "reward": "Special units",
+    },
+    "kinabal": {
+        "description": "",
+        "objective": "Destroy all the enemy units without destroying a single building",
+        "reward": "5000 Cr.",
     }
 };
 
@@ -207,8 +222,8 @@ module.exports.generateGame = (userId, name, race, difficulty, campaignType) => 
         "provinces": {
             "cartasone": { "owner": "NEUTRAL" },
             "eagle-nest": { "owner": "NEUTRAL" },
-            "haven": { "owner": side, /* always own haven */ },
-            "free-city": { "owner": side /* you only own this side */ },
+            "haven": { "owner": side, "capital": side /* always own haven */ },
+            "free-city": { "owner": side, "capital": side /* you only own this side */ },
             "lachine": { "owner": gameService.opposite(side) },
             "sutton": { "owner": gameService.opposite(side) },
             "milos": { "owner": "NEUTRAL" },
@@ -221,13 +236,14 @@ module.exports.generateGame = (userId, name, race, difficulty, campaignType) => 
             "sparta": { "owner": "NEUTRAL" },
             "aberdeen": { "owner": "NEUTRAL" },
             "delos": { "owner": "NEUTRAL" },
+            "elkin": { "owner": "NEUTRAL" },
             "norwood": { "owner": "NEUTRAL" },
             "kinabal": { "owner": "NEUTRAL" },
             "marshall": { "owner": "NEUTRAL" },
             "roanoke": { "owner": "NEUTRAL" },
             "creedmoor": { "owner": "NEUTRAL" },
             "garland": { "owner": "NEUTRAL" },
-            "chaos": { "owner": gameService.opposite(side) },
+            "chaos": { "owner": gameService.opposite(side), "capital": gameService.opposite(side) },
             "rolland": { "owner": gameService.opposite(side) },
             "chertsy": { "owner": gameService.opposite(side) },
             "bromont": { "owner": gameService.opposite(side) },
@@ -237,7 +253,7 @@ module.exports.generateGame = (userId, name, race, difficulty, campaignType) => 
             "brome-lake": { "owner": gameService.opposite(side) },
             "hull": { "owner": gameService.opposite(side) },
             "norenda": { "owner": gameService.opposite(side) },
-            "brimstone": { "owner": gameService.opposite(side) },
+            "brimstone": { "owner": gameService.opposite(side), "capital": gameService.opposite(side) },
             "thetfordmines": { "owner": gameService.opposite(side) },
             "sherbrooke": { "owner": gameService.opposite(side) },
             "masson-lake": { "owner": gameService.opposite(side) },

@@ -337,13 +337,11 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 if (structure) {
                     const structureImage = this.add.image(pos.x, pos.y, structure.spritesheet, structure.offset)
                         .setOrigin(0, 0)
-                        .setInteractive({ cursor: 'url(' + structurePointer + '), pointer' });
+                        .setInteractive({ cursor: 'url(' + structurePointer + '), pointer', pixelPerfect: true });
                     container.add(structureImage);
 
                     structureImage.on('pointerup', (_pointer, _x, _y, event) => {
                         if (this.constructionMode) return;
-
-                        event.stopPropagation();
                         this.onStructureSelected(structure, structureImage, tileIndex);
                     });
                 }
@@ -510,7 +508,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.cameras.main.scrollY += (this.touchStart.y - pointer.y);
             this.touchStart = { x: pointer.x, y: pointer.y };
         }, this);
-        this.input.on('pointerout', onDraggingCancelled, this);
         this.input.on('gameout', onDraggingCancelled, this);
 
         // Static UI in a container

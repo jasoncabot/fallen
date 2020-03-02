@@ -7,7 +7,16 @@ import TechnologyOverview from '../components/TechnologyOverview';
 import { data } from '../Config';
 import * as api from '../models/API';
 
-import strategicMap from '../../images/ui/strategic-map.png';
+import {
+    StrategicMap,
+    ColoniesFallen,
+    ColoniesLastHope,
+    ProvincesFallen,
+    ProvincesFallenData,
+    ProvincesCapitalAlien,
+    ProvincesCapitalHuman,
+    ProvincesMission,
+} from '../../images/ui';
 import { registerScenePath } from './../components/History';
 
 import terrain from './../../images/terrain';
@@ -25,7 +34,12 @@ export default class StrategicOverview extends Scene {
     }
 
     preload() {
-        this.load.image('strategic-map', strategicMap);
+        this.load.image('strategic-map', StrategicMap);
+        this.load.image('provinces-capital-alien', ProvincesCapitalAlien);
+        this.load.image('provinces-capital-human', ProvincesCapitalHuman);
+        this.load.image('provinces-mission', ProvincesMission);
+        this.load.image('colonies-fallen', ColoniesFallen);
+        this.load.atlas('provinces-fallen', ProvincesFallen, ProvincesFallenData);
         this.load.json('data-provinces', data("/provinces.json"));
 
         this.load.spritesheet('rocky-overview', terrain.rocky.overview, { frameWidth: 7, frameHeight: 7 });
@@ -48,8 +62,33 @@ export default class StrategicOverview extends Scene {
         this.selectedProvince = this.selectedProvince ? this.selectedProvince : game.defaultProvince;
         this.addProvinces(game);
 
-        this.mission = this.add.text(16, 380, "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana', wordWrap: { width: 142, useAdvancedWrap: true } })
+        this.mission = this.add.text(16, 380, "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana', wordWrap: { width: 152, useAdvancedWrap: true } })
             .setVisible(false);
+
+        // province text overview
+        const small = 2;
+        const medium = 10;
+        var oy = 38;
+        this.provinceCapital = this.add.text(450, oy, "CAPITAL", { color: 'green', fontSize: '14px', fontFamily: 'Verdana' })
+            .setVisible(false);
+        this.provinceName = this.add.text(450, oy += (14 + small), "", { color: 'green', fontSize: '14px', fontFamily: 'Verdana' });
+        this.provinceScannable = this.add.text(450, oy + (14 + small), "Out of scanning range", { color: 'red', fontSize: '14px', fontFamily: 'Verdana' })
+            .setVisible(false);
+        this.provinceTerrain = this.add.text(450, oy += (14 + small), "", { color: 'green', fontSize: '14px', fontFamily: 'Verdana' });
+        this.provinceEnergyIncome = this.add.text(450, oy += (12 + medium), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceCreditsIncome = this.add.text(450, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceResearchIncome = this.add.text(450, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceEnergy = this.add.text(450, oy += (12 + medium), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceCredits = this.add.text(450, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceResearch = this.add.text(450, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceRadar = this.add.text(450, oy += (12 + medium), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceMissileDefense = this.add.text(450, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceMissileLauncher = this.add.text(450, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceDropships = this.add.text(450, oy += (12 + medium), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceUnitsInside = this.add.text(450, oy += (12 + medium), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceUnitsOutside = this.add.text(450, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceUnitsTotal = this.add.text(450, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.provinceTowersTotal = this.add.text(450, oy += (12 + medium), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
 
         this.overviewProvince = this.add.existing(new ProvinceOverview(this, 32, 34, game).setScrollFactor(0).setVisible(false));
         this.technologyOverview = this.add.existing(new TechnologyOverview(this, 32, 34, game).setScrollFactor(0).setVisible(false));
@@ -167,40 +206,92 @@ export default class StrategicOverview extends Scene {
     addProvinces(game) {
         const provinceLookup = this.cache.json.get('data-provinces');
 
-        let font = { color: 'green', fontSize: '32px', fontFamily: 'Verdana' };
-        var y = 40;
         let provinceOptions = [];
-        this.overviewMap = this.add.container(0, 0).setScrollFactor(0);
+        this.overviewMap = this.add.container(14, 32).setScrollFactor(0);
+
+        this.overviewMap.add(this.add.image(0, 0, 'colonies-fallen')
+            .setOrigin(0, 0)
+            .setScrollFactor(0));
+
+        let colourForOwner = (owner) => {
+            switch (owner) {
+                case 'HUMAN': return 'blue';
+                case 'ALIEN': return 'red';
+            }
+            return 'grey';
+        }
+
+        // add each selectable province
         Object.keys(game.provinces).forEach((province) => {
-            let option = this.add.text(30, y, provinceLookup[province].name, font)
-                .setInteractive()
-                .setBackgroundColor(this.selectedProvince === province ? '#246B6C' : 'black')
+
+            const { x, y, iconX, iconY } = provinceLookup[province];
+            const { owner, mission, capital } = game.provinces[province];
+            const frame = `${province}-${colourForOwner(owner)}-${this.selectedProvince === province ? 'highlight' : 'default'}`;
+
+            const option = this.add.image(x, y, 'provinces-fallen', frame)
+                .setInteractive({
+                    pixelPerfect: true,
+                    useHandCursor: true
+                })
                 .on('pointerup', () => {
                     provinceOptions.forEach(selected => {
-                        let colour = option === selected ? '#246B6C' : 'black';
-                        selected.setBackgroundColor(colour)
+                        selected.setFrame(`${selected.getData('province')}-${colourForOwner(selected.getData('owner'))}-default`);
                     });
                     this.selectedProvince = province;
                     this.onSelectedProvinceUpdated(game);
-                });
-
-            let subtext = this.add.text(30, y + 38,
-                `energy: ${provinceLookup[province].energy}, credits: ${provinceLookup[province].credits}, research: ${provinceLookup[province].research}`,
-                { color: 'green', fontSize: '14px', fontFamily: 'Verdana' });
+                    option.setFrame(`${province}-${colourForOwner(owner)}-highlight`);
+                })
+                .setOrigin(0, 0)
+                .setScrollFactor(0)
+                .setData('province', province)
+                .setData('owner', owner);
 
             this.overviewMap.add(option);
-            this.overviewMap.add(subtext);
 
             provinceOptions.push(option);
-            y += 60;
+
+            // add any icons that sit above the province
+            if (mission) {
+                this.overviewMap.add(this.add.image(iconX, iconY, 'provinces-mission'));
+            }
+
+            if (capital) {
+                if (capital === 'HUMAN') {
+                    this.overviewMap.add(this.add.image(iconX, iconY, 'provinces-capital-human'));
+                } else {
+                    this.overviewMap.add(this.add.image(iconX, iconY, 'provinces-capital-alien'));
+                }
+            }
         });
     }
 
     onSelectedProvinceUpdated(game) {
-        let data = game.provinces[this.selectedProvince];
+        const provinceData = this.cache.json.get('data-provinces')[this.selectedProvince];
+        const province = game.provinces[this.selectedProvince];
+
+        const outOfScanningRange = game.scannableProvinces.indexOf(this.selectedProvince) < 0;
+
+        this.provinceCapital.setVisible(province.capital);
+        this.provinceName.setText(provinceData.name);
+        this.provinceScannable.setVisible(outOfScanningRange);
+        this.provinceTerrain.setText(provinceData.type);
+        // TODO: go through structures and calculate the correct values for income, structures and units
+        this.provinceEnergyIncome.setText(`Energy income ${province.energy}`);
+        this.provinceCreditsIncome.setText(`Credits income ${province.credits}`);
+        this.provinceResearchIncome.setText(`Research income ${province.research}`);
+        this.provinceEnergy.setText(`Energy ${province.energy}`);
+        this.provinceCredits.setText(`Credits ${province.credits}`);
+        this.provinceResearch.setText(`Research ${province.research}`);
+        this.provinceRadar.setText("Radar: Yes");
+        this.provinceMissileDefense.setText("Missile Defence: No");
+        this.provinceMissileLauncher.setText("Missile Launcher: Yes");
+        this.provinceDropships.setText("Dropships 1");
+        this.provinceUnitsInside.setText("Units inside 3");
+        this.provinceUnitsOutside.setText("Units outside 8");
+        this.provinceUnitsTotal.setText("Total units 11");
+        this.provinceTowersTotal.setText("Towers 1");
 
         // out of scanning range? hide the zoom button
-        const outOfScanningRange = game.scannableProvinces.indexOf(this.selectedProvince) < 0;
         if (outOfScanningRange) {
             this.buttonZoom.disable();
         } else {
@@ -208,7 +299,7 @@ export default class StrategicOverview extends Scene {
         }
 
         // not owned? hide the map button
-        const owned = data.owner === game.player.owner;
+        const owned = province.owner === game.player.owner;
         if (owned) {
             this.buttonMap.enable();
         } else {
@@ -216,14 +307,17 @@ export default class StrategicOverview extends Scene {
         }
 
         // mission? show the details
-        this.onMissionChanged(data.mission)
+        this.onMissionChanged(province.mission)
     }
 
     onMissionChanged(mission) {
         if (mission) {
             this.mission.visible = true;
-            const text = `MISSION\n${mission.description}\nObjective: ${mission.objective}\nReward: ${mission.reward}`
-            this.mission.setText(text);
+            if (mission.description && mission.description.length > 0) {
+                this.mission.setText(`MISSION\n${mission.description}\nObjective: ${mission.objective}\nReward: ${mission.reward}`);
+            } else {
+                this.mission.setText(`MISSION\nObjective: ${mission.objective}\nReward: ${mission.reward}`);
+            }
         } else {
             this.mission.visible = false;
         }
