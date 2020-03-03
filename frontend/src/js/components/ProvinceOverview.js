@@ -1,5 +1,6 @@
 import { GameObjects } from "phaser";
 import LayerBuilder from "./LayerBuilder";
+import { UnitData, StructureData, ProvinceData } from 'shared';
 
 export default class ProvinceOverview extends GameObjects.Container {
 
@@ -12,13 +13,11 @@ export default class ProvinceOverview extends GameObjects.Container {
     show(provinceId) {
         let builder = new LayerBuilder(null);
 
-        let reference = this.scene.cache.json.get('data-provinces')[provinceId];
-        let units = this.scene.cache.json.get('data-units');
-        let structures = this.scene.cache.json.get('data-structures');
+        let reference = ProvinceData[provinceId];
 
         let province = this.game.provinces[provinceId];
 
-        builder.initialise(province, units, structures, reference);
+        builder.initialise(province, UnitData, StructureData, reference);
 
         // This requires the owning scene to have preloaded the appropriate -overview resources
         this.terrainBlitter = this.scene.add.blitter(this.x, this.y, reference.type + '-overview').setScrollFactor(0);

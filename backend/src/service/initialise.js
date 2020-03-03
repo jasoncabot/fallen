@@ -1,6 +1,8 @@
 const gameService = require('./game');
 const uuidv4 = require('uuid/v4');
 
+const { UnitData, StructureData } = require('shared');
+
 const campaigns = {
     startingProvinces: [
         'haven',
@@ -117,37 +119,37 @@ const roads = {
 
 const units = {
     "haven": [
-        { "kind": { "category": "ASQD" }, "facing": 0, "position": { "x": 25, "y": 20 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ASQD" }, "facing": 0, "position": { "x": 22, "y": 27 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ASQD" }, "facing": 0, "position": { "x": 18, "y": 19 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ASQD" }, "facing": 0, "position": { "x": 23, "y": 24 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ALTK" }, "facing": 0, "position": { "x": 26, "y": 32 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ASNI" }, "facing": 0, "position": { "x": 30, "y": 29 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ASNI" }, "facing": 0, "position": { "x": 26, "y": 20 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ALTK" }, "facing": 0, "position": { "x": 30, "y": 22 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ASNI" }, "facing": 0, "position": { "x": 23, "y": 24 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ALTK" }, "facing": 0, "position": { "x": 23, "y": 24 }, "hp": 15, "experience": 1 },
-        { "kind": { "category": "ALTK" }, "facing": 0, "position": { "x": 30, "y": 26 }, "hp": 15, "experience": 1 }
+        { "kind": "ASQD", "position": { "x": 25, "y": 20 }, "experience": 1 },
+        { "kind": "ASQD", "position": { "x": 22, "y": 27 }, "experience": 1 },
+        { "kind": "ASQD", "position": { "x": 18, "y": 19 }, "experience": 1 },
+        { "kind": "ASQD", "position": { "x": 23, "y": 24 }, "experience": 1 },
+        { "kind": "ALTK", "position": { "x": 26, "y": 32 }, "experience": 1 },
+        { "kind": "ASNI", "position": { "x": 30, "y": 29 }, "experience": 1 },
+        { "kind": "ASNI", "position": { "x": 26, "y": 20 }, "experience": 1 },
+        { "kind": "ALTK", "position": { "x": 30, "y": 22 }, "experience": 1 },
+        { "kind": "ASNI", "position": { "x": 23, "y": 24 }, "experience": 1 },
+        { "kind": "ALTK", "position": { "x": 23, "y": 24 }, "experience": 1 },
+        { "kind": "ALTK", "position": { "x": 30, "y": 26 }, "experience": 1 }
     ]
 };
 
 const structures = {
     "haven": [
-        { "position": { "x": 20, "y": 24 }, "hp": 15, "kind": { "category": "AENY" } },
-        { "position": { "x": 20, "y": 27 }, "hp": 15, "kind": { "category": "AENY" } },
-        { "position": { "x": 18, "y": 24 }, "hp": 15, "kind": { "category": "AENY" } },
-        { "position": { "x": 18, "y": 27 }, "hp": 15, "kind": { "category": "AENY" } },
-        { "position": { "x": 27, "y": 23 }, "hp": 15, "kind": { "category": "AMIN" } },
-        { "position": { "x": 18, "y": 21 }, "hp": 15, "kind": { "category": "AMIN" } },
-        { "position": { "x": 28, "y": 19 }, "hp": 15, "kind": { "category": "ATUR" } },
-        { "position": { "x": 27, "y": 20 }, "hp": 15, "kind": { "category": "ABAR" } },
-        { "position": { "x": 22, "y": 20 }, "hp": 15, "kind": { "category": "AFAC" } },
-        { "position": { "x": 31, "y": 22 }, "hp": 15, "kind": { "category": "AAIR" } },
-        { "position": { "x": 23, "y": 29 }, "hp": 15, "kind": { "category": "ALAB" } },
-        { "position": { "x": 23, "y": 31 }, "hp": 15, "kind": { "category": "ALAB" } },
-        { "position": { "x": 24, "y": 27 }, "hp": 15, "kind": { "category": "ARAD" } },
-        { "position": { "x": 23, "y": 24 }, "hp": 15, "kind": { "category": "ASHP" } },
-        { "position": { "x": 27, "y": 27 }, "hp": 15, "kind": { "category": "ABAY" } }
+        { "position": { "x": 20, "y": 24 }, "kind": "AENY" },
+        { "position": { "x": 20, "y": 27 }, "kind": "AENY" },
+        { "position": { "x": 18, "y": 24 }, "kind": "AENY" },
+        { "position": { "x": 18, "y": 27 }, "kind": "AENY" },
+        { "position": { "x": 27, "y": 23 }, "kind": "AMIN" },
+        { "position": { "x": 18, "y": 21 }, "kind": "AMIN" },
+        { "position": { "x": 28, "y": 19 }, "kind": "ATUR" },
+        { "position": { "x": 27, "y": 20 }, "kind": "ABAR" },
+        { "position": { "x": 22, "y": 20 }, "kind": "AFAC" },
+        { "position": { "x": 31, "y": 22 }, "kind": "AAIR" },
+        { "position": { "x": 23, "y": 29 }, "kind": "ALAB" },
+        { "position": { "x": 23, "y": 31 }, "kind": "ALAB" },
+        { "position": { "x": 24, "y": 27 }, "kind": "ARAD" },
+        { "position": { "x": 23, "y": 24 }, "kind": "ASHP" },
+        { "position": { "x": 27, "y": 27 }, "kind": "ABAY" }
     ]
 };
 
@@ -157,10 +159,15 @@ const addExtendedProvinceInformation = (key, province) => {
     province.roads = province.roads || roads[key] || [];
     province.units = province.units || (units[key] || []).reduce((result, object) => {
         result[uuidv4()] = object;
+        object.hp = UnitData[object.kind].hp;
+        object.kind = UnitData[object.kind].kind;
+        object.facing = 0;
         return result;
     }, {});
     province.structures = province.structures || (structures[key] || []).reduce((result, object) => {
         result[uuidv4()] = object;
+        object.hp = StructureData[object.kind].hp;
+        object.kind = StructureData[object.kind].kind;
         return result;
     }, {});
     // TODO: this should look at the structures and units to decide sensible values

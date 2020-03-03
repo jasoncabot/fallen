@@ -4,7 +4,3 @@ const config = {
 }
 
 export default config;
-
-export const data = (path) => {
-    return config.assetEndpoint + path;
-}

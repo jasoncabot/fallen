@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 
+import { UnitData, StructureData, ProvinceData } from 'shared';
+
 export default class ProvinceTactical extends Phaser.Scene {
 
     constructor() {
@@ -24,9 +26,7 @@ export default class ProvinceTactical extends Phaser.Scene {
         let game = this.cache.json.get(`game-${this.gameId}`);
 
         let province = game.provinces[this.province];
-        let units = this.cache.json.get('data-units');
-        let structures = this.cache.json.get('data-structures');
-        let reference = this.cache.json.get('data-provinces')[this.province];
+        let reference = ProvinceData[this.province];
 
     }
 }

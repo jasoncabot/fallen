@@ -33,6 +33,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
+        include: paths.src,
         exclude: /node_modules/,
         use: ['babel-loader', 'eslint-loader'],
       },

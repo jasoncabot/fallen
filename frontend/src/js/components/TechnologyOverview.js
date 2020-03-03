@@ -1,5 +1,7 @@
 import { GameObjects } from "phaser";
 
+import { TechnologyData } from 'shared';
+
 const sliderText = [
     {
         key: "energy-efficiency",
@@ -99,10 +101,9 @@ export default class TechnologyOverview extends GameObjects.Container {
             // TODO: check locks and don't just split based equally - ensure locks are locked and split remaining
             let remaining = this.totalResearch - value;
             let equalShare = Math.floor(remaining / (this.sliders.length - 1));
-            let data = scene.cache.json.get('data-technology');
             this.sliders.forEach(slider => {
                 const updatedValue = (slider === updated) ? value : equalShare;
-                slider.update(updatedValue, data[slider.key]);
+                slider.update(updatedValue, TechnologyData[slider.key]);
             });
         }
 
@@ -116,14 +117,13 @@ export default class TechnologyOverview extends GameObjects.Container {
     }
 
     show() {
-        let data = this.scene.cache.json.get('data-technology');
         let tech = this.game.player.technology;
 
         this.sliders.forEach(slider => {
             let current = tech[slider.key];
             let thisTurn = Math.floor(this.totalResearch / this.sliders.length);
             slider.visible = true;
-            slider.update(current + thisTurn, data[slider.key]);
+            slider.update(current + thisTurn, TechnologyData[slider.key]);
         });
     }
 

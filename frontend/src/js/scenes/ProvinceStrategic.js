@@ -23,6 +23,8 @@ import structurePointer from '../../images/misc/FALLEN_218.cur';
 import { Sounds } from './../assets/Sounds';
 import { registerScenePath } from './../components/History';
 
+import { UnitData, StructureData, ProvinceData } from 'shared';
+
 const EventEmitter = require('eventemitter3');
 
 export default class ProvinceStrategic extends Phaser.Scene {
@@ -441,11 +443,9 @@ export default class ProvinceStrategic extends Phaser.Scene {
         let game = this.cache.json.get(`game-${this.gameId}`);
 
         let province = game.provinces[this.province];
-        let units = this.cache.json.get('data-units');
-        let structures = this.cache.json.get('data-structures');
-        let reference = this.cache.json.get('data-provinces')[this.province];
+        let reference = ProvinceData[this.province];
 
-        this.layerBuilder.initialise(province, units, structures, reference);
+        this.layerBuilder.initialise(province, UnitData, StructureData, reference);
 
         this.mapContainer = this.add.container(0, 0);
         this.terrainBlitter = this.add.blitter(0, 0, reference.type);
@@ -479,7 +479,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     }
                 } else if (this.currentlySelectedUnit) {
                     // if we already have a selected unit
-                    if (this.layerBuilder.unitCanOccupy(tileIndex)) {
+                    if (this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit, tileIndex, reference.type)) {
                         this.onUnitMoved(this.currentlySelectedUnit, tileIndex);
                     }
                 } else if (this.overviewProvince.visible) {

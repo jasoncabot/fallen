@@ -1,4 +1,4 @@
-{
+module.exports = {
     "ATUR": {
         "kind": {
             "category": "atur",
@@ -336,7 +336,8 @@
         "kind": {
             "category": "arad",
             "name": "Scanning Device",
-            "starship": false
+            "starship": false,
+            "scanner": true
         },
         "display": {
             "width": 2,
@@ -443,4 +444,4 @@
             "prev": "ASHP"
         }
     }
-}
+};

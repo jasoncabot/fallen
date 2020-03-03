@@ -1,4 +1,4 @@
-{
+module.exports = {
     "ASQD": {
         "kind": {
             "category": "asqd",
@@ -6,6 +6,9 @@
         },
         "upkeep": 2,
         "cost": 30,
+        "hp": 15,
+        "actionPoints": 50,
+        "movement": "GROUND",
         "display": {
             "tiles": "unit-alien",
             "offset": 40
@@ -20,7 +23,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             },
             "heavy": {
                 "name": "EXPLOSIVE MINE",
@@ -31,7 +34,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             }
         },
         "encyclopedia": {
@@ -44,8 +47,11 @@
             "category": "asni",
             "name": "Sniper"
         },
-        "upkeep": 5,
-        "cost": 5,
+        "upkeep": 3,
+        "cost": 60,
+        "hp": 20,
+        "actionPoints": 70,
+        "movement": "GROUND",
         "display": {
             "tiles": "unit-alien",
             "offset": 72
@@ -60,7 +66,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             },
             "heavy": {
                 "name": "EXPLOSIVE MINE",
@@ -71,7 +77,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             }
         },
         "encyclopedia": {
@@ -84,8 +90,11 @@
             "category": "altk",
             "name": "Light Tank"
         },
-        "upkeep": 5,
-        "cost": 5,
+        "upkeep": 10,
+        "cost": 150,
+        "hp": 30,
+        "actionPoints": 100,
+        "movement": "GROUND",
         "display": {
             "tiles": "unit-alien",
             "offset": 8
@@ -100,7 +109,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             },
             "heavy": {
                 "name": "EXPLOSIVE MINE",
@@ -111,7 +120,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             }
         },
         "encyclopedia": {
@@ -124,8 +133,11 @@
             "category": "apla",
             "name": "Artillery"
         },
-        "upkeep": 5,
-        "cost": 5,
+        "upkeep": 25,
+        "cost": 500,
+        "hp": 30,
+        "actionPoints": 50,
+        "movement": "GROUND",
         "display": {
             "tiles": "unit-alien",
             "offset": 32
@@ -140,7 +152,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             },
             "heavy": {
                 "name": "EXPLOSIVE MINE",
@@ -151,7 +163,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             }
         },
         "encyclopedia": {
@@ -164,8 +176,11 @@
             "category": "agrv",
             "name": "Hover Tank"
         },
-        "upkeep": 5,
-        "cost": 5,
+        "upkeep": 15,
+        "cost": 300,
+        "hp": 60,
+        "actionPoints": 100,
+        "movement": "HOVER",
         "display": {
             "tiles": "unit-alien",
             "offset": 48
@@ -180,7 +195,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             },
             "heavy": {
                 "name": "EXPLOSIVE MINE",
@@ -191,7 +206,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             }
         },
         "encyclopedia": {
@@ -204,8 +219,11 @@
             "category": "afly",
             "name": "Flyer"
         },
-        "upkeep": 5,
-        "cost": 5,
+        "upkeep": 15,
+        "cost": 300,
+        "hp": 30,
+        "actionPoints": 140,
+        "movement": "HOVER",
         "display": {
             "tiles": "unit-alien",
             "offset": 0
@@ -220,7 +238,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             },
             "heavy": {
                 "name": "EXPLOSIVE MINE",
@@ -231,7 +249,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             }
         },
         "encyclopedia": {
@@ -244,8 +262,11 @@
             "category": "amdt",
             "name": "Tank"
         },
-        "upkeep": 5,
-        "cost": 5,
+        "upkeep": 15,
+        "cost": 300,
+        "hp": 75,
+        "actionPoints": 70,
+        "movement": "GROUND",
         "display": {
             "tiles": "unit-alien",
             "offset": 16
@@ -260,7 +281,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             },
             "heavy": {
                 "name": "EXPLOSIVE MINE",
@@ -271,7 +292,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             }
         },
         "encyclopedia": {
@@ -284,8 +305,11 @@
             "category": "asup",
             "name": "S.H.O.G"
         },
-        "upkeep": 5,
-        "cost": 5,
+        "upkeep": 30,
+        "cost": 600,
+        "hp": 75,
+        "actionPoints": 100,
+        "movement": "HOVER",
         "display": {
             "tiles": "unit-alien",
             "offset": 64
@@ -300,7 +324,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             },
             "heavy": {
                 "name": "EXPLOSIVE MINE",
@@ -311,7 +335,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             }
         },
         "encyclopedia": {
@@ -324,8 +348,11 @@
             "category": "ameg",
             "name": "Mega Tank"
         },
-        "upkeep": 5,
-        "cost": 5,
+        "upkeep": 30,
+        "cost": 600,
+        "hp": 90,
+        "actionPoints": 70,
+        "movement": "GROUND",
         "display": {
             "tiles": "unit-alien",
             "offset": 24
@@ -340,7 +367,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             },
             "heavy": {
                 "name": "EXPLOSIVE MINE",
@@ -351,7 +378,7 @@
                     "far": 0
                 },
                 "precision": 1,
-                "percentTimeUnits": 35
+                "percentActionPoints": 35
             }
         },
         "encyclopedia": {

@@ -4,7 +4,7 @@ import { registerButtons, createButton, buttons } from '../assets/Buttons';
 import MessageBox from '../components/MessageBox';
 import ProvinceOverview from '../components/ProvinceOverview';
 import TechnologyOverview from '../components/TechnologyOverview';
-import { data } from '../Config';
+
 import * as api from '../models/API';
 
 import {
@@ -19,6 +19,7 @@ import {
 } from '../../images/ui';
 import { registerScenePath } from './../components/History';
 
+import { ProvinceData } from 'shared';
 import terrain from './../../images/terrain';
 
 export default class StrategicOverview extends Scene {
@@ -40,7 +41,6 @@ export default class StrategicOverview extends Scene {
         this.load.image('provinces-mission', ProvincesMission);
         this.load.image('colonies-fallen', ColoniesFallen);
         this.load.atlas('provinces-fallen', ProvincesFallen, ProvincesFallenData);
-        this.load.json('data-provinces', data("/provinces.json"));
 
         this.load.spritesheet('rocky-overview', terrain.rocky.overview, { frameWidth: 7, frameHeight: 7 });
         this.load.spritesheet('forest-overview', terrain.forest.overview, { frameWidth: 7, frameHeight: 7 });
@@ -204,8 +204,6 @@ export default class StrategicOverview extends Scene {
     }
 
     addProvinces(game) {
-        const provinceLookup = this.cache.json.get('data-provinces');
-
         let provinceOptions = [];
         this.overviewMap = this.add.container(14, 32).setScrollFactor(0);
 
@@ -224,7 +222,7 @@ export default class StrategicOverview extends Scene {
         // add each selectable province
         Object.keys(game.provinces).forEach((province) => {
 
-            const { x, y, iconX, iconY } = provinceLookup[province];
+            const { x, y, iconX, iconY } = ProvinceData[province];
             const { owner, mission, capital } = game.provinces[province];
             const frame = `${province}-${colourForOwner(owner)}-${this.selectedProvince === province ? 'highlight' : 'default'}`;
 
@@ -266,7 +264,7 @@ export default class StrategicOverview extends Scene {
     }
 
     onSelectedProvinceUpdated(game) {
-        const provinceData = this.cache.json.get('data-provinces')[this.selectedProvince];
+        const provinceData = ProvinceData[this.selectedProvince];
         const province = game.provinces[this.selectedProvince];
 
         const outOfScanningRange = game.scannableProvinces.indexOf(this.selectedProvince) < 0;

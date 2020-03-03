@@ -9,6 +9,8 @@ import background from './../../images/ui/encyclopedia-background.png';
 
 import images from './../../images/encyclopedia';
 
+import { UnitData, StructureData } from 'shared';
+
 export default class Encyclopedia extends Scene {
 
     constructor() {
@@ -21,8 +23,6 @@ export default class Encyclopedia extends Scene {
     }
 
     preload() {
-        if (this.category === 'units') this.load.json('data-units', data("/units.json"));
-        if (this.category === 'structures') this.load.json('data-structures', data("/structures.json"));
         this.load.image('encyclopedia-background', background);
 
         if (this.item) {
@@ -52,14 +52,14 @@ export default class Encyclopedia extends Scene {
     }
 
     showUnit(item) {
-        const unit = this.entryForKey(item, 'data-units');
+        const unit = this.entryForKey(item, UnitData);
         this.addItemImageAndButtons(unit.encyclopedia);
 
         let font = { color: 'green', fontSize: '12px', fontFamily: 'Verdana' };
-        this.add.text(18, 161, "Armor", font);
-        this.add.text(173, 161, 5, font);
+        this.add.text(18, 161, "Armour", font);
+        this.add.text(173, 161, unit.hp, font);
         this.add.text(18, 196, "Action Points", font);
-        this.add.text(173, 196, 5, font);
+        this.add.text(173, 196, unit.actionPoints, font);
 
         const addWeaponText = (weapon, offset) => {
             this.add.text(18, 243 + offset, weapon.name, font);
@@ -78,11 +78,11 @@ export default class Encyclopedia extends Scene {
     }
 
     showStructure(item) {
-        const structure = this.entryForKey(item, 'data-structures');
+        const structure = this.entryForKey(item, StructureData);
         this.addItemImageAndButtons(structure.encyclopedia);
 
         let font = { color: 'green', fontSize: '12px', fontFamily: 'Verdana' };
-        this.add.text(18, 161, "Armor", font);
+        this.add.text(18, 161, "Armour", font);
         this.add.text(173, 161, structure.hp, font);
         this.add.text(18, 196, "DESCRIPTION :", font);
         this.add.text(18, 216, structure.encyclopedia.description, font);
@@ -91,8 +91,7 @@ export default class Encyclopedia extends Scene {
         this.add.text(460, 400, `${structure.build.cost} Credits`, { color: 'green', fontSize: '20px', fontFamily: 'Verdana' }).setOrigin(0.5, 0);
     }
 
-    entryForKey(item, type) {
-        const lookup = this.cache.json.get(type);
+    entryForKey(item, lookup) {
         let key = item.toUpperCase();
         let entry = lookup[key].encyclopedia;
         entry.image = `encyclopedia-${key.toLowerCase()}`;

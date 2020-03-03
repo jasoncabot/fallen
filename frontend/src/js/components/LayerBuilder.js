@@ -1,3 +1,5 @@
+import { TerrainData } from 'shared';
+
 const objectExistsAt = (list) => {
     return (x, y) => {
         return (list[x] || [])[y];
@@ -35,10 +37,12 @@ export default class LayerBuilder {
         Object.keys(this.unitLookup || {}).forEach(unitId => {
             let unit = this.unitLookup[unitId];
             let reference = units[unit.kind.category];
+            // TODO: simplify and use the province.unit + reference data?
             let model = {
                 id: unitId,
                 type: 'unit',
                 name: reference.kind.name,
+                movement: reference.movement,
                 upkeep: reference.upkeep,
                 experience: unit.experience,
                 position: unit.position,
@@ -162,13 +166,19 @@ export default class LayerBuilder {
         return true;
     }
 
-    unitCanOccupy(index) {
+    unitCanOccupy(unit, index, terrainType) {
         // TODO: validation that a unit can occupy this space
         if (!this.inBounds(index, { x: 1, y: 1 })) return false;
         // terrain != water | forest | mountain
-        // no unit exists
-        // no structure exists
-        // no wall exists
+        let terrain = TerrainData[terrainType][this.terrainAt(index)];
+        const validMovements = {
+            "GROUND": ["Bridge", "Plain"],
+            "HOVER": ["Bridge", "Plain", "Water"],
+        }
+        if (!validMovements[unit.movement].find(x => x === terrain)) return false;
+        if (this.unitAt(index)) return false;
+        if (this.structureAt(index)) return false;
+        if (this.wallAt(index)) return false;
         return true;
     }
 
