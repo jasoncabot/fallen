@@ -1,7 +1,7 @@
 module.exports = {
     "ASQD": {
         "kind": {
-            "category": "asqd",
+            "category": "ASQD",
             "name": "Trooper"
         },
         "upkeep": 2,
@@ -44,7 +44,7 @@ module.exports = {
     },
     "ASNI": {
         "kind": {
-            "category": "asni",
+            "category": "ASNI",
             "name": "Sniper"
         },
         "upkeep": 3,
@@ -87,7 +87,7 @@ module.exports = {
     },
     "ALTK": {
         "kind": {
-            "category": "altk",
+            "category": "ALTK",
             "name": "Light Tank"
         },
         "upkeep": 10,
@@ -130,7 +130,7 @@ module.exports = {
     },
     "APLA": {
         "kind": {
-            "category": "apla",
+            "category": "APLA",
             "name": "Artillery"
         },
         "upkeep": 25,
@@ -173,7 +173,7 @@ module.exports = {
     },
     "AGRV": {
         "kind": {
-            "category": "agrv",
+            "category": "AGRV",
             "name": "Hover Tank"
         },
         "upkeep": 15,
@@ -216,7 +216,7 @@ module.exports = {
     },
     "AFLY": {
         "kind": {
-            "category": "afly",
+            "category": "AFLY",
             "name": "Flyer"
         },
         "upkeep": 15,
@@ -259,7 +259,7 @@ module.exports = {
     },
     "AMDT": {
         "kind": {
-            "category": "amdt",
+            "category": "AMDT",
             "name": "Tank"
         },
         "upkeep": 15,
@@ -302,7 +302,7 @@ module.exports = {
     },
     "ASUP": {
         "kind": {
-            "category": "asup",
+            "category": "ASUP",
             "name": "S.H.O.G"
         },
         "upkeep": 30,
@@ -345,7 +345,7 @@ module.exports = {
     },
     "AMEG": {
         "kind": {
-            "category": "ameg",
+            "category": "AMEG",
             "name": "Mega Tank"
         },
         "upkeep": 30,

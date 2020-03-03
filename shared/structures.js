@@ -1,7 +1,7 @@
 module.exports = {
     "ATUR": {
         "kind": {
-            "category": "atur",
+            "category": "ATUR",
             "name": "Fusion Tower",
             "starship": false
         },
@@ -38,7 +38,7 @@ module.exports = {
     },
     "AAIR": {
         "kind": {
-            "category": "aair",
+            "category": "AAIR",
             "name": "Hover Pads",
             "starship": false
         },
@@ -75,7 +75,7 @@ module.exports = {
     },
     "ABAR": {
         "kind": {
-            "category": "abar",
+            "category": "ABAR",
             "name": "Nest Center",
             "starship": false
         },
@@ -112,7 +112,7 @@ module.exports = {
     },
     "ABAY": {
         "kind": {
-            "category": "abay",
+            "category": "ABAY",
             "name": "Landing Site",
             "starship": false
         },
@@ -149,7 +149,7 @@ module.exports = {
     },
     "ADEF": {
         "kind": {
-            "category": "adef",
+            "category": "ADEF",
             "name": "Anti-Missile",
             "starship": false
         },
@@ -186,7 +186,7 @@ module.exports = {
     },
     "AENY": {
         "kind": {
-            "category": "aeny",
+            "category": "AENY",
             "name": "Energy Center",
             "starship": false
         },
@@ -223,7 +223,7 @@ module.exports = {
     },
     "AFAC": {
         "kind": {
-            "category": "afac",
+            "category": "AFAC",
             "name": "Production Center",
             "starship": false
         },
@@ -260,7 +260,7 @@ module.exports = {
     },
     "ALAB": {
         "kind": {
-            "category": "alab",
+            "category": "ALAB",
             "name": "Research Center",
             "starship": false
         },
@@ -297,7 +297,7 @@ module.exports = {
     },
     "AMIN": {
         "kind": {
-            "category": "amin",
+            "category": "AMIN",
             "name": "Refinery",
             "starship": false
         },
@@ -334,7 +334,7 @@ module.exports = {
     },
     "ARAD": {
         "kind": {
-            "category": "arad",
+            "category": "ARAD",
             "name": "Scanning Device",
             "starship": false,
             "scanner": true
@@ -372,7 +372,7 @@ module.exports = {
     },
     "ASHP": {
         "kind": {
-            "category": "ashp",
+            "category": "ASHP",
             "name": "Dropship",
             "starship": true
         },
@@ -409,7 +409,7 @@ module.exports = {
     },
     "ASIL": {
         "kind": {
-            "category": "asil",
+            "category": "ASIL",
             "name": "Nuclear Launcher",
             "starship": false
         },
