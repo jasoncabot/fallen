@@ -211,7 +211,9 @@ export default class ProvinceStrategic extends Phaser.Scene {
         } else if (this.currentlySelectedUnit) {
             this.logo.visible = false;
             this.infoText.setUnitMode(this.currentlySelectedUnit).setVisible(true);
-            this.activeUnitSelection.visible = true;
+            // this hides the selection when using overview map with a selected unit to 
+            // easily move it to another location
+            this.activeUnitSelection.visible = !this.overviewProvince.visible;
         } else {
             this.logo.visible = true;
             this.infoText.visible = false;
@@ -229,7 +231,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.mapContainer.visible = true;
         } else {
             this.constructionMode = null;
-            this.currentlySelectedUnit = null;
             this.overviewProvince.visible = true;
             this.overviewProvince.show(this.province);
             this.mapContainer.visible = false;
@@ -477,11 +478,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     if (command) {
                         this.layerBuilder.processCommand(command);
                     }
-                } else if (this.currentlySelectedUnit) {
-                    // if we already have a selected unit
-                    if (this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit, tileIndex, reference.type)) {
-                        this.onUnitMoved(this.currentlySelectedUnit, tileIndex);
-                    }
                 } else if (this.overviewProvince.visible) {
                     // find the selected tile
                     tileIndex = {
@@ -492,6 +488,11 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     this.centerCameraAtPoint(tileIndex);
                     // and hide the overview
                     this.onOverviewToggled();
+                } else if (this.currentlySelectedUnit) {
+                    // if we already have a selected unit
+                    if (this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit, tileIndex, reference.type)) {
+                        this.onUnitMoved(this.currentlySelectedUnit, tileIndex);
+                    }
                 }
             }
 
@@ -521,6 +522,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         })
         ui.add(this.buttonRepair);
         this.buttonBuild = createButton(this, 52, 410, buttons.strategic.build, (button) => {
+            // TODO: convert to using a GameObject rather than Scene
             if (this.buildDialog) {
                 this.buildDialog.dismiss();
                 this.buildDialog = null;
