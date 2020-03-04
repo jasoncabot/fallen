@@ -170,7 +170,7 @@ export default class StrategicOverview extends Scene {
                 this.buttonZoom.setHighlight(true);
                 this.buttonMap.disable();
                 this.buttonEndTurn.disable();
-                this.overviewProvince.show(this.selectedProvince);
+                this.overviewProvince.show(this.selectedProvince, null);
                 break;
             case 'technology':
                 this.overviewMap.visible = false;

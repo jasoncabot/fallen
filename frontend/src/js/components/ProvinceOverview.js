@@ -10,7 +10,7 @@ export default class ProvinceOverview extends GameObjects.Container {
         this.game = game;
     }
 
-    show(provinceId) {
+    show(provinceId, selectedUnit) {
         let builder = new LayerBuilder(null);
 
         let reference = ProvinceData[provinceId];
@@ -37,7 +37,21 @@ export default class ProvinceOverview extends GameObjects.Container {
                     this.overlayBlitter.create(i * 7, j * 7, builder.structureOverviewAt(tileIndex));
                 }
                 if (builder.unitAt(tileIndex)) {
-                    this.overlayBlitter.create(i * 7, j * 7, builder.unitOverviewAt(tileIndex));
+                    let unit = this.overlayBlitter.create(i * 7, j * 7, builder.unitOverviewAt(tileIndex));
+                    if (selectedUnit && selectedUnit.position.x === tileIndex.x && selectedUnit.position.y === tileIndex.y) {
+                        this.scene.add.tween({
+                            targets: [unit],
+                            ease: 'Cubic.Out',
+                            duration: 500,
+                            delay: 0,
+                            alpha: {
+                                getStart: () => 0,
+                                getEnd: () => 1.0
+                            },
+                            loop: -1,
+                            yoyo: true
+                        });
+                    }
                 }
             }
         }

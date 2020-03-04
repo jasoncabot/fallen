@@ -88,13 +88,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC).on('down', (_event) => {
-            if (this.buildDialog) {
-                this.buildDialog.dismiss();
-                this.buildDialog = null;
-            }
-            this.currentlySelectedUnit = null;
-            this.constructionMode = null;
-            this.onConstructionModeUpdated();
+            this.onDeselected();
         });
 
         this.load.spritesheet('rocky', terrain.rocky.isometric, { frameWidth: 70, frameHeight: 54 });
@@ -123,8 +117,18 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.sounds.preload(this);
     }
 
+    onDeselected() {
+        if (this.buildDialog) {
+            this.buildDialog.dismiss();
+            this.buildDialog = null;
+        }
+        this.currentlySelectedUnit = null;
+        this.constructionMode = null;
+        this.onConstructionModeUpdated();
+    }
+
     onStructureSelected(model, view, pos) {
-        console.log(`onStructureSelected('${JSON.stringify(model, null, 2)}', '${JSON.stringify(view, null, 2)}', '${JSON.stringify(pos, null, 2)}')`)
+        console.log(`onStructureSelected()`)
     }
 
     onButtonsUpdated() {
@@ -169,7 +173,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     onUnitSelected(model, pos) {
-        this.sound.play('yessir');
         if (this.currentlySelectedUnit && this.currentlySelectedUnit === model) {
             this.layerBuilder.processCommand({
                 action: 'TURN',
@@ -182,6 +185,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
             return;
         }
 
+        this.sound.play('yessir');
         this.currentlySelectedUnit = model;
         let view = this.unitViews[model.id];
         this.activeUnitSelection.setPosition(view.x, view.y);
@@ -232,7 +236,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         } else {
             this.constructionMode = null;
             this.overviewProvince.visible = true;
-            this.overviewProvince.show(this.province);
+            this.overviewProvince.show(this.province, this.currentlySelectedUnit);
             this.mapContainer.visible = false;
         }
 
@@ -354,7 +358,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 if (unit) {
                     const unitImage = this.add.image(pos.x, pos.y, unit.spritesheet, unit.offset + unit.facing)
                         .setOrigin(0, 0)
-                        .setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
+                        .setInteractive({ cursor: 'url(' + customPointer + '), pointer', pixelPerfect: true });
                     container.add(unitImage);
 
                     this.unitViews[unit.id] = unitImage;
@@ -588,6 +592,16 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
         this.infoText = new InfoText(this, 232, 413).setVisible(false);
         ui.add(this.infoText);
+
+        let infoTextZone = this.add.zone(232, 413, 183, 64)
+            .setOrigin(0, 0)
+            .setInteractive({ useHandCursor: true })
+            .setScrollFactor(0)
+            .on('pointerdown', (_pointer, _x, _y, event) => {
+                event.stopPropagation();
+                this.onDeselected();
+            });
+        ui.add(infoTextZone);
 
         this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
             camera: this.cameras.main,
