@@ -1,35 +1,79 @@
-import { Scene } from 'phaser';
+import { GameObjects } from 'phaser';
 
-import { registerButtons, createButton, buttons } from '../assets/Buttons';
+import { createButton, buttons } from '../assets/Buttons';
 
-import dialogBuild from '../../images/ui/dialog-build.png';
-import dialogStructure from '../../images/ui/dialog-structure.png';
+import { StructureData } from 'shared';
 
-export default class Dialog extends Scene {
+export default class Dialog extends GameObjects.Container {
 
-    constructor(key, x, y, parent) {
-        super(key);
+    constructor(scene, x, y, callback) {
+        super(scene, x, y);
 
-        this.zone = parent.add.zone(x, y, 384, 268).setOrigin(0);
+        this.onStructureSelected = callback;
+        this.setSize(384, 268);
+        this.setInteractive({ useHandCursor: true }).on('pointerdown', (_pointer, _x, _y, event) => {
+            event.stopPropagation();
+            this.onStructureSelected(this.currentStructure);
+        });
+        this.input.hitArea.x += 192;
+        this.input.hitArea.y += 134;
+        this.setScrollFactor(0);
+
+        this.currentOffset = 0;
+        this.structureKeys = Object.keys(StructureData).filter(key => !StructureData[key].kind.starship);
     }
 
-    preload() {
-        this.load.image('dialog-build', dialogBuild);
-        this.load.image('dialog-structure', dialogStructure);
+    show() {
+        this.setVisible(true);
+        this.add(this.scene.add.image(0, 0, 'dialog-build').setOrigin(0, 0).setScrollFactor(0));
 
-        registerButtons(this, buttons.manufacturing);
+        this.add(createButton(this.scene, 216, 238, buttons.manufacturing.up, (button) => {
+            this.currentOffset -= 1;
+            if (this.currentOffset < 0) this.currentOffset = this.structureKeys.length - 1;
+            this.currentStructure = StructureData[this.structureKeys[this.currentOffset]];
+            this.onCurrentStructureUpdated();
+        }));
+        this.add(createButton(this.scene, 256, 238, buttons.manufacturing.down, (button) => {
+            this.currentOffset += 1;
+            if (this.currentOffset >= this.structureKeys.length) this.currentOffset = 0;
+            this.currentStructure = StructureData[this.structureKeys[this.currentOffset]];
+            this.onCurrentStructureUpdated();
+        }));
+
+        const small = 2;
+        const medium = 50;
+        const ox = 10;
+        var oy = 38;
+        this.nameLabel = this.scene.add.text(ox, oy, "", { color: 'green', fontSize: '14px', fontFamily: 'Verdana' });
+        this.add(this.nameLabel);
+        this.uniqueFeatureLabel = this.scene.add.text(ox, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.uniqueFeatureLabel);
+        this.energyConsumptionLabel = this.scene.add.text(ox, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.energyConsumptionLabel);
+        this.armourLabel = this.scene.add.text(ox, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.armourLabel);
+        this.costLabel = this.scene.add.text(ox, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.costLabel);
+        this.restrictionLabel = this.scene.add.text(ox, oy += (12 + medium), "", { color: 'red', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.restrictionLabel);
+
+        this.currentStructure = StructureData[this.structureKeys[this.currentOffset]];
+        this.onCurrentStructureUpdated();
+
+        return this;
     }
 
-    create() {
-        this.cameras.main.setViewport(this.zone.x, this.zone.y, this.zone.width, this.zone.height);
-
-        this.add.image(0, 0, 'dialog-build').setOrigin(0, 0).setScrollFactor(0);
-
-        createButton(this, 216, 238, buttons.manufacturing.up, (button) => { });
-        createButton(this, 256, 238, buttons.manufacturing.down, (button) => { });
+    hide() {
+        this.setVisible(false);
+        this.destroy();
     }
 
-    dismiss() {
-        this.scene.sleep();
+    onCurrentStructureUpdated() {
+        this.nameLabel.setText(this.currentStructure.kind.name);
+        this.uniqueFeatureLabel.setText(this.currentStructure.encyclopedia.short);
+        this.energyConsumptionLabel.setText(`Energy consumption: ${this.currentStructure.usage.energy} EP per turn`);
+        this.armourLabel.setText(`Armour: ${this.currentStructure.hp}`);
+        this.costLabel.setText(`Cost: ${this.currentStructure.usage.cash}`);
+        this.restrictionLabel.setText('One per province');
     }
 }

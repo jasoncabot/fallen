@@ -35,7 +35,7 @@ export default class InfoText extends GameObjects.Container {
     }
 
     setConstructionMode(mode) {
-        let model = kinds[mode.kind];
+        let model = kinds[mode.kind] || mode.model;
         this.titleText.setText(model.title).setVisible(model.title);
         this.subtext1.setText(model.name).setVisible(model.name);
         this.subtext2.setText(`Cost ${model.cost} Credits`).setVisible(model.cost);

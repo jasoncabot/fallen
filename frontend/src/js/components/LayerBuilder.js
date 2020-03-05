@@ -223,6 +223,9 @@ export default class LayerBuilder {
             case 'MOVE':
                 this.moveUnit(this.findTarget(command), command.position);
                 return;
+            case 'BUILD_STRUCTURE':
+                this.buildStructure(command.category, command.position);
+                return;
             case 'DEMOLISH':
                 switch (command.targetType) {
                     // TODO: make the appropriate adjustment to the model
@@ -261,6 +264,10 @@ export default class LayerBuilder {
         }
         target.facing = unit.facing;
         this.emitter.emit('unitTurned', unit);
+    }
+
+    buildStructure(kind, position) {
+        console.log(`Building ${kind} at ${JSON.stringify(position)}`);
     }
 
     buildRoad(position) {

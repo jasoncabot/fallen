@@ -6,9 +6,11 @@ import LayerBuilder from '../components/LayerBuilder';
 import ProvinceOverview from '../components/ProvinceOverview';
 
 import uiStrategic from '../../images/ui/strategic.png';
-import activeUnitSelection from '../../images/icons/active-unit-selection.png';
+import dialogBuild from '../../images/ui/dialog-build.png';
+import dialogStructure from '../../images/ui/dialog-structure.png';
 import logoAlien from '../../images/ui/logo-alien.png';
 import logoHuman from '../../images/ui/logo-human.png';
+import activeUnitSelection from '../../images/icons/active-unit-selection.png';
 import roads from '../../images/roads/roads.png';
 
 import terrain from './../../images/terrain';
@@ -101,11 +103,15 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.load.spritesheet('overlay-overview', terrain.overlay, { frameWidth: 7, frameHeight: 7 });
 
         registerButtons(this, buttons.strategic);
+        registerButtons(this, buttons.manufacturing);
 
         registerUnits(this);
         registerStructures(this);
 
         this.load.spritesheet('roads', roads, { frameWidth: 70, frameHeight: 54 });
+
+        this.load.image('dialog-build', dialogBuild);
+        this.load.image('dialog-structure', dialogStructure);
 
         this.load.image('ui-strategic', uiStrategic);
         this.load.image('active-unit-selection', activeUnitSelection);
@@ -118,10 +124,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     onDeselected() {
-        if (this.buildDialog) {
-            this.buildDialog.dismiss();
-            this.buildDialog = null;
-        }
         this.currentlySelectedUnit = null;
         this.constructionMode = null;
         this.onConstructionModeUpdated();
@@ -148,11 +150,12 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     this.buttonRoad.setHighlight(false);
                     this.buttonRecycle.setHighlight(true);
                     break;
+                case 'pending-construction':
+                    this.buttonBuild.setHighlight(true);
+                    this.buttonRoad.setHighlight(false);
+                    this.buttonRecycle.setHighlight(false);
+                    break;
             }
-        } else if (this.buildDialog) {
-            this.buttonBuild.setHighlight(true);
-            this.buttonRoad.setHighlight(false);
-            this.buttonRecycle.setHighlight(false);
         } else if (this.overviewProvince && this.overviewProvince.visible) {
             this.buttonMap.setHighlight(true);
             this.buttonRepair.disable();
@@ -206,15 +209,44 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     onConstructionModeUpdated() {
-        // TODO: consolidate currentlySelectedUnit and constructionMode into cursorMode?
-        if (this.constructionMode) {
+
+        const hideBuildDialog = () => {
+            if (!this.buildDialog) return;
+            this.buildDialog.hide();
+            this.buildDialog = null;
+        }
+
+        if (this.constructionMode && this.constructionMode.kind === 'pending-construction') {
+            this.logo.visible = true;
+            this.buildDialog = new Dialog(this, 16, 42, (structure) => {
+                this.constructionMode = {
+                    w: structure.display.width,
+                    h: structure.display.height,
+                    kind: 'structure',
+                    category: structure.kind.category,
+                    model: {
+                        title: "Construction",
+                        name: structure.kind.name,
+                        cost: structure.usage.cash
+                    }
+                };
+                this.onConstructionModeUpdated();
+            }).setScrollFactor(0).show().setDepth(2);
+            this.add.existing(this.buildDialog);
+            this.infoText.visible = false;
+            this.activeUnitSelection.visible = false;
+            this.currentlySelectedUnit = null;
+            this.updateCurrentConstructionGraphics(null);
+        } else if (this.constructionMode) {
             this.logo.visible = false;
             this.infoText.setConstructionMode(this.constructionMode).setVisible(true);
             this.activeUnitSelection.visible = false;
             this.currentlySelectedUnit = null;
+            hideBuildDialog();
         } else if (this.currentlySelectedUnit) {
             this.logo.visible = false;
             this.infoText.setUnitMode(this.currentlySelectedUnit).setVisible(true);
+            hideBuildDialog();
             // this hides the selection when using overview map with a selected unit to 
             // easily move it to another location
             this.activeUnitSelection.visible = !this.overviewProvince.visible;
@@ -224,6 +256,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.activeUnitSelection.visible = false;
             this.currentlySelectedUnit = null;
             this.updateCurrentConstructionGraphics(null);
+            hideBuildDialog();
         }
         this.onButtonsUpdated();
     }
@@ -382,7 +415,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
     updateCurrentConstructionGraphics(tileIndex) {
 
-        if (!this.constructionMode) {
+        if (!this.constructionMode || !tileIndex) {
             // hide all tile selectors
             Object.values(this.cachedTileSelectors).forEach(graphics => { graphics.visible = false });
             return;
@@ -409,6 +442,15 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     targetId: null,
                     targetType: null,
                     position: tileIndex
+                }
+            case 'structure':
+                return {
+                    action: 'BUILD_STRUCTURE',
+                    province: this.province,
+                    targetId: null,
+                    targetType: null,
+                    position: tileIndex,
+                    category: mode.category // structure.kind.category
                 }
             case 'recycle':
                 // units and structures sit above everything else
@@ -526,30 +568,15 @@ export default class ProvinceStrategic extends Phaser.Scene {
         })
         ui.add(this.buttonRepair);
         this.buttonBuild = createButton(this, 52, 410, buttons.strategic.build, (button) => {
-            // TODO: convert to using a GameObject rather than Scene
-            if (this.buildDialog) {
-                this.buildDialog.dismiss();
-                this.buildDialog = null;
-            } else if (this.scene.isSleeping('build')) {
+            if (this.constructionMode && this.constructionMode.kind === 'pending-construction') {
                 this.constructionMode = null;
-                this.scene.wake('build');
-                this.buildDialog = this.scene.get('build');
             } else {
-                this.constructionMode = null;
-                let window = new Dialog('build', 16, 42, this);
-                this.scene.add(window.key, window, true);
-                this.buildDialog = window;
+                this.constructionMode = { w: 1, h: 1, kind: 'pending-construction' };
             }
-            this.currentlySelectedUnit = null;
             this.onConstructionModeUpdated();
         })
         ui.add(this.buttonBuild);
         this.buttonRoad = createButton(this, 113, 410, buttons.strategic.road, (button) => {
-            if (this.buildDialog) {
-                this.buildDialog.dismiss();
-                this.buildDialog = null;
-            }
-
             if (this.constructionMode && this.constructionMode.kind === 'road') {
                 this.constructionMode = null;
             } else {
@@ -559,11 +586,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
         })
         ui.add(this.buttonRoad);
         this.buttonRecycle = createButton(this, 161, 410, buttons.strategic.recycle, (button) => {
-            if (this.buildDialog) {
-                this.buildDialog.dismiss();
-                this.buildDialog = null;
-            }
-
             if (this.constructionMode && this.constructionMode.kind === 'recycle') {
                 this.constructionMode = null;
             } else {
