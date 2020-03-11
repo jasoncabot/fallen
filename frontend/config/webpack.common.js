@@ -13,13 +13,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([
-      {
-        from: paths.static,
-        to: 'assets',
-        ignore: ['*.DS_Store'],
-      },
-    ]),
     new HtmlWebpackPlugin({
       favicon: paths.src + '/images/favicon.png',
       template: paths.src + '/template.html', // template file
