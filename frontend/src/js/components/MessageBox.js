@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 
 import { registerButtons, createButton, buttons } from '../assets/Buttons';
 
-import background from '../../images/ui/messagebox.png';
+import { Messagebox } from '../../images/ui/';
 
 export default class MessageBox extends Scene {
 
@@ -14,7 +14,7 @@ export default class MessageBox extends Scene {
     }
 
     preload() {
-        this.load.image('messagebox', background);
+        this.load.image('messagebox', Messagebox);
         registerButtons(this, buttons.confirmCancel);
     }
 

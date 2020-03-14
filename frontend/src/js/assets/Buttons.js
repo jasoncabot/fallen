@@ -20,8 +20,7 @@ const createButton = (scene, x, y, config, callback) => {
             hitAreaCallback: Phaser.Geom.Polygon.Contains,
             useHandCursor: true
         })
-        .setOrigin(0, 0)
-        .setScrollFactor(0);
+        .setOrigin(0, 0);
 
     button.on('pointerover', (_pointer, _x, _y, event) => { 
         if (!button.highlighted) {

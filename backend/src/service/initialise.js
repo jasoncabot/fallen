@@ -157,14 +157,14 @@ const addExtendedProvinceInformation = (key, province) => {
     province.mission = missions[key];
     province.walls = province.walls || walls[key] || [];
     province.roads = province.roads || roads[key] || [];
-    province.units = province.units || (units[key] || []).reduce((result, object) => {
+    province.units = (province.units || units[key] || []).reduce((result, object) => {
         result[uuidv4()] = object;
         object.hp = UnitData[object.kind].hp;
         object.kind = UnitData[object.kind].kind;
         object.facing = 0;
         return result;
     }, {});
-    province.structures = province.structures || (structures[key] || []).reduce((result, object) => {
+    province.structures = (province.structures || structures[key] || []).reduce((result, object) => {
         result[uuidv4()] = object;
         object.hp = StructureData[object.kind].hp;
         object.kind = StructureData[object.kind].kind;

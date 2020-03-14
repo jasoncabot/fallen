@@ -36,8 +36,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
             key: 'ProvinceStrategic'
         });
 
-        this.isDragging = false;
-        this.touchStart = null;
         this.constructionMode = null;
 
         this.tileSize = {
@@ -86,7 +84,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     preload() {
-        this.cameras.main.setSize(640, 480);
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC).on('down', (_event) => {
@@ -130,7 +127,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     onStructureSelected(model, view, pos) {
-        console.log(`onStructureSelected()`)
     }
 
     onButtonsUpdated() {
@@ -231,7 +227,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     }
                 };
                 this.onConstructionModeUpdated();
-            }).setScrollFactor(0).show().setDepth(2);
+            }).show().setDepth(2);
             this.add.existing(this.buildDialog);
             this.infoText.visible = false;
             this.activeUnitSelection.visible = false;
@@ -347,14 +343,13 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     renderTileLayers(container, layerBuilder) {
-
         container.add(this.terrainBlitter);
         container.add(this.roadBlitter);
 
         let scanLines = (layerBuilder.height + layerBuilder.width) - 1;
         var line = 0;
         while (line < scanLines) {
-            for (let i = 0, j = line; i <= line; i++ , j--) {
+            for (let i = 0, j = line; i <= line; i++, j--) {
                 if (i >= layerBuilder.width) continue;
                 if (j >= layerBuilder.height) continue;
 
@@ -379,7 +374,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
                         .setOrigin(0, 0)
                         .setInteractive({ cursor: 'url(' + structurePointer + '), pointer', pixelPerfect: true });
                     container.add(structureImage);
-
                     structureImage.on('pointerup', (_pointer, _x, _y, event) => {
                         if (this.constructionMode) return;
                         this.onStructureSelected(structure, structureImage, tileIndex);
@@ -409,8 +403,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
     centerCameraAtPoint(tileIndex) {
         let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
-        this.cameras.main.scrollX = ((pos.x + this.tileSize.w) - this.cameras.main.width / 2);
-        this.cameras.main.scrollY = ((pos.y + this.tileSize.h) - this.cameras.main.height / 2);
+        this.cameras.main.centerOn(pos.x, pos.y);
     }
 
     updateCurrentConstructionGraphics(tileIndex) {
@@ -494,7 +487,22 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
         this.layerBuilder.initialise(province, UnitData, StructureData, reference);
 
-        this.mapContainer = this.add.container(0, 0);
+        this.mapContainer = this.add.container(0, 0).setInteractive({
+            hitArea: new Phaser.Geom.Polygon([
+                35, 18,
+                36, 18,
+                35 + (35 * reference.width), 18 + (18 * reference.width),
+                35 + (35 * reference.width) - (35 * reference.height), 19 + (18 * reference.width) + (18 * reference.height),
+                35 - (35 * reference.height), 19 + (18 * reference.height),
+                35 - (35 * reference.height), 18 + (18 * reference.height)
+            ]),
+            hitAreaCallback: Phaser.Geom.Polygon.Contains,
+            useHandCursor: true,
+            draggable: true
+        });
+
+        this.add.existing(this.mapContainer);
+
         this.terrainBlitter = this.add.blitter(0, 0, reference.type);
         this.roadBlitter = this.add.blitter(0, 0, 'roads');
         this.renderTileLayers(this.mapContainer, this.layerBuilder);
@@ -503,18 +511,29 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection').setOrigin(0.2, 0).setDepth(1);
         this.activeUnitSelection.visible = false;
 
-        const onDraggingCancelled = (pointer) => {
-            this.isDragging = false;
-            this.touchStart = null;
-            this.touchStartCamera = null;
-        }
+        this.uiCamera = this.cameras.add(0, 0, 640, 480)
+            .setOrigin(0, 0);
+
+        let dragStart = { x: 0, y: 0 };
+        this.input.on('dragstart', () => {
+            dragStart = { x: this.cameras.main.scrollX, y: this.cameras.main.scrollY };
+        });
+
+        this.input.on('drag', function (_pointer, _gameObject, dragX, dragY) {
+            this.cameras.main.scrollX = dragStart.x - (dragX / this.cameras.main.zoom);
+            this.cameras.main.scrollY = dragStart.y - (dragY / this.cameras.main.zoom);
+        }.bind(this));
 
         this.input.on('pointerdown', (pointer) => {
             if (this.buildDialog) return;
-            this.isDragging = true;
-            this.touchStart = { x: pointer.x, y: pointer.y };
             this.touchStartCamera = { x: Math.round(this.cameras.main.scrollX), y: Math.round(this.cameras.main.scrollY) };
         }, this);
+
+        this.input.on('pointermove', (pointer, _localX, _localY, _event) => {
+            let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
+            this.updateCurrentConstructionGraphics(tileIndex);
+        }, this);
+
         this.input.on('pointerup', (pointer) => {
             if (this.pointerUpNearPointerDown()) {
                 let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
@@ -541,26 +560,12 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     }
                 }
             }
-
-            onDraggingCancelled(pointer);
         }, this);
-        this.input.on('pointermove', (pointer, _localX, _localY, _event) => {
-            let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
-            this.updateCurrentConstructionGraphics(tileIndex);
-
-            // move the map
-            if (!this.isDragging) return;
-
-            this.cameras.main.scrollX += (this.touchStart.x - pointer.x);
-            this.cameras.main.scrollY += (this.touchStart.y - pointer.y);
-            this.touchStart = { x: pointer.x, y: pointer.y };
-        }, this);
-        this.input.on('gameout', onDraggingCancelled, this);
 
         // Static UI in a container
-        let ui = this.add.container(0, 0).setScrollFactor(0).setDepth(2);
+        let ui = this.add.container(0, 0).setDepth(5);
 
-        this.overviewProvince = new ProvinceOverview(this, 32, 34, game).setScrollFactor(0).setVisible(false);
+        this.overviewProvince = new ProvinceOverview(this, 32, 34, game).setVisible(false);
         ui.add(this.overviewProvince);
         this.buttonRepair = createButton(this, 12, 410, buttons.strategic.repair, (button) => {
             // TODO: submit a repair command
@@ -618,12 +623,15 @@ export default class ProvinceStrategic extends Phaser.Scene {
         let infoTextZone = this.add.zone(232, 413, 183, 64)
             .setOrigin(0, 0)
             .setInteractive({ useHandCursor: true })
-            .setScrollFactor(0)
             .on('pointerdown', (_pointer, _x, _y, event) => {
                 event.stopPropagation();
                 this.onDeselected();
             });
         ui.add(infoTextZone);
+        this.add.existing(ui);
+
+        this.cameras.main.ignore(ui);
+        this.uiCamera.ignore(this.mapContainer);
 
         this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
             camera: this.cameras.main,
@@ -631,6 +639,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
             right: this.cursors.right,
             up: this.cursors.up,
             down: this.cursors.down,
+            zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+            zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
             speed: 0.7
         });
 

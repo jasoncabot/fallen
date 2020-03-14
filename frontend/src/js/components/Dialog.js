@@ -21,6 +21,7 @@ export default class Dialog extends GameObjects.Container {
 
         this.currentOffset = 0;
         this.structureKeys = Object.keys(StructureData).filter(key => !StructureData[key].kind.starship);
+        this.currentImages = [];
     }
 
     show() {
@@ -69,11 +70,33 @@ export default class Dialog extends GameObjects.Container {
     }
 
     onCurrentStructureUpdated() {
+
+        this.draw(this.currentStructure.display);
+
         this.nameLabel.setText(this.currentStructure.kind.name);
         this.uniqueFeatureLabel.setText(this.currentStructure.encyclopedia.short);
         this.energyConsumptionLabel.setText(`Energy consumption: ${this.currentStructure.usage.energy} EP per turn`);
         this.armourLabel.setText(`Armour: ${this.currentStructure.hp}`);
         this.costLabel.setText(`Cost: ${this.currentStructure.usage.cash}`);
         this.restrictionLabel.setText('One per province');
+    }
+
+
+    draw(structure) {
+        this.currentImages.forEach(img => { img.destroy() });
+        let offset = structure.offset;
+        const start = { x: 238, y: 90 };
+        for (let x = 0; x < structure.width; x++) {
+            for (let y = 0; y < structure.height; y++) {
+                let img = this.scene.add.image(
+                    start.x + ((x - y) * 35),
+                    start.y + (((x + y) / 2) * 36),
+                    structure.tiles,
+                    offset++)
+                    .setOrigin(0);
+                this.currentImages.push(img);
+                this.add(img);
+            }
+        }
     }
 }
