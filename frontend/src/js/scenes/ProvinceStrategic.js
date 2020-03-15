@@ -658,10 +658,12 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.buttonMap = createButton(this, 424, 410, buttons.strategic.map, (button) => { this.onOverviewToggled() });
         ui.add(this.buttonMap);
         this.buttonMenu = createButton(this, 486, 410, buttons.strategic.menu, (button) => {
+            this.onDeselected();
             this.scene.start('MainMenu');
         });
         ui.add(this.buttonMenu);
         this.buttonColony = createButton(this, 563, 410, buttons.strategic.colony, (button) => {
+            this.onDeselected();
             this.scene.start('LoadGameResources', {
                 gameId: this.gameId
             });

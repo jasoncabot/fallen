@@ -324,7 +324,8 @@ export default class LayerBuilder {
 
     demolishRoad(position) {
         this.writeTileValue(this.roads, position, null);
-        this.roadLookup = this.roadLookup.filter(road => road.x !== position.x && road.y !== position.y);
+        const index = this.roadLookup.findIndex(item => item.x === position.x && item.y === position.y);
+        if (index >= 0) this.roadLookup.splice(index, 1);
         let positions = this.touchingPositions(this.roads, position);
         this.emitter.emit('roadsUpdated', positions.map(pos => {
             let { x, y } = pos;
@@ -335,7 +336,8 @@ export default class LayerBuilder {
 
     demolishWall(position) {
         this.writeTileValue(this.walls, position, null);
-        this.wallLookup = this.wallLookup.filter(wall => wall.x !== position.x && wall.y !== position.y);
+        const index = this.wallLookup.findIndex(item => item.x === position.x && item.y === position.y);
+        if (index >= 0) this.wallLookup.splice(index, 1);
         let positions = this.touchingPositions(this.walls, position);
         this.emitter.emit('wallsUpdated', positions.map(pos => {
             let { x, y } = pos;
