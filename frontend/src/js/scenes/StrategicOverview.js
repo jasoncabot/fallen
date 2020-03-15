@@ -90,7 +90,7 @@ export default class StrategicOverview extends Scene {
         this.provinceUnitsTotal = this.add.text(450, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
         this.provinceTowersTotal = this.add.text(450, oy += (12 + medium), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
 
-        this.overviewProvince = this.add.existing(new ProvinceOverview(this, 32, 34, game).setScrollFactor(0).setVisible(false));
+        this.overviewProvince = this.add.existing(new ProvinceOverview(this, 32, 34, game, null).setScrollFactor(0).setVisible(false));
         this.technologyOverview = this.add.existing(new TechnologyOverview(this, 32, 34, game).setScrollFactor(0).setVisible(false));
 
         let topFont = { color: 'green', fontSize: '14px', fontFamily: 'Verdana' };

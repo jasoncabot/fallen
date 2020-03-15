@@ -4,9 +4,10 @@ import { UnitData, StructureData, ProvinceData } from 'shared';
 
 export default class ProvinceOverview extends GameObjects.Container {
 
-    constructor(scene, x, y, game) {
+    constructor(scene, x, y, game, container) {
         super(scene, x, y);
 
+        this.container = container;
         this.game = game;
     }
 
@@ -20,8 +21,13 @@ export default class ProvinceOverview extends GameObjects.Container {
         builder.initialise(province, UnitData, StructureData, reference);
 
         // This requires the owning scene to have preloaded the appropriate -overview resources
-        this.terrainBlitter = this.scene.add.blitter(this.x, this.y, reference.type + '-overview').setScrollFactor(0);
-        this.overlayBlitter = this.scene.add.blitter(this.x, this.y, 'overlay-overview').setScrollFactor(0);
+        this.terrainBlitter = this.scene.add.blitter(this.x, this.y, reference.type + '-overview');
+        this.overlayBlitter = this.scene.add.blitter(this.x, this.y, 'overlay-overview');
+
+        if (this.container) {
+            this.container.add(this.terrainBlitter);
+            this.container.add(this.overlayBlitter);
+        }
 
         for (let i = 0; i < reference.height; i++) {
             for (let j = 0; j < reference.width; j++) {

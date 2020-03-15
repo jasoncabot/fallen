@@ -11,7 +11,7 @@ export default class Dialog extends GameObjects.Container {
 
         this.onStructureSelected = callback;
         this.setSize(384, 268);
-        this.setInteractive({ useHandCursor: true }).on('pointerdown', (_pointer, _x, _y, event) => {
+        this.setInteractive({ useHandCursor: true }).on('pointerup', (_pointer, _x, _y, event) => {
             event.stopPropagation();
             this.onStructureSelected(this.currentStructure);
         });

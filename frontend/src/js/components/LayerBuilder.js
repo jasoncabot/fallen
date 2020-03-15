@@ -1,5 +1,7 @@
 import { TerrainData } from 'shared';
 
+const uuidv4 = require('uuid/v4');
+
 const objectExistsAt = (list) => {
     return (x, y) => {
         return (list[x] || [])[y];
@@ -19,6 +21,9 @@ export default class LayerBuilder {
         this.width = terrain.width;
         this.height = terrain.height;
         this.terrainTiles = terrain.tiles;
+
+        this.structureReferenceLookup = structures;
+        this.unitReferenceLookup = units;
 
         this.roads = [];
         this.roadLookup = province.roads;
@@ -228,14 +233,17 @@ export default class LayerBuilder {
                 return;
             case 'DEMOLISH':
                 switch (command.targetType) {
-                    // TODO: make the appropriate adjustment to the model
                     case 'road':
+                        this.demolishRoad(command.position);
                         return;
                     case 'wall':
+                        this.demolishWall(command.position);
                         return;
                     case 'structure':
+                        this.demolishStructure(this.findTarget(command), command.targetId);
                         return;
                     case 'unit':
+                        this.demolishUnit(this.findTarget(command), command.targetId);
                         return;
                 }
                 return;
@@ -266,26 +274,80 @@ export default class LayerBuilder {
         this.emitter.emit('unitTurned', unit);
     }
 
-    buildStructure(kind, position) {
-        console.log(`Building ${kind} at ${JSON.stringify(position)}`);
+    buildStructure(category, position) {
+        const structureId = uuidv4();
+
+        let models = [];
+        let reference = this.structureReferenceLookup[category];
+        let displayOffset = reference.display.offset;
+        for (let x = 0; x < reference.display.width; x++) {
+            for (let y = 0; y < reference.display.height; y++) {
+                let pos = { x: position.x + x, y: position.y + y };
+                let model = {
+                    id: structureId,
+                    type: 'structure',
+                    position: pos,
+                    spritesheet: reference.display.tiles,
+                    offset: displayOffset
+                };
+                this.writeTileValue(this.structureModels, pos, model);
+                displayOffset += 1;
+                models.push(model);
+            }
+        }
+        const instance = {
+            position: position,
+            kind: reference.kind,
+            hp: reference.hp
+        };
+        this.structureLookup[structureId] = instance;
+        this.emitter.emit('structureBuilt', { instance, models });
+    }
+
+    demolishStructure(structure, structureId) {
+        let reference = this.structureReferenceLookup[structure.kind.category];
+        for (let x = 0; x < reference.display.width; x++) {
+            for (let y = 0; y < reference.display.height; y++) {
+                let pos = { x: structure.position.x + x, y: structure.position.y + y };
+                this.writeTileValue(this.structureModels, pos, null);
+            }
+        }
+        delete this.structureLookup[structureId];
+        this.emitter.emit('structureDemolished', { position: structure.position, structureId });
+    }
+
+    demolishUnit(unit, unitId) {
+        this.writeTileValue(this.unitModels, unit.position, null);
+        delete this.unitLookup[unitId];
+        this.emitter.emit('unitDemolished', { position: unit.position, unitId });
+    }
+
+    demolishRoad(position) {
+        this.writeTileValue(this.roads, position, null);
+        this.roadLookup = this.roadLookup.filter(road => road.x !== position.x && road.y !== position.y);
+        let positions = this.touchingPositions(this.roads, position);
+        this.emitter.emit('roadsUpdated', positions.map(pos => {
+            let { x, y } = pos;
+            var tileId = this.roadAt(pos);
+            return { x, y, tileId };
+        }));
+    }
+
+    demolishWall(position) {
+        this.writeTileValue(this.walls, position, null);
+        this.wallLookup = this.wallLookup.filter(wall => wall.x !== position.x && wall.y !== position.y);
+        let positions = this.touchingPositions(this.walls, position);
+        this.emitter.emit('roadsUpdated', positions.map(pos => {
+            let { x, y } = pos;
+            var tileId = this.wallAt(pos);
+            return { x, y, tileId };
+        }));
     }
 
     buildRoad(position) {
         this.writeTileValue(this.roads, position, true);
         this.roadLookup.push(position);
-
-        // When building a road, it affects (potentially) all 4 touching tiles
-        // so here we just try and find ones that have explicitly been affected
-        // so we can be more efficient when re-drawing them
-        let positions = [
-            { x: position.x - 1, y: position.y + 0 },
-            { x: position.x + 1, y: position.y + 0 },
-            { x: position.x + 0, y: position.y - 1 },
-            { x: position.x + 0, y: position.y + 1 }
-        ].filter(pos => {
-            return (this.roads[pos.x] || [])[pos.y];
-        });
-        positions.push(position);
+        let positions = this.touchingPositions(this.roads, position);
         this.emitter.emit('roadsUpdated', positions.map(pos => {
             let { x, y } = pos;
             var tileId = this.roadAt(pos);
@@ -296,16 +358,7 @@ export default class LayerBuilder {
     buildWall(position) {
         this.writeTileValue(this.walls, position, true);
         this.wallLookup.push(position);
-
-        let positions = [
-            { x: position.x - 1, y: position.y + 0 },
-            { x: position.x + 1, y: position.y + 0 },
-            { x: position.x + 0, y: position.y - 1 },
-            { x: position.x + 0, y: position.y + 1 }
-        ].filter(pos => {
-            return (this.walls[pos.x] || [])[pos.y];
-        });
-        positions.push(position);
+        let positions = this.touchingPositions(this.walls, position);
         this.emitter.emit('wallsUpdated', positions.map(pos => {
             let { x, y } = pos;
             var tileId = this.wallAt(pos);
@@ -313,4 +366,19 @@ export default class LayerBuilder {
         }));
     }
 
+    touchingPositions(models, position) {
+        // When building a road, it affects (potentially) all 4 touching tiles
+        // so here we just try and find ones that have explicitly been affected
+        // so we can be more efficient when re-drawing them
+        let positions = [
+            { x: position.x - 1, y: position.y + 0 },
+            { x: position.x + 1, y: position.y + 0 },
+            { x: position.x + 0, y: position.y - 1 },
+            { x: position.x + 0, y: position.y + 1 }
+        ].filter(pos => {
+            return (models[pos.x] || [])[pos.y];
+        });
+        positions.push(position);
+        return positions;
+    }
 }
