@@ -337,7 +337,7 @@ export default class LayerBuilder {
         this.writeTileValue(this.walls, position, null);
         this.wallLookup = this.wallLookup.filter(wall => wall.x !== position.x && wall.y !== position.y);
         let positions = this.touchingPositions(this.walls, position);
-        this.emitter.emit('roadsUpdated', positions.map(pos => {
+        this.emitter.emit('wallsUpdated', positions.map(pos => {
             let { x, y } = pos;
             var tileId = this.wallAt(pos);
             return { x, y, tileId };
