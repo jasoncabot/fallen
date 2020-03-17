@@ -115,20 +115,16 @@ const roads = {
 }
 
 // TODO: units and structures should not just be ALIEN units and structures - it should be generic and looked up based on side
-// TODO: hp isn't always 15
 
 const units = {
     "haven": [
         { "kind": "ASQD", "position": { "x": 25, "y": 20 }, "experience": 1 },
         { "kind": "ASQD", "position": { "x": 22, "y": 27 }, "experience": 1 },
         { "kind": "ASQD", "position": { "x": 18, "y": 19 }, "experience": 1 },
-        { "kind": "ASQD", "position": { "x": 23, "y": 24 }, "experience": 1 },
         { "kind": "ALTK", "position": { "x": 26, "y": 32 }, "experience": 1 },
         { "kind": "ASNI", "position": { "x": 30, "y": 29 }, "experience": 1 },
         { "kind": "ASNI", "position": { "x": 26, "y": 20 }, "experience": 1 },
         { "kind": "ALTK", "position": { "x": 30, "y": 22 }, "experience": 1 },
-        { "kind": "ASNI", "position": { "x": 23, "y": 24 }, "experience": 1 },
-        { "kind": "ALTK", "position": { "x": 23, "y": 24 }, "experience": 1 },
         { "kind": "ALTK", "position": { "x": 30, "y": 26 }, "experience": 1 }
     ]
 };
@@ -148,28 +144,57 @@ const structures = {
         { "position": { "x": 23, "y": 29 }, "kind": "ALAB" },
         { "position": { "x": 23, "y": 31 }, "kind": "ALAB" },
         { "position": { "x": 24, "y": 27 }, "kind": "ARAD" },
-        { "position": { "x": 23, "y": 24 }, "kind": "ASHP" },
+        {
+            "position": { "x": 23, "y": 24 },
+            "kind": "ASHP",
+            "units": [
+                { "kind": "ASNI", "experience": 1 },
+                { "kind": "ASQD", "experience": 1 },
+                { "kind": "ALTK", "experience": 1 },
+            ]
+        },
         { "position": { "x": 27, "y": 27 }, "kind": "ABAY" }
     ]
 };
+
+const createUnitInstance = (result, object) => {
+    const ref = UnitData[object.kind];
+    const pos = object.position ? {
+        "x": object.position.x,
+        "y": object.position.y
+    } : null;
+    result[uuidv4()] = {
+        "kind": ref.kind,
+        "position": pos,
+        "experience": object.experience,
+        "hp": ref.hp,
+        "facing": 0
+    };
+    return result;
+}
+
+const createStructureInstance = (result, object) => {
+    const ref = StructureData[object.kind];
+    const units = (object.units || []).reduce(createUnitInstance, {});
+    const pos = object.position ? {
+        "x": object.position.x,
+        "y": object.position.y
+    } : null;
+    result[uuidv4()] = {
+        "hp": ref.hp,
+        "kind": ref.kind,
+        "units": units,
+        "position": pos,
+    }
+    return result;
+}
 
 const addExtendedProvinceInformation = (key, province) => {
     province.mission = missions[key];
     province.walls = province.walls || walls[key] || [];
     province.roads = province.roads || roads[key] || [];
-    province.units = (province.units || units[key] || []).reduce((result, object) => {
-        result[uuidv4()] = object;
-        object.hp = UnitData[object.kind].hp;
-        object.kind = UnitData[object.kind].kind;
-        object.facing = 0;
-        return result;
-    }, {});
-    province.structures = (province.structures || structures[key] || []).reduce((result, object) => {
-        result[uuidv4()] = object;
-        object.hp = StructureData[object.kind].hp;
-        object.kind = StructureData[object.kind].kind;
-        return result;
-    }, {});
+    province.units = (province.units || units[key] || []).reduce(createUnitInstance, {});
+    province.structures = (province.structures || structures[key] || []).reduce(createStructureInstance, {});
     // TODO: this should look at the structures and units to decide sensible values
     province.energy = 123;
     province.credits = 123;

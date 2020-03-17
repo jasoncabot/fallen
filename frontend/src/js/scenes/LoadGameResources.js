@@ -1,6 +1,5 @@
 import { Scene } from 'phaser';
 
-import { data } from '../Config';
 import * as api from '../models/API';
 
 export default class LoadGameResources extends Scene {

@@ -29,7 +29,7 @@ export default class CreateGame extends Scene {
 
         this.add.text(130, 213, 'Your name', { color: 'white', fontSize: '14px', fontFamily: 'Verdana' });
 
-        let inputName = `<input type="text" name="name" value="${this.auth.name}" placeholder="Enter your name" style="font-size: 14px; width: 225px; height: 30px; position: absolute; top: 233px; left: 131px; padding-left: 8px;">`;
+        let inputName = `<input type="text" name="name" value="${this.auth.name}" placeholder="Enter your name" style="font-size: 14px; width: 222px; height: 27px; position: absolute; top: 233px; left: 131px; padding-left: 8px;">`;
         let element = this.add.dom().createFromHTML(inputName);
 
         this.add.existing(new MenuButton(this, { x: 386, y: 231, width: 126, height: 38 }, 'Start', (scene) => {

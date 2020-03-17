@@ -5,6 +5,7 @@ const structures = {
     alien_dropship: require('../../images/structures/alie_ssi.png'),
     human: require('../../images/structures/huma_si.png'),
     human_dropship: require('../../images/structures/huma_ssi.png'),
+    infra: require('../../images/structures/infra.png'),
 }
 
 const units = {
@@ -20,6 +21,7 @@ export const registerStructures = (scene) => {
     scene.load.spritesheet('structure-alien-dropship', structures.alien_dropship, { frameWidth: 70, frameHeight: 54 });
     scene.load.spritesheet('structure-human', structures.human, { frameWidth: 70, frameHeight: 54 });
     scene.load.spritesheet('structure-human-dropship', structures.human_dropship, { frameWidth: 70, frameHeight: 54 });
+    scene.load.spritesheet('structure-infra', structures.infra, { frameWidth: 70, frameHeight: 54 });
 }
 
 export const registerUnits = (scene) => {

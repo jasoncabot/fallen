@@ -4,7 +4,7 @@ import { createButton, buttons } from '../assets/Buttons';
 
 import { StructureData } from 'shared';
 
-export default class Dialog extends GameObjects.Container {
+export default class ConstructionDialog extends GameObjects.Container {
 
     constructor(scene, x, y, callback) {
         super(scene, x, y);
@@ -43,8 +43,8 @@ export default class Dialog extends GameObjects.Container {
 
         const small = 2;
         const medium = 50;
-        const ox = 10;
-        var oy = 38;
+        const ox = 16;
+        var oy = 23;
         this.nameLabel = this.scene.add.text(ox, oy, "", { color: 'green', fontSize: '14px', fontFamily: 'Verdana' });
         this.add(this.nameLabel);
         this.uniqueFeatureLabel = this.scene.add.text(ox, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
@@ -75,12 +75,11 @@ export default class Dialog extends GameObjects.Container {
 
         this.nameLabel.setText(this.currentStructure.kind.name);
         this.uniqueFeatureLabel.setText(this.currentStructure.encyclopedia.short);
-        this.energyConsumptionLabel.setText(`Energy consumption: ${this.currentStructure.usage.energy} EP per turn`);
+        this.energyConsumptionLabel.setText(`Energy consumption: ${this.currentStructure.energyUsage} EP per turn`);
         this.armourLabel.setText(`Armour: ${this.currentStructure.hp}`);
-        this.costLabel.setText(`Cost: ${this.currentStructure.usage.cash}`);
+        this.costLabel.setText(`Cost: ${this.currentStructure.build.cost}`);
         this.restrictionLabel.setText('One per province');
     }
-
 
     draw(structure) {
         this.currentImages.forEach(img => { img.destroy() });

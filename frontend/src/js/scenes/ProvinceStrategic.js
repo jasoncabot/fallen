@@ -1,9 +1,12 @@
 import Phaser from 'phaser';
 
-import Dialog from '../components/Dialog';
-import InfoText from '../components/InfoText';
-import LayerBuilder from '../components/LayerBuilder';
-import ProvinceOverview from '../components/ProvinceOverview';
+import {
+    ConstructionDialog,
+    StructureDialog,
+    InfoText,
+    LayerBuilder,
+    ProvinceOverview,
+} from '../components/';
 
 import uiStrategic from '../../images/ui/strategic.png';
 import dialogBuild from '../../images/ui/dialog-build.png';
@@ -11,7 +14,6 @@ import dialogStructure from '../../images/ui/dialog-structure.png';
 import logoAlien from '../../images/ui/logo-alien.png';
 import logoHuman from '../../images/ui/logo-human.png';
 import activeUnitSelection from '../../images/icons/active-unit-selection.png';
-import roads from '../../images/roads/roads.png';
 
 import terrain from './../../images/terrain';
 
@@ -102,8 +104,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         });
         emitter.on('structureBuilt', ({ models }) => {
             models.forEach((structure) => {
-                let tileIndex = { x: structure.position.x, y: structure.position.y };
-                let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
+                let pos = this.screenCoordinates(structure.position.x, structure.position.y);
                 const structureImage = this.add.image(pos.x, pos.y, structure.spritesheet, structure.offset)
                     .setOrigin(0, 0)
                     .setInteractive({ cursor: 'url(' + structurePointer + '), pointer', pixelPerfect: true });
@@ -115,7 +116,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
                 structureImage.on('pointerup', (_pointer, _x, _y, _event) => {
                     if (this.constructionMode) return;
-                    this.onStructureSelected(structure, structureImage, tileIndex);
+                    this.onStructureSelected(structure, structureImage, structure.position);
                 });
             });
         });
@@ -151,8 +152,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
         registerUnits(this);
         registerStructures(this);
 
-        this.load.spritesheet('roads', roads, { frameWidth: 70, frameHeight: 54 });
-
         this.load.image('dialog-build', dialogBuild);
         this.load.image('dialog-structure', dialogStructure);
 
@@ -173,6 +172,41 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     onStructureSelected(model, view, pos) {
+        if (this.modalDialog) return;
+        let game = this.cache.json.get(`game-${this.gameId}`);
+        let province = game.provinces[this.province];
+        const dialog = new StructureDialog(this, 13, 28, province, model, "STRATEGIC", (_structure) => {
+            this.modalDialog.destroy();
+            this.modalDialog = null;
+        }, (kind, structure) => {
+
+            switch (kind) {
+                case 'FIRE':
+                    console.log('pew pew fire a turret');
+                    break;
+                case 'BUILD_DROPSHIP':
+                    console.log('beep beep build a dropship');
+                    break;
+                case 'LAUNCH':
+                    // TODO: this should show the province selection screen with 2 options
+                    // ok(provincekey) submit following command
+                    // this.layerBuilder.processCommand({
+                    //     action: 'LAUNCH_DROPSHIP',
+                    //     province: this.province,
+                    //     targetId: model.id,
+                    //     targetType: 'structure',
+                    //     position: structure.position,
+                    // });
+                    console.log('beep beep launching dropship');
+                    break;
+                case 'MISSILE':
+                    console.log('pew pew fire a missile');
+                    break;
+            }
+        })
+        this.uiContainer.add(dialog);
+        this.modalDialog = dialog;
+        dialog.show();
     }
 
     onButtonsUpdated() {
@@ -252,15 +286,15 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
     onConstructionModeUpdated() {
 
-        const hideBuildDialog = () => {
-            if (!this.buildDialog) return;
-            this.buildDialog.hide();
-            this.buildDialog = null;
+        const hideModalDialog = () => {
+            if (!this.modalDialog) return;
+            this.modalDialog.hide();
+            this.modalDialog = null;
         }
 
         if (this.constructionMode && this.constructionMode.kind === 'pending-construction') {
             this.logo.visible = true;
-            this.buildDialog = new Dialog(this, 16, 42, (structure) => {
+            this.modalDialog = new ConstructionDialog(this, 16, 42, (structure) => {
                 this.constructionMode = {
                     w: structure.display.width,
                     h: structure.display.height,
@@ -269,12 +303,12 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     model: {
                         title: "Construction",
                         name: structure.kind.name,
-                        cost: structure.usage.cash
+                        cost: structure.build.cost
                     }
                 };
                 this.onConstructionModeUpdated();
             }).show();
-            this.uiContainer.add(this.buildDialog);
+            this.uiContainer.add(this.modalDialog);
             this.infoText.visible = false;
             this.activeUnitSelection.visible = false;
             this.currentlySelectedUnit = null;
@@ -284,11 +318,11 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.infoText.setConstructionMode(this.constructionMode).setVisible(true);
             this.activeUnitSelection.visible = false;
             this.currentlySelectedUnit = null;
-            hideBuildDialog();
+            hideModalDialog();
         } else if (this.currentlySelectedUnit) {
             this.logo.visible = false;
             this.infoText.setUnitMode(this.currentlySelectedUnit).setVisible(true);
-            hideBuildDialog();
+            hideModalDialog();
             // this hides the selection when using overview map with a selected unit to 
             // easily move it to another location
             this.activeUnitSelection.visible = !this.overviewProvince.visible;
@@ -298,7 +332,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.activeUnitSelection.visible = false;
             this.currentlySelectedUnit = null;
             this.updateCurrentConstructionGraphics(null);
-            hideBuildDialog();
+            hideModalDialog();
         }
         this.onButtonsUpdated();
     }
@@ -490,6 +524,18 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     position: tileIndex
                 }
             case 'structure':
+                // Walls are a special case because they are in the structures menu
+                // without a dedicated button like a road, however they are infrastructure
+                // so built in the same way as a road
+                if (mode.category === "WALL") {
+                    return {
+                        action: 'WALL',
+                        province: this.province,
+                        targetId: null,
+                        targetType: null,
+                        position: tileIndex
+                    }
+                }
                 return {
                     action: 'BUILD_STRUCTURE',
                     province: this.province,
@@ -557,7 +603,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.add.existing(this.mapContainer);
 
         this.terrainBlitter = this.add.blitter(0, 0, reference.type);
-        this.infrastructureBlitter = this.add.blitter(0, 0, 'roads');
+        this.infrastructureBlitter = this.add.blitter(0, 0, 'structure-infra');
         this.renderTileLayers(this.mapContainer, this.layerBuilder);
 
         // Render active unit selection
@@ -581,7 +627,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
         let downStart = { x: 0, y: 0 };
         this.input.on('pointerdown', (_pointer) => {
-            if (this.buildDialog) return;
+            if (this.modalDialog) return;
             downStart = { x: Math.round(this.cameras.main.scrollX), y: Math.round(this.cameras.main.scrollY) };
         }, this);
 

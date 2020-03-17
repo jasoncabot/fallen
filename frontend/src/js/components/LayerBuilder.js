@@ -8,6 +8,23 @@ const objectExistsAt = (list) => {
     }
 }
 
+const buildStructureModel = (id, structure, reference, position, displayOffset) => {
+    let model = {
+        id: id,
+        type: 'structure',
+        category: structure.kind.category,
+        hp: {
+            current: structure.hp,
+            max: reference.hp
+        },
+        units: structure.units,
+        position: position,
+        spritesheet: reference.display.tiles,
+        offset: displayOffset
+    };
+    return model;
+}
+
 export default class LayerBuilder {
 
     constructor(emitter) {
@@ -61,6 +78,7 @@ export default class LayerBuilder {
         // create structure lookup
         this.structureModels = [];
         this.structureLookup = province.structures;
+
         Object.keys(this.structureLookup || {}).forEach((structureId) => {
             // Each structure can consist of multiple tiles
             // this is where we turn 1 structure into the many tiles that are 
@@ -72,13 +90,7 @@ export default class LayerBuilder {
             for (let x = 0; x < reference.display.width; x++) {
                 for (let y = 0; y < reference.display.height; y++) {
                     let pos = { x: structure.position.x + x, y: structure.position.y + y };
-                    let model = {
-                        id: structureId,
-                        type: 'structure',
-                        position: structure.position,
-                        spritesheet: reference.display.tiles,
-                        offset: displayOffset
-                    };
+                    let model = buildStructureModel(structureId, structure, reference, pos, displayOffset);
                     this.writeTileValue(this.structureModels, pos, model);
                     displayOffset += 1;
                 }
@@ -222,6 +234,9 @@ export default class LayerBuilder {
             case 'ROAD':
                 this.buildRoad(command.position);
                 return;
+            case 'WALL':
+                this.buildWall(command.position);
+                return;
             case 'TURN':
                 this.turnUnit(this.findTarget(command));
                 return;
@@ -247,9 +262,15 @@ export default class LayerBuilder {
                         return;
                 }
                 return;
+            case 'LAUNCH_DROPSHIP':
+                this.launchDropship(this.findTarget(command));
+                return;
             default:
                 throw new Error('No handler for action of type ' + command.action);
         }
+    }
+
+    launchDropship(dropship) {
     }
 
     moveUnit(target, position) {
@@ -276,30 +297,24 @@ export default class LayerBuilder {
 
     buildStructure(category, position) {
         const structureId = uuidv4();
-
-        let models = [];
         let reference = this.structureReferenceLookup[category];
-        let displayOffset = reference.display.offset;
-        for (let x = 0; x < reference.display.width; x++) {
-            for (let y = 0; y < reference.display.height; y++) {
-                let pos = { x: position.x + x, y: position.y + y };
-                let model = {
-                    id: structureId,
-                    type: 'structure',
-                    position: pos,
-                    spritesheet: reference.display.tiles,
-                    offset: displayOffset
-                };
-                this.writeTileValue(this.structureModels, pos, model);
-                displayOffset += 1;
-                models.push(model);
-            }
-        }
         const instance = {
             position: position,
             kind: reference.kind,
             hp: reference.hp
         };
+
+        let models = [];
+        let displayOffset = reference.display.offset;
+        for (let x = 0; x < reference.display.width; x++) {
+            for (let y = 0; y < reference.display.height; y++) {
+                let pos = { x: position.x + x, y: position.y + y };
+                let model = buildStructureModel(structureId, instance, reference, pos, displayOffset);
+                this.writeTileValue(this.structureModels, pos, model);
+                displayOffset += 1;
+                models.push(model);
+            }
+        }
         this.structureLookup[structureId] = instance;
         this.emitter.emit('structureBuilt', { instance, models });
     }

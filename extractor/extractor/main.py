@@ -36,7 +36,7 @@ def run():
 	# parse_file('./input/ANMS/NUKE.ANM', './out/images/anim/nuke.png')
 	# parse_file('./input/ANMS/POW.ANM', './out/images/anim/pow.png')
 	# parse_file('./input/ANMS/RAD.ANM', './out/images/anim/rad.png')
-	# parse_file('./input/ROADS/ROADS.ICA', './out/images/roads/roads.png', 17)
+	# parse_file('./input/ROADS/ROADS.ICA', './out/images/structures/infra.png', 17)
 	# parse_file('./input/TIMG/ROCKY.ICA', './out/images/terrain/rocky.png', 50)
 	# parse_file('./input/ANMS/SBI.ANM', './out/images/anim/sbi.png')
 	# parse_file('./input/ANMS/X1B.ANM', './out/images/anim/x1b.png')
