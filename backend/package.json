@@ -4,6 +4,7 @@
   "description": "Fallen Haven Remake API",
   "private": true,
   "scripts": {
+    "debug": "nodemon -r dotenv/config --inspect src/index.js",
     "start:dev": "nodemon -r dotenv/config src/index.js",
     "start": "node -r dotenv/config src/index.js"
   },
