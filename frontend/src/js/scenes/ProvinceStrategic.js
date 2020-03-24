@@ -501,7 +501,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 if (unit) {
                     const unitImage = this.add.image(pos.x, pos.y, unit.spritesheet, unit.offset + unit.facing)
                         .setOrigin(0, 0)
-                        .setInteractive({ cursor: 'url(' + customPointer + '), pointer', pixelPerfect: true });
+                        .setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
                     container.add(unitImage);
 
                     this.unitView[unit.id] = unitImage;

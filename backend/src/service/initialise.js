@@ -114,18 +114,18 @@ const roads = {
     ]
 }
 
-// TODO: units and structures should not just be ALIEN units and structures - it should be generic and looked up based on side
+// TODO: structures should not just be ALIEN - it should be generic and looked up based on side - see how units work
 
 const units = {
     "haven": [
-        { "kind": "ASQD", "position": { "x": 25, "y": 20 }, "experience": 1 },
-        { "kind": "ASQD", "position": { "x": 22, "y": 27 }, "experience": 1 },
-        { "kind": "ASQD", "position": { "x": 18, "y": 19 }, "experience": 1 },
-        { "kind": "ALTK", "position": { "x": 26, "y": 32 }, "experience": 1 },
-        { "kind": "ASNI", "position": { "x": 30, "y": 29 }, "experience": 1 },
-        { "kind": "ASNI", "position": { "x": 26, "y": 20 }, "experience": 1 },
-        { "kind": "ALTK", "position": { "x": 30, "y": 22 }, "experience": 1 },
-        { "kind": "ALTK", "position": { "x": 30, "y": 26 }, "experience": 1 }
+        { "type": "SQUAD", "position": { "x": 25, "y": 20 }, "experience": 1 },
+        { "type": "SQUAD", "position": { "x": 22, "y": 27 }, "experience": 1 },
+        { "type": "SQUAD", "position": { "x": 18, "y": 19 }, "experience": 1 },
+        { "type": "LTTANK", "position": { "x": 26, "y": 32 }, "experience": 1 },
+        { "type": "TROOP", "position": { "x": 30, "y": 29 }, "experience": 1 },
+        { "type": "TROOP", "position": { "x": 26, "y": 20 }, "experience": 1 },
+        { "type": "LTTANK", "position": { "x": 30, "y": 22 }, "experience": 1 },
+        { "type": "LTTANK", "position": { "x": 30, "y": 26 }, "experience": 1 }
     ]
 };
 
@@ -148,53 +148,81 @@ const structures = {
             "position": { "x": 23, "y": 24 },
             "kind": "ASHP",
             "units": [
-                { "kind": "ASNI", "experience": 1 },
-                { "kind": "ASQD", "experience": 1 },
-                { "kind": "ALTK", "experience": 1 },
+                { "type": "TROOP", "experience": 1 },
+                { "type": "SQUAD", "experience": 1 },
+                { "type": "LTTANK", "experience": 1 },
             ]
         },
         { "position": { "x": 27, "y": 27 }, "kind": "ABAY" }
     ]
 };
 
-const createUnitInstance = (result, object) => {
-    const ref = UnitData[object.kind];
-    const pos = object.position ? {
-        "x": object.position.x,
-        "y": object.position.y
-    } : null;
-    result[uuidv4()] = {
-        "kind": ref.kind,
-        "position": pos,
-        "experience": object.experience,
-        "hp": ref.hp,
-        "facing": 0
-    };
-    return result;
-}
-
-const createStructureInstance = (result, object) => {
-    const ref = StructureData[object.kind];
-    const units = (object.units || []).reduce(createUnitInstance, {});
-    const pos = object.position ? {
-        "x": object.position.x,
-        "y": object.position.y
-    } : null;
-    result[uuidv4()] = {
-        "hp": ref.hp,
-        "kind": ref.kind,
-        "units": units,
-        "position": pos,
+const createUnitInstance = (side) => {
+    const unitLookup = {
+        'HUMAN': {
+            "SQUAD": "HSQU",
+            "TROOP": "HRAN",
+            "LTTANK": "HATV",
+            "LONGRANGE": "HART",
+            "UNIQUE1": "HBUG",
+            "TANK": "HTNK",
+            "LTGRAV": "HSPE",
+            "HEAVYGRAV": "HGRV",
+            "LONGRANGEHOVER": "HGUN"
+        },
+        'ALIEN': {
+            "SQUAD": "ASQD",
+            "TROOP": "ASNI",
+            "LTTANK": "ALTK",
+            "LONGRANGE": "APLA",
+            "HEAVYGRAV": "AGRV",
+            "LTGRAV": "AFLY",
+            "TANK": "AMDT",
+            "LONGRANGEHOVER": "ASUP",
+            "UNIQUE1": "AMEG"
+        }
+    }[side];
+    return (result, object) => {
+        const ref = UnitData[unitLookup[object.type]];
+        const pos = object.position ? {
+            "x": object.position.x,
+            "y": object.position.y
+        } : null;
+        result[uuidv4()] = {
+            "kind": ref.kind,
+            "position": pos,
+            "experience": object.experience,
+            "hp": ref.hp,
+            "facing": 0
+        };
+        return result;
     }
-    return result;
 }
 
-const addExtendedProvinceInformation = (key, province) => {
+const createStructureInstance = (side) => {
+    return (result, object) => {
+        const ref = StructureData[object.kind];
+        const units = (object.units || []).reduce(createUnitInstance(side), {});
+        const pos = object.position ? {
+            "x": object.position.x,
+            "y": object.position.y
+        } : null;
+        result[uuidv4()] = {
+            "hp": ref.hp,
+            "kind": ref.kind,
+            "units": units,
+            "position": pos,
+        }
+        return result;
+    }
+}
+
+const addExtendedProvinceInformation = (key, side, province) => {
     province.mission = missions[key];
     province.walls = province.walls || walls[key] || [];
     province.roads = province.roads || roads[key] || [];
-    province.units = (province.units || units[key] || []).reduce(createUnitInstance, {});
-    province.structures = (province.structures || structures[key] || []).reduce(createStructureInstance, {});
+    province.units = (province.units || units[key] || []).reduce(createUnitInstance(side), {});
+    province.structures = (province.structures || structures[key] || []).reduce(createStructureInstance(side), {});
     // TODO: this should look at the structures and units to decide sensible values
     province.energy = 123;
     province.credits = 123;
@@ -305,7 +333,7 @@ module.exports.generateGame = (userId, name, race, difficulty, campaignType) => 
         .filter(province => campaign.includes(province))
         .reduce((provinces, province) => {
             let data = game.provinces[province];
-            provinces[province] = addExtendedProvinceInformation(province, data);
+            provinces[province] = addExtendedProvinceInformation(province, side, data);
             return provinces;
         }, {})
     return game;

@@ -1,7 +1,171 @@
 module.exports = {
+
+    "HSQU": {
+        "kind": {
+            "category": "HSQU",
+            "type": "SQUAD",
+            "name": "Squad"
+        },
+        "upkeep": 123,
+        "cost": 123,
+        "hp": 123,
+        "actionPoints": 123,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-human",
+            "offset": 32
+        },
+        "weapons": {}
+    },
+
+    "HRAN": {
+        "kind": {
+            "category": "HRAN",
+            "type": "TROOP",
+            "name": "Ranger"
+        },
+        "upkeep": 123,
+        "cost": 123,
+        "hp": 123,
+        "actionPoints": 123,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-human",
+            "offset": 72
+        },
+        "weapons": {}
+    },
+
+    "HATV": {
+        "kind": {
+            "category": "HATV",
+            "type": "LTTANK",
+            "name": "L.A.V"
+        },
+        "upkeep": 123,
+        "cost": 123,
+        "hp": 123,
+        "actionPoints": 123,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-human",
+            "offset": 8
+        },
+        "weapons": {}
+    },
+
+    "HART": {
+        "kind": {
+            "category": "HART",
+            "type": "LONGRANGE",
+            "name": "Artillery",
+        },
+        "upkeep": 123,
+        "cost": 123,
+        "hp": 123,
+        "actionPoints": 123,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-human",
+            "offset": 0
+        },
+        "weapons": {}
+    },
+
+    "HBUG": {
+        "kind": {
+            "category": "HBUG",
+            "type": "UNIQUE1",
+            "name": "Buggy"
+        },
+        "upkeep": 123,
+        "cost": 123,
+        "hp": 123,
+        "actionPoints": 123,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-human",
+            "offset": 48
+        },
+        "weapons": {}
+    },
+
+    "HTNK": {
+        "kind": {
+            "category": "HTNK",
+            "type": "TANK",
+            "name": "Tank"
+        },
+        "upkeep": 123,
+        "cost": 123,
+        "hp": 123,
+        "actionPoints": 123,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-human",
+            "offset": 40
+        },
+        "weapons": {}
+    },
+
+    "HSPE": {
+        "kind": {
+            "category": "HSPE",
+            "type": "LTGRAV",
+            "name": "Speeder"
+        },
+        "upkeep": 123,
+        "cost": 123,
+        "hp": 123,
+        "actionPoints": 123,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-human",
+            "offset": 16
+        },
+        "weapons": {}
+    },
+
+    "HGRV": {
+        "kind": {
+            "category": "HGRV",
+            "type": "HEAVYGRAV",
+            "name": "Grav Tank"
+        },
+        "upkeep": 123,
+        "cost": 123,
+        "hp": 123,
+        "actionPoints": 123,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-human",
+            "offset": 24
+        },
+        "weapons": {}
+    },
+
+    "HGUN": {
+        "kind": {
+            "category": "HGUN",
+            "type": "LONGRANGEHOVER",
+            "name": "GunShip"
+        },
+        "upkeep": 123,
+        "cost": 123,
+        "hp": 123,
+        "actionPoints": 123,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-human",
+            "offset": 64
+        },
+        "weapons": {}
+    },
+
     "ASQD": {
         "kind": {
             "category": "ASQD",
+            "type": "SQUAD",
             "name": "Trooper"
         },
         "upkeep": 2,
@@ -45,6 +209,7 @@ module.exports = {
     "ASNI": {
         "kind": {
             "category": "ASNI",
+            "type": "TROOP",
             "name": "Sniper"
         },
         "upkeep": 3,
@@ -88,6 +253,7 @@ module.exports = {
     "ALTK": {
         "kind": {
             "category": "ALTK",
+            "type": "LTTANK",
             "name": "Light Tank"
         },
         "upkeep": 10,
@@ -131,6 +297,7 @@ module.exports = {
     "APLA": {
         "kind": {
             "category": "APLA",
+            "type": "LONGRANGE",
             "name": "Artillery"
         },
         "upkeep": 25,
@@ -174,6 +341,7 @@ module.exports = {
     "AGRV": {
         "kind": {
             "category": "AGRV",
+            "type": "HEAVYGRAV",
             "name": "Hover Tank"
         },
         "upkeep": 15,
@@ -217,6 +385,7 @@ module.exports = {
     "AFLY": {
         "kind": {
             "category": "AFLY",
+            "type": "LTGRAV",
             "name": "Flyer"
         },
         "upkeep": 15,
@@ -260,6 +429,7 @@ module.exports = {
     "AMDT": {
         "kind": {
             "category": "AMDT",
+            "type": "TANK",
             "name": "Tank"
         },
         "upkeep": 15,
@@ -303,6 +473,7 @@ module.exports = {
     "ASUP": {
         "kind": {
             "category": "ASUP",
+            "type": "LONGRANGEHOVER",
             "name": "S.H.O.G"
         },
         "upkeep": 30,
@@ -346,6 +517,7 @@ module.exports = {
     "AMEG": {
         "kind": {
             "category": "AMEG",
+            "type": "UNIQUE1",
             "name": "Mega Tank"
         },
         "upkeep": 30,

@@ -10,8 +10,8 @@ const structures = {
 
 const units = {
     alien: require('../../images/units/alie_ui.png'),
-    human: require('../../images/units/alie_ui.png'),
-    neutral: require('../../images/units/alie_ui.png')
+    human: require('../../images/units/huma_ui.png'),
+    neutral: require('../../images/units/neut_ui.png')
 }
 
 export const registerStructures = (scene) => {
