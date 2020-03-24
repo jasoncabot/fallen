@@ -12,12 +12,16 @@ const buildStructureModel = (id, structure, reference, position, displayOffset) 
     let model = {
         id: id,
         type: 'structure',
+        kind: structure.kind.type,
         category: structure.kind.category,
         hp: {
             current: structure.hp,
             max: reference.hp
         },
-        units: structure.units,
+        units: {
+            current: structure.units,
+            max: reference.production.value
+        },
         position: position,
         spritesheet: reference.display.tiles,
         offset: displayOffset
@@ -184,9 +188,7 @@ export default class LayerBuilder {
     }
 
     unitCanOccupy(unit, index, terrainType) {
-        // TODO: validation that a unit can occupy this space
         if (!this.inBounds(index, { x: 1, y: 1 })) return false;
-        // terrain != water | forest | mountain
         let terrain = TerrainData[terrainType][this.terrainAt(index)];
         const validMovements = {
             "GROUND": ["Bridge", "Plain"],
@@ -265,12 +267,28 @@ export default class LayerBuilder {
             case 'LAUNCH_DROPSHIP':
                 this.launchDropship(this.findTarget(command));
                 return;
+            case 'BOARD':
+                const position = this.findTarget(command).position;
+                const dropship = this.findTarget({
+                    targetId: command.dropship,
+                    targetType: 'structure'
+                });
+                this.boardUnit(position, dropship);
+                return;
             default:
                 throw new Error('No handler for action of type ' + command.action);
         }
     }
 
     launchDropship(dropship) {
+    }
+
+    boardUnit(position, dropship) {
+        const unit = this.unitAt(position);
+        dropship.units[unit.id] = unit;
+        this.writeTileValue(this.unitModels, position, null);
+        unit.position = {};
+        this.emitter.emit('unitBoarded', unit);
     }
 
     moveUnit(target, position) {

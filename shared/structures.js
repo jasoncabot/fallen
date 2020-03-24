@@ -4,7 +4,7 @@ module.exports = {
             "category": "WALL",
             "type": "WALL",
             "name": "Wall",
-            "starship": false
+            "constructable": true
         },
         "display": {
             "width": 1,
@@ -38,7 +38,7 @@ module.exports = {
             "category": "ATUR",
             "type": "TOWER",
             "name": "Fusion Tower",
-            "starship": false
+            "constructable": true
         },
         "display": {
             "width": 1,
@@ -71,7 +71,7 @@ module.exports = {
             "category": "AAIR",
             "type": "AIRPORT",
             "name": "Hover Pads",
-            "starship": false
+            "constructable": true
         },
         "display": {
             "width": 3,
@@ -101,7 +101,7 @@ module.exports = {
             "category": "ABAR",
             "type": "BARRACKS",
             "name": "Nest Center",
-            "starship": false
+            "constructable": true
         },
         "display": {
             "width": 2,
@@ -131,7 +131,7 @@ module.exports = {
             "category": "ABAY",
             "type": "STARPORT",
             "name": "Landing Site",
-            "starship": false
+            "constructable": false
         },
         "display": {
             "width": 3,
@@ -164,7 +164,7 @@ module.exports = {
             "category": "ADEF",
             "type": "ANTIMISSILE",
             "name": "Anti-Missile",
-            "starship": false
+            "constructable": true
         },
         "display": {
             "width": 2,
@@ -194,7 +194,7 @@ module.exports = {
             "category": "AENY",
             "type": "ENERGY",
             "name": "Energy Center",
-            "starship": false
+            "constructable": true
         },
         "display": {
             "width": 2,
@@ -224,7 +224,7 @@ module.exports = {
             "category": "AFAC",
             "type": "FACTORY",
             "name": "Production Center",
-            "starship": false
+            "constructable": true
         },
         "display": {
             "width": 3,
@@ -254,7 +254,7 @@ module.exports = {
             "category": "ALAB",
             "type": "LAB",
             "name": "Research Center",
-            "starship": false
+            "constructable": true
         },
         "display": {
             "width": 2,
@@ -284,7 +284,7 @@ module.exports = {
             "category": "AMIN",
             "type": "MINING",
             "name": "Refinery",
-            "starship": false
+            "constructable": true
         },
         "display": {
             "width": 3,
@@ -314,8 +314,7 @@ module.exports = {
             "category": "ARAD",
             "type": "SCANNER",
             "name": "Scanning Device",
-            "starship": false,
-            "scanner": true
+            "constructable": true
         },
         "display": {
             "width": 2,
@@ -343,8 +342,9 @@ module.exports = {
     "ASHP": {
         "kind": {
             "category": "ASHP",
+            "type": "DROPSHIP",
             "name": "Dropship",
-            "starship": true
+            "constructable": false
         },
         "display": {
             "width": 3,
@@ -367,8 +367,8 @@ module.exports = {
             "placement": "ANYWHERE"
         },
         "encyclopedia": {
-            "description": "This is a longer description",
-            "short": "Short description",
+            "description": "Dropships transport units from one province to another.",
+            "short": "",
             "next": "ASIL",
             "prev": "ARAD"
         }
@@ -377,7 +377,8 @@ module.exports = {
         "kind": {
             "category": "ASIL",
             "name": "Nuclear Launcher",
-            "starship": false
+            "type": "MISSILE",
+            "constructable": true
         },
         "display": {
             "width": 2,

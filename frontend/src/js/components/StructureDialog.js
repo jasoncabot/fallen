@@ -13,12 +13,13 @@ const showUnitInformation = (structure, reference) => {
 
 export default class StructureDialog extends GameObjects.Container {
 
-    constructor(scene, x, y, province, structure, mode, onDismiss, onActionSelected) {
+    constructor(scene, x, y, province, technology, structure, mode, onDismiss, onActionSelected) {
         super(scene, x, y);
 
         const structureRef = StructureData[structure.category];
 
         this.province = province;
+        this.technology = technology;
         this.structure = structure;
         this.mode = mode;
         this.structureReference = structureRef;
@@ -123,34 +124,65 @@ export default class StructureDialog extends GameObjects.Container {
     }
 
     linesForStructure(province, structure, reference) {
-        const energyConsumption = (reference.energyUsage && reference.energyUsage > 0) ? `${reference.energyUsage} EP per turn` : 'Nil'
-        const type = {
-            name: reference.kind.name,
-            count: Object.values(province.structures).filter(s => s.kind.category === reference.kind.category).length
-        };
-        const vals = {
-            'ENERGY': 'EP',
-            'CASH': 'Credits',
-            'RESEARCH': 'RP',
-            'TROOP': '',
-            'FACTORY': '',
-            'HOVER': '',
-            'DROPSHIP': '',
-            'NONE': ''
-        };
-        const production = {
-            single: `${reference.production.value} ${vals[reference.production.category]}`,
-            total: `${reference.production.value * type.count} ${vals[reference.production.category]}`
-        }
-        // TODO: add the right fields above for structure viewing and implement the follow 2
-        // production = filterByCurrentTechnology(reference.availableForProduction)
-        // units inside = structure.units
+        const lines = [];
 
-        return [
-            `Energy consumption: ${energyConsumption}`,
-            `${type.name} on province: ${type.count}`,
-            `Each produces ${production.single}`,
-            `Total production ${production.total}`,
-        ];
+        const structureIs = (array) => {
+            return array.indexOf(reference.kind.type) >= 0;
+        }
+
+        // Energy Consumption
+        const energyConsumption = (reference.energyUsage && reference.energyUsage > 0) ? `${reference.energyUsage} EP per turn` : 'Nil'
+        lines.push(`Energy consumption: ${energyConsumption}`);
+
+        // Unit production
+        if (structureIs(['AIRPORT', 'BARRACKS', 'DROPSHIP', 'FACTORY'])) {
+            // Storage space ...
+            // Units inside ...
+            lines.push(`Storage space: ${structure.units.max}`);
+            lines.push(`Units inside: ${Object.keys(structure.units.current).length}`);
+            // Resource production
+        } else if (structureIs(['ENERGY', 'LAB', 'MINING'])) {
+            // ... in province ...
+            // Each produces ...
+            // Total production ...
+            const total = Object.values(province.structures).filter(s => s.kind.category === reference.kind.category).length;
+            lines.push(`${reference.kind.name} on province: ${total}`);
+            const productionUnits = {
+                'ENERGY': 'EP',
+                'CASH': 'Credits',
+                'RESEARCH': 'RP'
+            }[reference.production.category];
+            if (productionUnits) {
+                lines.push(`Each produces ${reference.production.value} ${productionUnits}`);
+                lines.push(`Total production ${reference.production.value * total} ${productionUnits}`);
+            }
+        }
+
+        // Special Structures
+        switch (reference.kind.type) {
+            case 'ANTIMISSILE':
+                lines.push(`Protects against missile strike`);
+                break;
+            case 'MISSILE':
+                lines.push(`Missile cost: ${1000} Credits`);
+                lines.push(`Allows construction of Missiles`);
+                break;
+            case 'SCANNER':
+                lines.push(`Allows scanning of adjacent provinces`);
+                break;
+            case 'STARPORT':
+                lines.push(`Allows Construction of Dropships`);
+                lines.push(`Dropship cost ${600} Credits`);
+                break;
+            case 'TOWER':
+                lines.push(`Weapon damage ${60}`);
+                break;
+        }
+
+        if (structureIs(['ANTIMISSILE', 'MISSILE'])) {
+            lines.push(`Efficiency level ${this.technology.rocketry}`);
+        }
+
+        return lines;
     }
 }

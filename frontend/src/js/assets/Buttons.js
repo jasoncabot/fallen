@@ -22,7 +22,7 @@ const createButton = (scene, x, y, config, callback) => {
         })
         .setOrigin(0, 0);
 
-    button.on('pointerover', (_pointer, _x, _y, event) => { 
+    button.on('pointerover', (_pointer, _x, _y, event) => {
         if (!button.highlighted) {
             button.setFrame(config.name + '_1');
         }
@@ -101,13 +101,13 @@ const launch = {
         data: buttonsLaunchData,
     },
     land: {
-        hitArea: []
+        hitArea: [0, 22, 4, 12, 9, 7, 14, 4, 23, 2, 33, 0, 104, 0, 104, 44, 0, 44]
     },
     nuke: {
-        hitArea: []
+        hitArea: [0, 22, 4, 12, 9, 7, 14, 4, 23, 2, 33, 0, 104, 0, 104, 44, 0, 44]
     },
     cancel: {
-        hitArea: []
+        hitArea: [29, 45, 19, 43, 13, 41, 8, 38, 4, 33, 0, 25, 0, 0, 104, 0, 104, 45]
     }
 };
 const manufacturing = {

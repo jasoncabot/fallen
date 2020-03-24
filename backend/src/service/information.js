@@ -7,7 +7,7 @@ const touchingOwnedWithScanner = (provinceKey, owner, provinces) => {
     return ProvinceData[provinceKey].touching
         .map(key => provinces[key])
         .filter(p => p.owner === owner)
-        .find(p => Object.values(p.structures).find(s => s.kind.scanner));
+        .find(p => Object.values(p.structures).find(s => s.kind.type === 'SCANNER'));
 }
 
 module.exports.removeUnknown = (game, userId) => {

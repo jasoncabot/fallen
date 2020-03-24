@@ -20,7 +20,7 @@ export default class ConstructionDialog extends GameObjects.Container {
         this.setScrollFactor(0);
 
         this.currentOffset = 0;
-        this.structureKeys = Object.keys(StructureData).filter(key => !StructureData[key].kind.starship);
+        this.structureKeys = Object.keys(StructureData).filter(key => StructureData[key].kind.constructable);
         this.currentImages = [];
     }
 

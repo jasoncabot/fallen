@@ -102,6 +102,13 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.activeUnitSelection.setPosition(view.x, view.y);
             this.onConstructionModeUpdated();
         });
+        emitter.on('unitBoarded', (unit) => {
+            let view = this.unitView[unit.id];
+            view.destroy();
+            this.sound.play('telep');
+            this.currentlySelectedUnit = null;
+            this.onConstructionModeUpdated();
+        });
         emitter.on('structureBuilt', ({ models }) => {
             models.forEach((structure) => {
                 let pos = this.screenCoordinates(structure.position.x, structure.position.y);
@@ -171,36 +178,57 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.onConstructionModeUpdated();
     }
 
+    enterConstructionMode(reference) {
+        this.constructionMode = {
+            w: reference.display.width,
+            h: reference.display.height,
+            kind: 'structure',
+            category: reference.kind.category,
+            model: {
+                title: "Construction",
+                name: reference.kind.name,
+                cost: reference.build.cost
+            }
+        };
+        this.onConstructionModeUpdated();
+    }
+
     onStructureSelected(model, view, pos) {
         if (this.modalDialog) return;
         let game = this.cache.json.get(`game-${this.gameId}`);
         let province = game.provinces[this.province];
-        const dialog = new StructureDialog(this, 13, 28, province, model, "STRATEGIC", (_structure) => {
+        const dialog = new StructureDialog(this, 13, 28, province, game.player.technology, model, "STRATEGIC", (_structure) => {
             this.modalDialog.destroy();
             this.modalDialog = null;
         }, (kind, structure) => {
+            this.modalDialog.destroy();
+            this.modalDialog = null;
 
             switch (kind) {
                 case 'FIRE':
-                    console.log('pew pew fire a turret');
+                    // Technically you shouldn't be able to get here in Strategic mode, however
+                    // when this code is moved into a shared location between strategic and tactical modes
+                    // then this should target a specific place for firing a weapon
                     break;
                 case 'BUILD_DROPSHIP':
-                    console.log('beep beep build a dropship');
+                    const dropshipReference = Object.values(StructureData).find(s => s.kind.type === 'DROPSHIP');
+                    this.enterConstructionMode(dropshipReference);
                     break;
                 case 'LAUNCH':
-                    // TODO: this should show the province selection screen with 2 options
-                    // ok(provincekey) submit following command
-                    // this.layerBuilder.processCommand({
-                    //     action: 'LAUNCH_DROPSHIP',
-                    //     province: this.province,
-                    //     targetId: model.id,
-                    //     targetType: 'structure',
-                    //     position: structure.position,
-                    // });
-                    console.log('beep beep launching dropship');
+                    this.scene.start('Launch', {
+                        mode: 'DROPSHIP',
+                        from: this.province,
+                        gameId: this.gameId,
+                        dropship: model.id,
+                        position: structure.position
+                    });
                     break;
                 case 'MISSILE':
-                    console.log('pew pew fire a missile');
+                    this.scene.start('Launch', {
+                        mode: 'MISSILE',
+                        from: this.province,
+                        gameId: this.gameId
+                    });
                     break;
             }
         })
@@ -295,18 +323,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         if (this.constructionMode && this.constructionMode.kind === 'pending-construction') {
             this.logo.visible = true;
             this.modalDialog = new ConstructionDialog(this, 16, 42, (structure) => {
-                this.constructionMode = {
-                    w: structure.display.width,
-                    h: structure.display.height,
-                    kind: 'structure',
-                    category: structure.kind.category,
-                    model: {
-                        title: "Construction",
-                        name: structure.kind.name,
-                        cost: structure.build.cost
-                    }
-                };
-                this.onConstructionModeUpdated();
+                this.enterConstructionMode(structure);
             }).show();
             this.uiContainer.add(this.modalDialog);
             this.infoText.visible = false;
@@ -461,9 +478,21 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     views.push(structureImage)
                     this.structureViews[structure.id] = views;
 
-                    structureImage.on('pointerup', (_pointer, _x, _y, event) => {
+                    structureImage.on('pointerup', (_pointer, _x, _y, _event) => {
                         if (this.constructionMode) return;
-                        this.onStructureSelected(structure, structureImage, tileIndex);
+                        if (this.currentlySelectedUnit) {
+                            if (structure.kind !== 'DROPSHIP' || Object.keys(structure.units.current).length >= structure.units.max) return;
+
+                            this.layerBuilder.processCommand({
+                                action: 'BOARD',
+                                province: this.province,
+                                targetId: this.currentlySelectedUnit.id,
+                                targetType: 'unit',
+                                dropship: structure.id
+                            });
+                        } else {
+                            this.onStructureSelected(structure, structureImage, tileIndex);
+                        }
                     });
                 }
 
