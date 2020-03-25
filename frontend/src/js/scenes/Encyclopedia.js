@@ -119,7 +119,7 @@ export default class Encyclopedia extends Scene {
         this.add.image(3, 13, 'encyclopedia-background').setOrigin(0, 0);
         var y = 180;
         [
-            { title: 'Human Units', scene: 'Encyclopedia', item: 'ASQD' },
+            { title: 'Human Units', scene: 'Encyclopedia', item: 'HSQU' },
             { title: 'Neutral Units', scene: 'Encyclopedia', item: 'ASQD' },
             { title: 'Tauran Units', scene: 'Encyclopedia', item: 'ASQD' }
         ].forEach(config => {
@@ -131,7 +131,7 @@ export default class Encyclopedia extends Scene {
 
         y = 308;
         [
-            { title: 'Human Buildings', scene: 'Encyclopedia', item: 'ATUR' },
+            { title: 'Human Buildings', scene: 'Encyclopedia', item: 'HTUR' },
             { title: 'Tauran Buildings', scene: 'Encyclopedia', item: 'ATUR' }
         ].forEach(config => {
             this.add.existing(new MenuButton(this, { x: 193, y, width: 258, height: 38 }, config.title, (scene) => {

@@ -33,6 +33,381 @@ module.exports = {
             "prev": ""
         }
     },
+
+    "HTUR": {
+        "kind": {
+            "category": "HTUR",
+            "type": "TOWER",
+            "name": "Fusion Tower",
+            "constructable": true
+        },
+        "display": {
+            "width": 1,
+            "height": 1,
+            "tiles": "structure-human",
+            "offset": 66
+        },
+        "action": {
+            "TACTICAL": "FIRE"
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 25,
+        "hp": 50,
+        "build": {
+            "cost": 100,
+            "placement": "B-WALL"
+        },
+        "encyclopedia": {
+            "description": "This is a longer description",
+            "short": "Automatic active defense",
+            "next": "HAIR",
+            "prev": ""
+        }
+    },
+    "HAIR": {
+        "kind": {
+            "category": "HAIR",
+            "type": "AIRPORT",
+            "name": "Gravport",
+            "constructable": true
+        },
+        "display": {
+            "width": 3,
+            "height": 4,
+            "tiles": "structure-human",
+            "offset": 0
+        },
+        "production": {
+            "category": "HOVER",
+            "value": 12
+        },
+        "energyUsage": 50,
+        "hp": 250,
+        "build": {
+            "cost": 300,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of hover units.",
+            "short": "Production capacity: Hover units",
+            "next": "HBAR",
+            "prev": "HTUR"
+        }
+    },
+    "HBAR": {
+        "kind": {
+            "category": "HBAR",
+            "type": "BARRACKS",
+            "name": "Barrack",
+            "constructable": true
+        },
+        "display": {
+            "width": 2,
+            "height": 2,
+            "tiles": "structure-human",
+            "offset": 12
+        },
+        "production": {
+            "category": "TROOP",
+            "value": 8
+        },
+        "energyUsage": 5,
+        "hp": 150,
+        "build": {
+            "cost": 200,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of squad units.",
+            "short": "Production capacity: Squad units",
+            "next": "HBAY",
+            "prev": "HAIR"
+        }
+    },
+    "HBAY": {
+        "kind": {
+            "category": "HBAY",
+            "type": "STARPORT",
+            "name": "Shipyard",
+            "constructable": false
+        },
+        "display": {
+            "width": 3,
+            "height": 4,
+            "tiles": "structure-human",
+            "offset": 16
+        },
+        "action": {
+            "STRATEGIC": "BUILD_DROPSHIP"
+        },
+        "production": {
+            "category": "DROPSHIP",
+            "value": 1
+        },
+        "energyUsage": 50,
+        "hp": 20000,
+        "build": {
+            "cost": 300,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "The only building that allows construction of dropships",
+            "short": "Short description",
+            "next": "HDEF",
+            "prev": "HBAR"
+        }
+    },
+    "HDEF": {
+        "kind": {
+            "category": "HDEF",
+            "type": "ANTIMISSILE",
+            "name": "Anti-Missile",
+            "constructable": true
+        },
+        "display": {
+            "width": 2,
+            "height": 2,
+            "tiles": "structure-human",
+            "offset": 28
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 50,
+        "hp": 200,
+        "build": {
+            "cost": 400,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Defense against incoming missiles.",
+            "short": "Defense power: Antimissile",
+            "next": "HENY",
+            "prev": "HBAY"
+        }
+    },
+    "HENY": {
+        "kind": {
+            "category": "HENY",
+            "type": "ENERGY",
+            "name": "Power Plant",
+            "constructable": true
+        },
+        "display": {
+            "width": 2,
+            "height": 2,
+            "tiles": "structure-human",
+            "offset": 32
+        },
+        "production": {
+            "category": "ENERGY",
+            "value": 100
+        },
+        "energyUsage": 0,
+        "hp": 100,
+        "build": {
+            "cost": 50,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Produces energy to maintain buildings.",
+            "short": "Energy production: 100 EP",
+            "next": "HFAC",
+            "prev": "HDEF"
+        }
+    },
+    "HFAC": {
+        "kind": {
+            "category": "HFAC",
+            "type": "FACTORY",
+            "name": "Factory",
+            "constructable": true
+        },
+        "display": {
+            "width": 3,
+            "height": 3,
+            "tiles": "structure-human",
+            "offset": 36
+        },
+        "production": {
+            "category": "FACTORY",
+            "value": 12
+        },
+        "energyUsage": 50,
+        "hp": 250,
+        "build": {
+            "cost": 300,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of ground units.",
+            "short": "Production capacity: Ground units",
+            "next": "HLAB",
+            "prev": "HENY"
+        }
+    },
+    "HLAB": {
+        "kind": {
+            "category": "HLAB",
+            "type": "LAB",
+            "name": "Laboratory",
+            "constructable": true
+        },
+        "display": {
+            "width": 2,
+            "height": 2,
+            "tiles": "structure-human",
+            "offset": 45
+        },
+        "production": {
+            "category": "RESEARCH",
+            "value": 100
+        },
+        "energyUsage": 10,
+        "hp": 50,
+        "build": {
+            "cost": 400,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Produces research points to improve the Tech Level in six Research Fields.",
+            "short": "Research Production: 100 RP",
+            "next": "HMIN",
+            "prev": "HFAC"
+        }
+    },
+    "HMIN": {
+        "kind": {
+            "category": "HMIN",
+            "type": "MINING",
+            "name": "Mining Facility",
+            "constructable": true
+        },
+        "display": {
+            "width": 3,
+            "height": 3,
+            "tiles": "structure-human",
+            "offset": 49
+        },
+        "production": {
+            "category": "CASH",
+            "value": 100
+        },
+        "energyUsage": 10,
+        "hp": 250,
+        "build": {
+            "cost": 100,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Produces credits income to build units and structures.",
+            "short": "Credits production: 100 Credits",
+            "next": "HRAD",
+            "prev": "HLAB"
+        }
+    },
+    "HRAD": {
+        "kind": {
+            "category": "HRAD",
+            "type": "SCANNER",
+            "name": "Radar",
+            "constructable": true
+        },
+        "display": {
+            "width": 2,
+            "height": 2,
+            "tiles": "structure-human",
+            "offset": 58
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 30,
+        "hp": 30,
+        "build": {
+            "cost": 200,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Gives information on adjacent provinces, improves Nuclear attack and defense.",
+            "short": "Capacity: Scanning adjacent provinces",
+            "next": "HSHP",
+            "prev": "HMIN"
+        }
+    },
+    "HSHP": {
+        "kind": {
+            "category": "HSHP",
+            "type": "DROPSHIP",
+            "name": "Dropship",
+            "constructable": false
+        },
+        "display": {
+            "width": 3,
+            "height": 3,
+            "tiles": "structure-human-dropship",
+            "offset": 0
+        },
+        "action": {
+            "STRATEGIC": "LAUNCH",
+            "TACTICAL": "LAUNCH"
+        },
+        "production": {
+            "category": "NONE",
+            "value": 8
+        },
+        "energyUsage": 0,
+        "hp": 75,
+        "build": {
+            "cost": 600,
+            "placement": "ANYWHERE"
+        },
+        "encyclopedia": {
+            "description": "Dropships transport units from one province to another.",
+            "short": "",
+            "next": "HSIL",
+            "prev": "HRAD"
+        }
+    },
+    "HSIL": {
+        "kind": {
+            "category": "HSIL",
+            "name": "Nuclear Silo",
+            "type": "MISSILE",
+            "constructable": true
+        },
+        "display": {
+            "width": 2,
+            "height": 2,
+            "tiles": "structure-human",
+            "offset": 62
+        },
+        "action": {
+            "STRATEGIC": "MISSILE",
+            "TACTICAL": null
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 50,
+        "hp": 200,
+        "build": {
+            "cost": 800,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of nuclear missiles.",
+            "short": "Long-range attack",
+            "next": "",
+            "prev": "HSHP"
+        }
+    },
     "ATUR": {
         "kind": {
             "category": "ATUR",

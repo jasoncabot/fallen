@@ -143,7 +143,7 @@ export default class LayerBuilder {
     structureOverviewAt(index) {
         let reference = (this.structureModels[index.x] || [])[index.y];
         if (!reference) return null;
-        return this.objectAt(index, [32, 32, 32, 32, 32, 17, 19, 18, 32, 23, 25, 24, 32, 20, 22, 21], (x, y) => {
+        return this.objectAt(index, [68, 32, 32, 32, 32, 17, 19, 18, 32, 23, 25, 24, 32, 20, 22, 21], (x, y) => {
             let model = (this.structureModels[x] || [])[y];
             if (!model) return false;
             return reference.id === model.id;
