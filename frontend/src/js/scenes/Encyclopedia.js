@@ -120,7 +120,7 @@ export default class Encyclopedia extends Scene {
         var y = 180;
         [
             { title: 'Human Units', scene: 'Encyclopedia', item: 'HSQU' },
-            { title: 'Neutral Units', scene: 'Encyclopedia', item: 'ASQD' },
+            { title: 'Neutral Units', scene: 'Encyclopedia', item: 'NATV' },
             { title: 'Tauran Units', scene: 'Encyclopedia', item: 'ASQD' }
         ].forEach(config => {
             this.add.existing(new MenuButton(this, { x: 193, y, width: 258, height: 38 }, config.title, (scene) => {

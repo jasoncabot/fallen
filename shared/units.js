@@ -1,5 +1,180 @@
 module.exports = {
-
+    "NATV": {
+        "kind": {
+            "category": "NATV",
+            "type": "LTTANK",
+            "name": "Strike Car"
+        },
+        "upkeep": 5,
+        "cost": 100,
+        "hp": 20,
+        "actionPoints": 140,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-neutral",
+            "offset": 32
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "NTNK",
+            "prev": null
+        }
+    },
+    "NTNK": {
+        "kind": {
+            "category": "NTNK",
+            "type": "TANK",
+            "name": "Tank"
+        },
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 50,
+        "actionPoints": 100,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-neutral",
+            "offset": 32
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "NGRV",
+            "prev": "NATV"
+        }
+    },
+    "NGRV": {
+        "kind": {
+            "category": "NGRV",
+            "type": "SQUAD",
+            "name": "Grav Bike"
+        },
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 20,
+        "actionPoints": 180,
+        "movement": "HOVER",
+        "display": {
+            "tiles": "unit-neutral",
+            "offset": 32
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "NROC",
+            "prev": "NTNK"
+        }
+    },
+    "NROC": {
+        "kind": {
+            "category": "NROC",
+            "type": "LONGRANGE",
+            "name": "Launcher"
+        },
+        "upkeep": 15,
+        "cost": 600,
+        "hp": 20,
+        "actionPoints": 80,
+        "movement": "GROUND",
+        "display": {
+            "tiles": "unit-neutral",
+            "offset": 32
+        },
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": null,
+            "prev": "NGRV"
+        }
+    },
     "HSQU": {
         "kind": {
             "category": "HSQU",
