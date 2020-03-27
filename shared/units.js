@@ -15,9 +15,35 @@ module.exports = {
             "tiles": "unit-human",
             "offset": 32
         },
-        "weapons": {}
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HRAN",
+            "prev": null
+        }
     },
-
     "HRAN": {
         "kind": {
             "category": "HRAN",
@@ -33,9 +59,35 @@ module.exports = {
             "tiles": "unit-human",
             "offset": 72
         },
-        "weapons": {}
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HATV",
+            "prev": "HSQU"
+        }
     },
-
     "HATV": {
         "kind": {
             "category": "HATV",
@@ -51,9 +103,35 @@ module.exports = {
             "tiles": "unit-human",
             "offset": 8
         },
-        "weapons": {}
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HART",
+            "prev": "HRAN"
+        }
     },
-
     "HART": {
         "kind": {
             "category": "HART",
@@ -69,9 +147,35 @@ module.exports = {
             "tiles": "unit-human",
             "offset": 0
         },
-        "weapons": {}
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HBUG",
+            "prev": "HATV"
+        }
     },
-
     "HBUG": {
         "kind": {
             "category": "HBUG",
@@ -87,9 +191,35 @@ module.exports = {
             "tiles": "unit-human",
             "offset": 48
         },
-        "weapons": {}
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HTNK",
+            "prev": "HART"
+        }
     },
-
     "HTNK": {
         "kind": {
             "category": "HTNK",
@@ -105,9 +235,35 @@ module.exports = {
             "tiles": "unit-human",
             "offset": 40
         },
-        "weapons": {}
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HSPE",
+            "prev": "HBUG"
+        }
     },
-
     "HSPE": {
         "kind": {
             "category": "HSPE",
@@ -123,9 +279,35 @@ module.exports = {
             "tiles": "unit-human",
             "offset": 16
         },
-        "weapons": {}
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HGRV",
+            "prev": "HTNK"
+        }
     },
-
     "HGRV": {
         "kind": {
             "category": "HGRV",
@@ -141,9 +323,35 @@ module.exports = {
             "tiles": "unit-human",
             "offset": 24
         },
-        "weapons": {}
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HGUN",
+            "prev": "HSPE"
+        }
     },
-
     "HGUN": {
         "kind": {
             "category": "HGUN",
@@ -159,9 +367,35 @@ module.exports = {
             "tiles": "unit-human",
             "offset": 64
         },
-        "weapons": {}
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": null,
+            "prev": "HGRV"
+        }
     },
-
     "ASQD": {
         "kind": {
             "category": "ASQD",

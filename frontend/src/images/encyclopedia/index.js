@@ -26,7 +26,6 @@ import hatv from './hatv.png'
 import hbar from './hbar.png'
 import hbay from './hbay.png'
 import hbug from './hbug.png'
-import hcom from './hcom.png'
 import hdef from './hdef.png'
 import heny from './heny.png'
 import hfac from './hfac.png'
@@ -35,10 +34,11 @@ import hgun from './hgun.png'
 import hlab from './hlab.png'
 import hmin from './hmin.png'
 import hrad from './hrad.png'
+import hran from './hran.png'
 import hshp from './hshp.png'
 import hsil from './hsil.png'
-import hspd from './hspd.png'
-import hsqd from './hsqd.png'
+import hspe from './hspe.png'
+import hsqu from './hsqu.png'
 import htnk from './htnk.png'
 import htur from './htur.png'
 import natv from './natv.png'
@@ -74,7 +74,6 @@ export default {
     hbar,
     hbay,
     hbug,
-    hcom,
     hdef,
     heny,
     hfac,
@@ -83,10 +82,11 @@ export default {
     hlab,
     hmin,
     hrad,
+    hran,
     hshp,
     hsil,
-    hspd,
-    hsqd,
+    hspe,
+    hsqu,
     htnk,
     htur,
     natv,
