@@ -2,10 +2,26 @@ import { TerrainData } from 'shared';
 
 const uuidv4 = require('uuid/v4');
 
-const objectExistsAt = (list) => {
+const findObject = (list) => {
     return (x, y) => {
         return (list[x] || [])[y];
     }
+}
+
+const buildUnitModel = (id, unit, reference) => {
+    let model = {
+        id: id,
+        type: 'unit',
+        name: reference.kind.name,
+        movement: reference.movement,
+        upkeep: reference.upkeep,
+        experience: unit.experience,
+        position: unit.position,
+        facing: unit.facing,
+        spritesheet: reference.display.tiles,
+        offset: reference.display.offset,
+    };
+    return model;
 }
 
 const buildStructureModel = (id, structure, reference, position, displayOffset) => {
@@ -19,7 +35,7 @@ const buildStructureModel = (id, structure, reference, position, displayOffset) 
             max: reference.hp
         },
         units: {
-            current: structure.units,
+            current: structure.units || {},
             max: reference.production.value
         },
         position: position,
@@ -63,19 +79,7 @@ export default class LayerBuilder {
         Object.keys(this.unitLookup || {}).forEach(unitId => {
             let unit = this.unitLookup[unitId];
             let reference = units[unit.kind.category];
-            // TODO: simplify and use the province.unit + reference data?
-            let model = {
-                id: unitId,
-                type: 'unit',
-                name: reference.kind.name,
-                movement: reference.movement,
-                upkeep: reference.upkeep,
-                experience: unit.experience,
-                position: unit.position,
-                facing: unit.facing,
-                spritesheet: reference.display.tiles,
-                offset: reference.display.offset,
-            };
+            let model = buildUnitModel(unitId, unit, reference);
             this.writeTileValue(this.unitModels, unit.position, model);
         });
 
@@ -107,7 +111,7 @@ export default class LayerBuilder {
     }
 
     roadAt(index) {
-        return this.objectAt(index, [16, 11, 12, 9, 13, 1, 3, 7, 14, 2, 4, 8, 10, 5, 6, 15], objectExistsAt(this.roads));
+        return this.objectAt(index, [16, 11, 12, 9, 13, 1, 3, 7, 14, 2, 4, 8, 10, 5, 6, 15], findObject(this.roads));
     }
 
     roadOverviewAt(index) {
@@ -129,22 +133,23 @@ export default class LayerBuilder {
         // 1101 = 90
         // 1110 = 91
         // 1111 = 101
-        return this.objectAt(index, [101, 94, 94, 94, 95, 86, 88, 92, 95, 87, 89, 93, 95, 90, 91, 101], objectExistsAt(this.roads));
+        return this.objectAt(index, [101, 94, 94, 94, 95, 86, 88, 92, 95, 87, 89, 93, 95, 90, 91, 101], findObject(this.roads));
     }
 
     wallAt(index) {
-        return this.objectAt(index, [32, 27, 28, 25, 29, 17, 19, 23, 30, 18, 20, 24, 26, 21, 22, 31], objectExistsAt(this.walls));
+        return this.objectAt(index, [32, 27, 28, 25, 29, 17, 19, 23, 30, 18, 20, 24, 26, 21, 22, 31], findObject(this.walls));
     }
 
     wallOverviewAt(index) {
-        return this.objectAt(index, [118, 111, 111, 111, 112, 103, 105, 109, 112, 104, 106, 110, 112, 107, 108, 118], objectExistsAt(this.walls));
+        return this.objectAt(index, [118, 111, 111, 111, 112, 103, 105, 109, 112, 104, 106, 110, 112, 107, 108, 118], findObject(this.walls));
     }
 
     structureOverviewAt(index) {
-        let reference = (this.structureModels[index.x] || [])[index.y];
+        let findStructure = findObject(this.structureModels);
+        let reference = findStructure(index.x, index.y);
         if (!reference) return null;
         return this.objectAt(index, [68, 32, 32, 32, 32, 17, 19, 18, 32, 23, 25, 24, 32, 20, 22, 21], (x, y) => {
-            let model = (this.structureModels[x] || [])[y];
+            let model = findStructure(x, y);
             if (!model) return false;
             return reference.id === model.id;
         });
@@ -176,7 +181,7 @@ export default class LayerBuilder {
     }
 
     unitAt(index) {
-        return (this.unitModels[index.x] || [])[index.y];
+        return findObject(this.unitModels)(index.x, index.y);
     }
 
     inBounds(index, size) {
@@ -202,7 +207,7 @@ export default class LayerBuilder {
     }
 
     structureAt(index) {
-        return (this.structureModels[index.x] || [])[index.y];
+        return findObject(this.structureModels)(index.x, index.y);
     }
 
     validForConstruction(index, size, kind) {
@@ -268,12 +273,12 @@ export default class LayerBuilder {
                 this.launchDropship(this.findTarget(command));
                 return;
             case 'BOARD':
-                const position = this.findTarget(command).position;
+                const unit = this.findTarget(command);
                 const dropship = this.findTarget({
                     targetId: command.dropship,
                     targetType: 'structure'
                 });
-                this.boardUnit(position, dropship);
+                this.boardUnit(unit, command.targetId, dropship);
                 return;
             default:
                 throw new Error('No handler for action of type ' + command.action);
@@ -283,12 +288,11 @@ export default class LayerBuilder {
     launchDropship(dropship) {
     }
 
-    boardUnit(position, dropship) {
-        const unit = this.unitAt(position);
-        dropship.units[unit.id] = unit;
-        this.writeTileValue(this.unitModels, position, null);
+    boardUnit(unit, unitId, dropship) {
+        dropship.units[unitId] = unit;
+        this.writeTileValue(this.unitModels, unit.position, null);
         unit.position = {};
-        this.emitter.emit('unitBoarded', unit);
+        this.emitter.emit('unitBoarded', unitId);
     }
 
     moveUnit(target, position) {
@@ -319,7 +323,8 @@ export default class LayerBuilder {
         const instance = {
             position: position,
             kind: reference.kind,
-            hp: reference.hp
+            hp: reference.hp,
+            units: {}
         };
 
         let models = [];
@@ -411,7 +416,7 @@ export default class LayerBuilder {
             { x: position.x + 0, y: position.y - 1 },
             { x: position.x + 0, y: position.y + 1 }
         ].filter(pos => {
-            return (models[pos.x] || [])[pos.y];
+            return findObject(models)(pos.x, pos.y);
         });
         positions.push(position);
         return positions;

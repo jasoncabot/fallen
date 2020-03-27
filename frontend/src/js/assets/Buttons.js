@@ -23,11 +23,15 @@ const createButton = (scene, x, y, config, callback) => {
         .setOrigin(0, 0);
 
     button.on('pointerover', (_pointer, _x, _y, event) => {
-        if (!button.highlighted) {
+        if (!button.highlighted && button.state !== 3) {
             button.setFrame(config.name + '_1');
         }
     });
-    button.on('pointerout', () => { if (!button.highlighted) button.setFrame(config.name + '_0'); });
+    button.on('pointerout', () => {
+        if (!button.highlighted && button.state !== 3) {
+            button.setFrame(config.name + '_0');
+        }
+    });
     button.on('pointerdown', (_pointer, _x, _y, event) => {
         button.setFrame(config.name + '_2');
         event.stopPropagation();
@@ -38,10 +42,12 @@ const createButton = (scene, x, y, config, callback) => {
         callback(button);
     });
     button.disable = () => {
+        button.state = 3;
         button.disableInteractive();
         button.setFrame(config.name + '_3');
     }
     button.enable = () => {
+        button.state = 0;
         button.setFrame(config.name + '_0');
         button.setInteractive();
     }
@@ -49,6 +55,7 @@ const createButton = (scene, x, y, config, callback) => {
         button.highlighted = value;
         button.setFrame(config.name + (value ? '_2' : '_0'));
     }
+    button.state = 0;
 
     return button;
 }
@@ -91,7 +98,7 @@ const done = {
         data: buttonsDoneData,
     },
     done: {
-        hitArea: []
+        hitArea: [2, 0, 57, 0, 57, 67, 0, 67, 0, 64, 12, 52, 12, 50, 13, 49, 13, 18, 12, 17, 12, 15, 2, 2, 2, 0]
     }
 };
 const launch = {
@@ -120,10 +127,10 @@ const manufacturing = {
         hitArea: [14, 0, 98, 0, 103, 4, 103, 34, 98, 38, 14, 38, 6, 31, 6, 30, 2, 24, 2, 21, 0, 19, 0, 14, 7, 4, 8, 4]
     },
     up: {
-        hitArea: [16, 0, 19, 0, 35, 16, 35, 17, 0, 17, 0, 16, 16, 0]
+        hitArea: [-4, -11, 40, -11, 40, 33, -4, 33]
     },
     down: {
-        hitArea: [0, 0, 35, 0, 35, 1, 19, 17, 16, 17, 0, 1]
+        hitArea: [-4, -11, 40, -11, 40, 33, -4, 33]
     }
 };
 const strategic = {

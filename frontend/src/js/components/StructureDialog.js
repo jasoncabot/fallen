@@ -1,13 +1,15 @@
 import { GameObjects } from 'phaser';
 
 import { createButton, buttons } from '../assets/Buttons';
+import customPointer from '../../images/misc/FALLEN_218.cur';
 
-import { StructureData } from 'shared';
+import { StructureData, UnitData } from 'shared';
 
 const showUnitInformation = (structure, reference) => {
-    const containsUnits = structure.units && Object.keys(structure.units).length > 0;
+    const containsUnits = structure.units.current && Object.keys(structure.units.current).length > 0;
     const canBuildUnits = ['TROOP', 'FACTORY', 'HOVER'].indexOf(reference.production.category) >= 0;
-    const showUnitInformation = containsUnits || canBuildUnits;
+    const canCarryUnits = ['DROPSHIP'].indexOf(reference.kind.type) >= 0;
+    const showUnitInformation = containsUnits || canBuildUnits || canCarryUnits;
     return showUnitInformation;
 }
 
@@ -28,7 +30,7 @@ export default class StructureDialog extends GameObjects.Container {
         const showUnits = showUnitInformation(structure, structureRef);
         const width = showUnits ? 600 : 288;
         this.setSize(width, 254);
-        this.add(scene.add.zone(0, 0, width, 254)
+        this.add(scene.add.zone(0, 0, 288, 254)
             .setOrigin(0)
             .setInteractive()
             .on('pointerup', (_pointer, _x, _y, event) => {
@@ -43,7 +45,9 @@ export default class StructureDialog extends GameObjects.Container {
 
         this.showUnits = showUnits;
         this.unitOffset = 0;
-        this.currentImages = [];
+        this.unitKeys = Object.keys(structure.units.current);
+        this.currentStructureImages = [];
+        this.currentUnitImages = [];
     }
 
     show() {
@@ -55,18 +59,18 @@ export default class StructureDialog extends GameObjects.Container {
 
         // Unit Production
         if (this.showUnits) {
-            this.add(createButton(this.scene, 401, 228, buttons.manufacturing.up, (button) => {
-                console.log('moved up');
-            }));
-            this.add(createButton(this.scene, 442, 228, buttons.manufacturing.down, (button) => {
-                console.log('moved down');
-            }));
-
-            // TODO: if there are units in here already, count how many, 
-            // if more than 4, look at this.unitOffset (page) show down/up arrow
-
+            this.buttonUp = createButton(this.scene, 401, 228, buttons.manufacturing.up, (button) => {
+                this.unitOffset = Math.max(0, this.unitOffset - 4)
+                this.onUnitPageChanged();
+            });
+            this.add(this.buttonUp);
+            this.buttonDown = createButton(this.scene, 442, 228, buttons.manufacturing.down, (button) => {
+                this.unitOffset = Math.min(this.structure.units.max, this.unitOffset + 4)
+                this.onUnitPageChanged();
+            });
+            this.add(this.buttonDown);
+            this.onUnitPageChanged();
         }
-        this.unitOffset = 0;
 
         // Main Action
         if (this.storedCommand) {
@@ -81,7 +85,7 @@ export default class StructureDialog extends GameObjects.Container {
             .setOrigin(0);
         this.add(this.healthBar);
 
-        this.draw(this.structureReference.display);
+        this.drawStructure(this.structureReference.display);
 
         const small = 2;
         const medium = 50;
@@ -105,8 +109,8 @@ export default class StructureDialog extends GameObjects.Container {
         this.destroy();
     }
 
-    draw(structure) {
-        this.currentImages.forEach(img => { img.destroy() });
+    drawStructure(structure) {
+        this.currentStructureImages.forEach(img => { img.destroy() });
         let offset = structure.offset;
         const start = { x: 120, y: 80 };
         for (let x = 0; x < structure.width; x++) {
@@ -117,10 +121,29 @@ export default class StructureDialog extends GameObjects.Container {
                     structure.tiles,
                     offset++)
                     .setOrigin(0);
-                this.currentImages.push(img);
+                this.currentStructureImages.push(img);
                 this.add(img);
             }
         }
+    }
+
+    drawUnit(unit, offset) {
+        const pos = {
+            x: 304 + (offset * 70),
+            y: 145
+        };
+        const reference = UnitData[unit.kind.category];
+        const unitImage = this.scene.add.image(pos.x, pos.y,
+            reference.display.tiles, reference.display.offset + unit.facing)
+            .setOrigin(0)
+            .setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
+        this.add(unitImage);
+        this.currentUnitImages.push(unitImage);
+
+        unitImage.on('pointerup', (_pointer, _x, _y, event) => {
+            event.stopPropagation();
+            this.onUnitSelected(unit);
+        });
     }
 
     linesForStructure(province, structure, reference) {
@@ -184,5 +207,34 @@ export default class StructureDialog extends GameObjects.Container {
         }
 
         return lines;
+    }
+
+    onUnitSelected(unit) {
+        console.log('selected unit ' + unit);
+    }
+
+    onUnitPageChanged() {
+        this.currentUnitImages.forEach(img => { img.destroy() });
+        const unitsPerPage = 4;
+
+        // enable/disable up/down buttons
+        const visibleKeys = this.unitKeys.slice(this.unitOffset, this.unitOffset + unitsPerPage);
+
+        visibleKeys.forEach((key, index) => {
+            const unit = this.structure.units.current[key];
+            this.drawUnit(unit, index);
+        });
+
+        if (this.unitOffset === 0) {
+            this.buttonUp.disable();
+        } else {
+            this.buttonUp.enable();
+        }
+
+        if (this.unitOffset + unitsPerPage >= this.structure.units.max) {
+            this.buttonDown.disable();
+        } else {
+            this.buttonDown.enable();
+        }
     }
 }

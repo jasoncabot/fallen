@@ -46,10 +46,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
         };
 
         this.sounds = new Sounds();
-        this.unitView = {};
-        this.structureViews = {};
-        this.infrastructureViews = {};
-        this.cachedTileSelectors = {};
     }
 
     init(data) {
@@ -102,8 +98,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.activeUnitSelection.setPosition(view.x, view.y);
             this.onConstructionModeUpdated();
         });
-        emitter.on('unitBoarded', (unit) => {
-            let view = this.unitView[unit.id];
+        emitter.on('unitBoarded', (unitId) => {
+            let view = this.unitView[unitId];
             view.destroy();
             this.sound.play('telep');
             this.currentlySelectedUnit = null;
@@ -123,7 +119,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
                 structureImage.on('pointerup', (_pointer, _x, _y, _event) => {
                     if (this.constructionMode) return;
-                    this.onStructureSelected(structure, structureImage, structure.position);
+                    this.onStructureSelected(structure);
                 });
             });
         });
@@ -190,10 +186,23 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 cost: reference.build.cost
             }
         };
+        this.updateCurrentConstructionGraphics(null);
         this.onConstructionModeUpdated();
     }
 
-    onStructureSelected(model, view, pos) {
+    onStructureSelected(model) {
+        if (this.currentlySelectedUnit) {
+            if (model.kind !== 'DROPSHIP' || Object.keys(model.units.current).length >= model.units.max) return;
+
+            this.layerBuilder.processCommand({
+                action: 'BOARD',
+                province: this.province,
+                targetId: this.currentlySelectedUnit.id,
+                targetType: 'unit',
+                dropship: model.id
+            });
+            return;
+        }
         if (this.modalDialog) return;
         let game = this.cache.json.get(`game-${this.gameId}`);
         let province = game.provinces[this.province];
@@ -480,19 +489,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
                     structureImage.on('pointerup', (_pointer, _x, _y, _event) => {
                         if (this.constructionMode) return;
-                        if (this.currentlySelectedUnit) {
-                            if (structure.kind !== 'DROPSHIP' || Object.keys(structure.units.current).length >= structure.units.max) return;
-
-                            this.layerBuilder.processCommand({
-                                action: 'BOARD',
-                                province: this.province,
-                                targetId: this.currentlySelectedUnit.id,
-                                targetType: 'unit',
-                                dropship: structure.id
-                            });
-                        } else {
-                            this.onStructureSelected(structure, structureImage, tileIndex);
-                        }
+                        this.onStructureSelected(structure);
                     });
                 }
 
@@ -524,7 +521,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
     updateCurrentConstructionGraphics(tileIndex) {
 
-        if (!this.constructionMode || !tileIndex) {
+        if (!this.constructionMode || !tileIndex || (this.constructionMode && this.constructionMode.kind === 'pending-construction')) {
             // hide all tile selectors
             Object.values(this.cachedTileSelectors).forEach(graphics => { graphics.visible = false });
             return;
@@ -612,6 +609,11 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
         let province = game.provinces[this.province];
         let reference = ProvinceData[this.province];
+
+        this.unitView = {};
+        this.structureViews = {};
+        this.infrastructureViews = {};
+        this.cachedTileSelectors = {};
 
         this.layerBuilder.initialise(province, UnitData, StructureData, reference);
 
@@ -790,5 +792,4 @@ export default class ProvinceStrategic extends Phaser.Scene {
     update(time, delta) {
         this.controls.update(delta);
     }
-
 }
