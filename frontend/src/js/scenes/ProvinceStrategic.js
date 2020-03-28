@@ -331,7 +331,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
         if (this.constructionMode && this.constructionMode.kind === 'pending-construction') {
             this.logo.visible = true;
-            this.modalDialog = new ConstructionDialog(this, 16, 42, (structure) => {
+            let player = this.cache.json.get(`game-${this.gameId}`).player;
+            this.modalDialog = new ConstructionDialog(this, 16, 42, player.owner, (structure) => {
                 this.enterConstructionMode(structure);
             }).show();
             this.uiContainer.add(this.modalDialog);

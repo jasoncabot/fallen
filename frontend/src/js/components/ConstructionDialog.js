@@ -6,7 +6,7 @@ import { StructureData } from 'shared';
 
 export default class ConstructionDialog extends GameObjects.Container {
 
-    constructor(scene, x, y, callback) {
+    constructor(scene, x, y, side, callback) {
         super(scene, x, y);
 
         this.onStructureSelected = callback;
@@ -20,7 +20,12 @@ export default class ConstructionDialog extends GameObjects.Container {
         this.setScrollFactor(0);
 
         this.currentOffset = 0;
-        this.structureKeys = Object.keys(StructureData).filter(key => StructureData[key].kind.constructable);
+        this.structureKeys = Object.keys(StructureData)
+            .filter(key => {
+                const kind = StructureData[key].kind;
+                return kind.constructable && kind.owner.indexOf(side) >= 0;
+            }
+            );
         this.currentImages = [];
     }
 

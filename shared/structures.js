@@ -4,7 +4,8 @@ module.exports = {
             "category": "WALL",
             "type": "WALL",
             "name": "Wall",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "ALIEN", "NEUTRAL"]
         },
         "display": {
             "width": 1,
@@ -39,7 +40,8 @@ module.exports = {
             "category": "HTUR",
             "type": "TOWER",
             "name": "Fusion Tower",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 1,
@@ -72,7 +74,8 @@ module.exports = {
             "category": "HAIR",
             "type": "AIRPORT",
             "name": "Gravport",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 3,
@@ -102,7 +105,8 @@ module.exports = {
             "category": "HBAR",
             "type": "BARRACKS",
             "name": "Barrack",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 2,
@@ -132,7 +136,8 @@ module.exports = {
             "category": "HBAY",
             "type": "STARPORT",
             "name": "Shipyard",
-            "constructable": false
+            "constructable": false,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 3,
@@ -165,7 +170,8 @@ module.exports = {
             "category": "HDEF",
             "type": "ANTIMISSILE",
             "name": "Anti-Missile",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 2,
@@ -195,7 +201,8 @@ module.exports = {
             "category": "HENY",
             "type": "ENERGY",
             "name": "Power Plant",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 2,
@@ -225,7 +232,8 @@ module.exports = {
             "category": "HFAC",
             "type": "FACTORY",
             "name": "Factory",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 3,
@@ -255,7 +263,8 @@ module.exports = {
             "category": "HLAB",
             "type": "LAB",
             "name": "Laboratory",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 2,
@@ -285,7 +294,8 @@ module.exports = {
             "category": "HMIN",
             "type": "MINING",
             "name": "Mining Facility",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 3,
@@ -315,7 +325,8 @@ module.exports = {
             "category": "HRAD",
             "type": "SCANNER",
             "name": "Radar",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 2,
@@ -345,7 +356,8 @@ module.exports = {
             "category": "HSHP",
             "type": "DROPSHIP",
             "name": "Dropship",
-            "constructable": false
+            "constructable": false,
+            "owner": ["HUMAN"]
         },
         "display": {
             "width": 3,
@@ -379,7 +391,8 @@ module.exports = {
             "category": "HSIL",
             "name": "Nuclear Silo",
             "type": "MISSILE",
-            "constructable": true
+            "constructable": true,
+            "owner": ["HUMAN", "NEUTRAL"]
         },
         "display": {
             "width": 2,
@@ -413,7 +426,8 @@ module.exports = {
             "category": "ATUR",
             "type": "TOWER",
             "name": "Fusion Tower",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 1,
@@ -446,7 +460,8 @@ module.exports = {
             "category": "AAIR",
             "type": "AIRPORT",
             "name": "Hover Pads",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 3,
@@ -476,7 +491,8 @@ module.exports = {
             "category": "ABAR",
             "type": "BARRACKS",
             "name": "Nest Center",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 2,
@@ -506,7 +522,8 @@ module.exports = {
             "category": "ABAY",
             "type": "STARPORT",
             "name": "Landing Site",
-            "constructable": false
+            "constructable": false,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 3,
@@ -539,7 +556,8 @@ module.exports = {
             "category": "ADEF",
             "type": "ANTIMISSILE",
             "name": "Anti-Missile",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 2,
@@ -569,7 +587,8 @@ module.exports = {
             "category": "AENY",
             "type": "ENERGY",
             "name": "Energy Center",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 2,
@@ -599,7 +618,8 @@ module.exports = {
             "category": "AFAC",
             "type": "FACTORY",
             "name": "Production Center",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 3,
@@ -629,7 +649,8 @@ module.exports = {
             "category": "ALAB",
             "type": "LAB",
             "name": "Research Center",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 2,
@@ -659,7 +680,8 @@ module.exports = {
             "category": "AMIN",
             "type": "MINING",
             "name": "Refinery",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 3,
@@ -689,7 +711,8 @@ module.exports = {
             "category": "ARAD",
             "type": "SCANNER",
             "name": "Scanning Device",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 2,
@@ -719,7 +742,8 @@ module.exports = {
             "category": "ASHP",
             "type": "DROPSHIP",
             "name": "Dropship",
-            "constructable": false
+            "constructable": false,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 3,
@@ -753,7 +777,8 @@ module.exports = {
             "category": "ASIL",
             "name": "Nuclear Launcher",
             "type": "MISSILE",
-            "constructable": true
+            "constructable": true,
+            "owner": ["ALIEN"]
         },
         "display": {
             "width": 2,
