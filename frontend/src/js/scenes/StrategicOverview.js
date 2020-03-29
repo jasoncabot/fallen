@@ -1,22 +1,18 @@
 import { Scene } from 'phaser';
 
 import { registerButtons, createButton, buttons } from '../assets/Buttons';
-import MessageBox from '../components/MessageBox';
-import ProvinceOverview from '../components/ProvinceOverview';
-import TechnologyOverview from '../components/TechnologyOverview';
+
+import {
+    MessageBox,
+    ProvinceOverview,
+    TechnologyOverview,
+    ProvinceMap
+} from '../components';
+
+import { StrategicMap } from '../../images/ui';
 
 import * as api from '../models/API';
 
-import {
-    StrategicMap,
-    ColoniesFallen,
-    ColoniesLastHope,
-    ProvincesFallen,
-    ProvincesFallenData,
-    ProvincesCapitalAlien,
-    ProvincesCapitalHuman,
-    ProvincesMission,
-} from '../../images/ui';
 import { registerScenePath } from './../components/History';
 
 import { ProvinceData } from 'shared';
@@ -35,12 +31,9 @@ export default class StrategicOverview extends Scene {
     }
 
     preload() {
+        ProvinceMap.preload(this);
+
         this.load.image('strategic-map', StrategicMap);
-        this.load.image('provinces-capital-alien', ProvincesCapitalAlien);
-        this.load.image('provinces-capital-human', ProvincesCapitalHuman);
-        this.load.image('provinces-mission', ProvincesMission);
-        this.load.image('colonies-fallen', ColoniesFallen);
-        this.load.atlas('provinces-fallen', ProvincesFallen, ProvincesFallenData);
 
         this.load.spritesheet('rocky-overview', terrain.rocky.overview, { frameWidth: 7, frameHeight: 7 });
         this.load.spritesheet('forest-overview', terrain.forest.overview, { frameWidth: 7, frameHeight: 7 });
@@ -55,12 +48,11 @@ export default class StrategicOverview extends Scene {
 
         const game = this.cache.json.get(`game-${this.gameId}`);
 
-        this.add.image(0, 0, 'strategic-map')
+        // UI Buttons
+        this.scene.add.image(0, 0, 'strategic-map')
             .setOrigin(0, 0)
             .setScrollFactor(0);
-
         this.selectedProvince = this.selectedProvince ? this.selectedProvince : game.defaultProvince;
-        this.addProvinces(game);
 
         this.mission = this.add.text(16, 380, "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana', wordWrap: { width: 152, useAdvancedWrap: true } })
             .setVisible(false);
@@ -92,6 +84,10 @@ export default class StrategicOverview extends Scene {
 
         this.overviewProvince = this.add.existing(new ProvinceOverview(this, 32, 34, game, null).setScrollFactor(0).setVisible(false));
         this.technologyOverview = this.add.existing(new TechnologyOverview(this, 32, 34, game).setScrollFactor(0).setVisible(false));
+        this.provinceMap = this.add.existing(new ProvinceMap(this, 32, 34, game, this.selectedProvince, (province) => {
+            this.selectedProvince = province;
+            this.onSelectedProvinceUpdated(game);
+        }).setScrollFactor(0).setVisible(true));
 
         let topFont = { color: 'green', fontSize: '14px', fontFamily: 'Verdana' };
         this.add.text(112, 4, `Year ${game.turn.number}`, topFont).setOrigin(0.5, 0);
@@ -163,7 +159,7 @@ export default class StrategicOverview extends Scene {
     onCurrentViewChanged(view, game) {
         switch (view) {
             case 'zoom':
-                this.overviewMap.visible = false;
+                this.provinceMap.visible = false;
                 this.overviewProvince.visible = true;
                 this.buttonMenu.disable();
                 this.buttonTechnology.disable();
@@ -173,7 +169,7 @@ export default class StrategicOverview extends Scene {
                 this.overviewProvince.show(this.selectedProvince, null);
                 break;
             case 'technology':
-                this.overviewMap.visible = false;
+                this.provinceMap.visible = false;
                 this.technologyOverview.visible = true;
                 this.buttonMenu.disable();
                 this.buttonTechnology.setHighlight(true);
@@ -183,7 +179,7 @@ export default class StrategicOverview extends Scene {
                 this.technologyOverview.show();
                 break;
             default:
-                this.overviewMap.visible = true;
+                this.provinceMap.visible = true;
                 this.overviewProvince.visible = false;
                 this.technologyOverview.visible = false;
                 this.buttonMenu.enable();
@@ -201,66 +197,6 @@ export default class StrategicOverview extends Scene {
                 break;
         }
         this.view = view;
-    }
-
-    addProvinces(game) {
-        let provinceOptions = [];
-        this.overviewMap = this.add.container(14, 32).setScrollFactor(0);
-
-        this.overviewMap.add(this.add.image(0, 0, 'colonies-fallen')
-            .setOrigin(0, 0)
-            .setScrollFactor(0));
-
-        let colourForOwner = (owner) => {
-            switch (owner) {
-                case 'HUMAN': return 'blue';
-                case 'ALIEN': return 'red';
-            }
-            return 'grey';
-        }
-
-        // add each selectable province
-        Object.keys(game.provinces).forEach((province) => {
-
-            const { x, y, iconX, iconY } = ProvinceData[province];
-            const { owner, mission, capital } = game.provinces[province];
-            const frame = `${province}-${colourForOwner(owner)}-${this.selectedProvince === province ? 'highlight' : 'default'}`;
-
-            const option = this.add.image(x, y, 'provinces-fallen', frame)
-                .setInteractive({
-                    pixelPerfect: true,
-                    useHandCursor: true
-                })
-                .on('pointerup', () => {
-                    provinceOptions.forEach(selected => {
-                        selected.setFrame(`${selected.getData('province')}-${colourForOwner(selected.getData('owner'))}-default`);
-                    });
-                    this.selectedProvince = province;
-                    this.onSelectedProvinceUpdated(game);
-                    option.setFrame(`${province}-${colourForOwner(owner)}-highlight`);
-                })
-                .setOrigin(0, 0)
-                .setScrollFactor(0)
-                .setData('province', province)
-                .setData('owner', owner);
-
-            this.overviewMap.add(option);
-
-            provinceOptions.push(option);
-
-            // add any icons that sit above the province
-            if (mission) {
-                this.overviewMap.add(this.add.image(iconX, iconY, 'provinces-mission'));
-            }
-
-            if (capital) {
-                if (capital === 'HUMAN') {
-                    this.overviewMap.add(this.add.image(iconX, iconY, 'provinces-capital-human'));
-                } else {
-                    this.overviewMap.add(this.add.image(iconX, iconY, 'provinces-capital-alien'));
-                }
-            }
-        });
     }
 
     onSelectedProvinceUpdated(game) {

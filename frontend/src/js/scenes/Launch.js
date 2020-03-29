@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 
 import { ProvincePicker } from '../../images/ui';
+import { ProvinceMap } from '../components';
 import { registerButtons, createButton, buttons } from '../assets/Buttons';
 
 export default class Launch extends Scene {
@@ -22,11 +23,18 @@ export default class Launch extends Scene {
 
     preload() {
         this.load.image('launch-province-picker', ProvincePicker);
+        ProvinceMap.preload(this);
         registerButtons(this, buttons.launch);
     }
 
     create() {
+        const game = this.cache.json.get(`game-${this.gameId}`);
+
         this.add.image(0, 0, 'launch-province-picker').setOrigin(0);
+
+        this.provinceMap = this.add.existing(new ProvinceMap(this, 32, 34, game, this.province, (province) => {
+            this.targetProvince = province;
+        }).setScrollFactor(0).setVisible(true));
 
         if (this.mode === 'DROPSHIP') {
             this.buttonLand = createButton(this, 463, 361, buttons.launch.land, (button) => {
