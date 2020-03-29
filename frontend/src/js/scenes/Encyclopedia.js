@@ -85,7 +85,12 @@ export default class Encyclopedia extends Scene {
         this.add.text(18, 161, "Armour", font);
         this.add.text(173, 161, structure.hp, font);
         this.add.text(18, 196, "DESCRIPTION :", font);
-        this.add.text(18, 216, structure.encyclopedia.description, font);
+        this.add.text(18, 216, structure.encyclopedia.description, {
+            color: 'green',
+            fontSize: '12px',
+            fontFamily: 'Verdana',
+            wordWrap: { width: 240, useAdvancedWrap: true }
+        });
 
         this.add.text(460, 350, structure.kind.name, { color: 'green', fontSize: '40px', fontFamily: 'Verdana' }).setOrigin(0.5, 0);
         this.add.text(460, 400, `${structure.build.cost} Credits`, { color: 'green', fontSize: '20px', fontFamily: 'Verdana' }).setOrigin(0.5, 0);
