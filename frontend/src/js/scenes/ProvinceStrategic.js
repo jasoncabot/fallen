@@ -220,7 +220,9 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     // then this should target a specific place for firing a weapon
                     break;
                 case 'BUILD_DROPSHIP':
-                    const dropshipReference = Object.values(StructureData).find(s => s.kind.type === 'DROPSHIP');
+                    const game = this.cache.json.get(`game-${this.gameId}`);
+                    const dropshipReference = Object.values(StructureData)
+                        .find(s => s.kind.type === 'DROPSHIP' && s.kind.owner.indexOf(game.player.owner) >= 0);
                     this.enterConstructionMode(dropshipReference);
                     break;
                 case 'LAUNCH':

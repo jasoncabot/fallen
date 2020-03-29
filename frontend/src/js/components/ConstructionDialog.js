@@ -24,8 +24,7 @@ export default class ConstructionDialog extends GameObjects.Container {
             .filter(key => {
                 const kind = StructureData[key].kind;
                 return kind.constructable && kind.owner.indexOf(side) >= 0;
-            }
-            );
+            });
         this.currentImages = [];
     }
 
