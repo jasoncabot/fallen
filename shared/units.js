@@ -12,7 +12,7 @@ module.exports = {
         "movement": "GROUND",
         "display": {
             "tiles": "unit-neutral",
-            "offset": 32
+            "offset": 0
         },
         "weapons": {
             "light": {
@@ -56,7 +56,7 @@ module.exports = {
         "movement": "GROUND",
         "display": {
             "tiles": "unit-neutral",
-            "offset": 32
+            "offset": 16
         },
         "weapons": {
             "light": {
@@ -100,7 +100,7 @@ module.exports = {
         "movement": "HOVER",
         "display": {
             "tiles": "unit-neutral",
-            "offset": 32
+            "offset": 24
         },
         "weapons": {
             "light": {
@@ -144,7 +144,7 @@ module.exports = {
         "movement": "GROUND",
         "display": {
             "tiles": "unit-neutral",
-            "offset": 32
+            "offset": 8
         },
         "weapons": {
             "light": {

@@ -34,6 +34,12 @@ const createUnitInstance = (side) => {
             "TANK": "AMDT",
             "LONGRANGEHOVER": "ASUP",
             "UNIQUE1": "AMEG"
+        },
+        'NEUTRAL': {
+            'SQUAD': 'NGRV',
+            'LTTANK': 'NATV',
+            'TANK': 'NTNK',
+            'LONGRANGE': 'NROC'
         }
     }[side];
     return (result, object) => {
@@ -82,7 +88,21 @@ const createStructureInstance = (side) => {
             "SCANNER": "ARAD",
             "STARPORT": "ABAY",
             "TOWER": "ATUR"
-        }
+        },
+        'NEUTRAL': {
+            "AIRPORT": "HAIR",
+            "ANTIMISSILE": "HDEF",
+            "BARRACKS": "HBAR",
+            "DROPSHIP": "HSHP",
+            "ENERGY": "HENY",
+            "FACTORY": "HFAC",
+            "LAB": "HLAB",
+            "MINING": "HMIN",
+            "MISSILE": "HSIL",
+            "SCANNER": "HRAD",
+            "STARPORT": "HBAY",
+            "TOWER": "HTUR"
+        },
     }[side];
     return (result, object) => {
         const ref = StructureData[structureLookup[object.type]];
@@ -101,12 +121,12 @@ const createStructureInstance = (side) => {
     }
 }
 
-const addExtendedProvinceInformation = (key, side, province) => {
+const addExtendedProvinceInformation = (key, province) => {
     province.mission = missions[key];
     province.walls = province.walls || walls[key] || [];
     province.roads = province.roads || roads[key] || [];
-    province.units = (province.units || units[key] || []).reduce(createUnitInstance(side), {});
-    province.structures = (province.structures || structures[key] || []).reduce(createStructureInstance(side), {});
+    province.units = (province.units || units[key] || []).reduce(createUnitInstance(province.owner), {});
+    province.structures = (province.structures || structures[key] || []).reduce(createStructureInstance(province.owner), {});
     return province;
 };
 
@@ -211,7 +231,7 @@ module.exports.generateGame = (userId, name, race, difficulty, campaignType) => 
         .filter(province => campaign.includes(province))
         .reduce((provinces, province) => {
             let data = game.provinces[province];
-            provinces[province] = addExtendedProvinceInformation(province, side, data);
+            provinces[province] = addExtendedProvinceInformation(province, data);
             return provinces;
         }, {})
     return game;

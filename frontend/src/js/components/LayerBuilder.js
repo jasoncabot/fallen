@@ -148,7 +148,9 @@ export default class LayerBuilder {
         let findStructure = findObject(this.structureModels);
         let reference = findStructure(index.x, index.y);
         if (!reference) return null;
-        return this.objectAt(index, [68, 32, 32, 32, 32, 17, 19, 18, 32, 23, 25, 24, 32, 20, 22, 21], (x, y) => {
+        // TODO: we need to add on 17 to all numbers between 17 and 25 to get the right owner
+        // we need to add 0,1,2 to the 68 to get the right owner
+        return this.objectAt(index, [68, 68, 68, 68, 68, 17, 19, 18, 68, 23, 25, 24, 68, 20, 22, 21], (x, y) => {
             let model = findStructure(x, y);
             if (!model) return false;
             return reference.id === model.id;
@@ -157,7 +159,7 @@ export default class LayerBuilder {
 
     unitOverviewAt(index) {
         // touching units don't matter for the overview
-        // we should return 0, 1, 2 depending on owner
+        // TODO: we should return 0, 1, 2 depending on owner
         return 0;
     }
 
