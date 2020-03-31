@@ -304,7 +304,7 @@ module.exports = {
             "offset": 49
         },
         "production": {
-            "category": "CASH",
+            "category": "CREDITS",
             "value": 100
         },
         "energyUsage": 10,
@@ -690,7 +690,7 @@ module.exports = {
             "offset": 49
         },
         "production": {
-            "category": "CASH",
+            "category": "CREDITS",
             "value": 100
         },
         "energyUsage": 10,

@@ -2,12 +2,13 @@
 // them being calculated on the client
 
 const ProvinceData = require('shared/provinces');
+const ResourceCalculator = require('shared/resource-calculator');
 
 const touchingOwnedWithScanner = (provinceKey, owner, provinces) => {
     return ProvinceData[provinceKey].touching
         .map(key => provinces[key])
         .filter(p => p.owner === owner)
-        .find(p => Object.values(p.structures).find(s => s.kind.type === 'SCANNER'));
+        .find(ResourceCalculator.hasStructureOfType('SCANNER'));
 }
 
 module.exports.removeUnknown = (game, userId) => {
@@ -25,9 +26,6 @@ module.exports.removeUnknown = (game, userId) => {
             delete province.roads;
             delete province.units;
             delete province.structures;
-            delete province.energy;
-            delete province.credits;
-            delete province.research;
         } else {
             scannableProvinces.push(key);
         }

@@ -4,6 +4,7 @@ const TerrainData = require('./terrain');
 const ProvinceData = require('./provinces');
 const ResearchData = require('./research');
 const TechnologyData = require('./technology');
+const ResourceCalculator = require('./resource-calculator');
 
 module.exports = {
     UnitData,
@@ -11,5 +12,6 @@ module.exports = {
     TerrainData,
     ProvinceData,
     ResearchData,
-    TechnologyData
+    TechnologyData,
+    ResourceCalculator
 }

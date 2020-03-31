@@ -5,7 +5,7 @@ import {
     StructureDialog,
     InfoText,
     LayerBuilder,
-    ProvinceOverview,
+    ProvinceOverview
 } from '../components/';
 
 import uiStrategic from '../../images/ui/strategic.png';
@@ -27,7 +27,7 @@ import structurePointer from '../../images/misc/FALLEN_218.cur';
 import { Sounds } from './../assets/Sounds';
 import { registerScenePath } from './../components/History';
 
-import { UnitData, StructureData, ProvinceData } from 'shared';
+import { UnitData, StructureData, ProvinceData, ResourceCalculator } from 'shared';
 
 const EventEmitter = require('eventemitter3');
 
@@ -101,6 +101,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         emitter.on('unitBoarded', (unitId) => {
             let view = this.unitView[unitId];
             view.destroy();
+            delete this.unitView[unitId];
             this.sound.play('telep');
             this.currentlySelectedUnit = null;
             this.onConstructionModeUpdated();
@@ -784,10 +785,10 @@ export default class ProvinceStrategic extends Phaser.Scene {
         });
 
         let font = { color: 'green', fontSize: '12px', fontFamily: 'Verdana' };
-        ui.add(this.add.text(58, 6, province.research, font).setOrigin(0.5, 0));
-        ui.add(this.add.text(133, 6, province.energy, font).setOrigin(0.5, 0));
+        ui.add(this.add.text(58, 6, ResourceCalculator.calculateIncome(province, 'RESEARCH'), font).setOrigin(0.5, 0));
+        ui.add(this.add.text(133, 6, ResourceCalculator.calculateIncome(province, 'ENERGY'), font).setOrigin(0.5, 0));
         ui.add(this.add.text(320, 6, reference.name, font).setOrigin(0.5, 0));
-        ui.add(this.add.text(569, 6, game.player.globalReserve + "/" + province.credits, font).setOrigin(0.5, 0));
+        ui.add(this.add.text(569, 6, game.player.globalReserve + "/" + ResourceCalculator.calculateIncome(province, 'CREDITS'), font).setOrigin(0.5, 0));
 
         this.centerCameraAtPoint({ x: reference.width / 2, y: reference.height / 2 });
     }

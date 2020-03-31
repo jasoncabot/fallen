@@ -172,7 +172,7 @@ export default class StructureDialog extends GameObjects.Container {
             lines.push(`${reference.kind.name} on province: ${total}`);
             const productionUnits = {
                 'ENERGY': 'EP',
-                'CASH': 'Credits',
+                'CREDITS': 'Credits',
                 'RESEARCH': 'RP'
             }[reference.production.category];
             if (productionUnits) {

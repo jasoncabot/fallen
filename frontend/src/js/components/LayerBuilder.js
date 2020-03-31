@@ -291,6 +291,7 @@ export default class LayerBuilder {
     boardUnit(unit, unitId, dropship) {
         dropship.units[unitId] = unit;
         this.writeTileValue(this.unitModels, unit.position, null);
+        delete this.unitLookup[unitId];
         unit.position = {};
         this.emitter.emit('unitBoarded', unitId);
     }

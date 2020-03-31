@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 
-import { TechnologyData } from 'shared';
+import { TechnologyData, ResourceCalculator } from 'shared';
 
 const sliderText = [
     {
@@ -91,7 +91,7 @@ export default class TechnologyOverview extends GameObjects.Container {
         // TODO: move somewhere sensible - also check for duplication between this and credits
         this.totalResearch = Object.values(game.provinces)
             .filter(p => p.owner === game.player.owner)
-            .map(p => p.research)
+            .map(p => ResourceCalculator.calculateIncome(p, 'RESEARCH'))
             .reduce((total, current) => total + current);
 
         let totalResearchText = scene.add.text(56, 27, `Research Production: ${this.totalResearch} RP`, { font: "14px Verdana", color: 'green' }).setOrigin(0, 0);
