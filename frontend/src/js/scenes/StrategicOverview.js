@@ -170,6 +170,7 @@ export default class StrategicOverview extends Scene {
                 break;
             case 'technology':
                 this.provinceMap.visible = false;
+                this.overviewProvince.visible = false;
                 this.technologyOverview.visible = true;
                 this.buttonMenu.disable();
                 this.buttonTechnology.setHighlight(true);
@@ -177,6 +178,25 @@ export default class StrategicOverview extends Scene {
                 this.buttonMap.disable();
                 this.buttonEndTurn.disable();
                 this.technologyOverview.show();
+                this.provinceCapital.setVisible(false);
+                this.provinceCredits.setVisible(false);
+                this.provinceCreditsIncome.setVisible(false);
+                this.provinceDropships.setVisible(false);
+                this.provinceEnergy.setVisible(false);
+                this.provinceEnergyIncome.setVisible(false);
+                this.provinceMissileDefense.setVisible(false);
+                this.provinceMissileLauncher.setVisible(false);
+                this.provinceName.setVisible(false);
+                this.provinceRadar.setVisible(false);
+                this.provinceResearch.setVisible(false);
+                this.provinceResearchIncome.setVisible(false);
+                this.provinceScannable.setVisible(false);
+                this.provinceTerrain.setVisible(false);
+                this.provinceTowersTotal.setVisible(false);
+                this.provinceUnitsInside.setVisible(false);
+                this.provinceUnitsOutside.setVisible(false);
+                this.provinceUnitsTotal.setVisible(false);
+                this.mission.setVisible(false);
                 break;
             default:
                 this.provinceMap.visible = true;
@@ -193,10 +213,10 @@ export default class StrategicOverview extends Scene {
                 this.buttonTechnology.setHighlight(false);
                 this.overviewProvince.hide();
                 this.technologyOverview.hide();
+                this.onSelectedProvinceUpdated(game);
                 break;
         }
         this.view = view;
-        this.onSelectedProvinceUpdated(game);
     }
 
     onSelectedProvinceUpdated(game) {
@@ -205,73 +225,50 @@ export default class StrategicOverview extends Scene {
 
         const outOfScanningRange = game.scannableProvinces.indexOf(this.selectedProvince) < 0;
 
-        if (this.view === 'technology') {
-            this.provinceCapital.setVisible(false);
-            this.provinceCredits.setVisible(false);
-            this.provinceCreditsIncome.setVisible(false);
-            this.provinceDropships.setVisible(false);
-            this.provinceEnergy.setVisible(false);
-            this.provinceEnergyIncome.setVisible(false);
-            this.provinceMissileDefense.setVisible(false);
-            this.provinceMissileLauncher.setVisible(false);
-            this.provinceName.setVisible(false);
-            this.provinceRadar.setVisible(false);
-            this.provinceResearch.setVisible(false);
-            this.provinceResearchIncome.setVisible(false);
-            this.provinceScannable.setVisible(false);
-            this.provinceTerrain.setVisible(false);
-            this.provinceTowersTotal.setVisible(false);
-            this.provinceUnitsInside.setVisible(false);
-            this.provinceUnitsOutside.setVisible(false);
-            this.provinceUnitsTotal.setVisible(false);
-        } else {
+        this.provinceCapital.setVisible(province.capital);
+        this.provinceName.setText(provinceData.name);
+        this.provinceName.setVisible(true);
+        this.provinceScannable.setVisible(outOfScanningRange);
+        this.provinceTerrain.setText(provinceData.type);
+        this.provinceTerrain.setVisible(!outOfScanningRange);
 
-            this.provinceCapital.setVisible(province.capital);
-            this.provinceName.setText(provinceData.name);
-            this.provinceName.setVisible(true);
-            this.provinceScannable.setVisible(outOfScanningRange);
-            this.provinceTerrain.setText(provinceData.type);
-            this.provinceTerrain.setVisible(!outOfScanningRange);
+        this.provinceEnergyIncome.setText(`Energy income ${ResourceCalculator.calculateIncome(province, 'ENERGY')}`);
+        this.provinceCreditsIncome.setText(`Credits income ${ResourceCalculator.calculateIncome(province, 'CREDITS')}`);
+        this.provinceResearchIncome.setText(`Research income ${ResourceCalculator.calculateIncome(province, 'RESEARCH')}`);
+        this.provinceEnergyIncome.setVisible(!outOfScanningRange);
+        this.provinceCreditsIncome.setVisible(!outOfScanningRange);
+        this.provinceResearchIncome.setVisible(!outOfScanningRange);
 
-            this.provinceEnergyIncome.setText(`Energy income ${ResourceCalculator.calculateIncome(province, 'ENERGY')}`);
-            this.provinceCreditsIncome.setText(`Credits income ${ResourceCalculator.calculateIncome(province, 'CREDITS')}`);
-            this.provinceResearchIncome.setText(`Research income ${ResourceCalculator.calculateIncome(province, 'RESEARCH')}`);
-            this.provinceEnergyIncome.setVisible(!outOfScanningRange);
-            this.provinceCreditsIncome.setVisible(!outOfScanningRange);
-            this.provinceResearchIncome.setVisible(!outOfScanningRange);
+        const resourceLevelNames = { 5: "Poor", 10: "Average", 15: "Rich", 30: "Very rich" };
+        this.provinceEnergy.setText(`Energy ${resourceLevelNames[provinceData.energy]}`);
+        this.provinceCredits.setText(`Credits ${resourceLevelNames[provinceData.credits]}`);
+        this.provinceResearch.setText(`Research ${resourceLevelNames[provinceData.research]}`);
+        this.provinceEnergy.setVisible(!outOfScanningRange);
+        this.provinceCredits.setVisible(!outOfScanningRange);
+        this.provinceResearch.setVisible(!outOfScanningRange);
 
-            const resourceLevelNames = { 5: "Poor", 10: "Average", 15: "Rich", 30: "Very rich" };
-            this.provinceEnergy.setText(`Energy ${resourceLevelNames[provinceData.energy]}`);
-            this.provinceCredits.setText(`Credits ${resourceLevelNames[provinceData.credits]}`);
-            this.provinceResearch.setText(`Research ${resourceLevelNames[provinceData.research]}`);
-            this.provinceEnergy.setVisible(!outOfScanningRange);
-            this.provinceCredits.setVisible(!outOfScanningRange);
-            this.provinceResearch.setVisible(!outOfScanningRange);
+        this.provinceRadar.setText(`Radar: ${ResourceCalculator.hasStructureOfType('SCANNER')(province) ? "Yes" : "No"}`);
+        this.provinceMissileDefense.setText(`Missile Defence: ${ResourceCalculator.hasStructureOfType('ANTIMISSILE')(province) ? "Yes" : "No"}`);
+        this.provinceMissileLauncher.setText(`Missile Launcher: ${ResourceCalculator.hasStructureOfType('MISSILE')(province) ? "Yes" : "No"}`);
+        this.provinceRadar.setVisible(!outOfScanningRange);
+        this.provinceMissileDefense.setVisible(!outOfScanningRange);
+        this.provinceMissileLauncher.setVisible(!outOfScanningRange);
 
-            // TODO: go through structures and calculate the correct values for income, structures and units
-            this.provinceRadar.setText(`Radar: ${ResourceCalculator.hasStructureOfType('SCANNER')(province) ? "Yes" : "No"}`);
-            this.provinceMissileDefense.setText(`Missile Defence: ${ResourceCalculator.hasStructureOfType('ANTIMISSILE')(province) ? "Yes" : "No"}`);
-            this.provinceMissileLauncher.setText(`Missile Launcher: ${ResourceCalculator.hasStructureOfType('MISSILE')(province) ? "Yes" : "No"}`);
-            this.provinceRadar.setVisible(!outOfScanningRange);
-            this.provinceMissileDefense.setVisible(!outOfScanningRange);
-            this.provinceMissileLauncher.setVisible(!outOfScanningRange);
+        this.provinceDropships.setText(`Dropships ${ResourceCalculator.countStructureOfType('DROPSHIP')(province)}`);
+        this.provinceDropships.setVisible(!outOfScanningRange);
 
-            this.provinceDropships.setText(`Dropships ${ResourceCalculator.countStructureOfType('DROPSHIP')(province)}`);
-            this.provinceDropships.setVisible(!outOfScanningRange);
-
-            const units = {
-                inside: ResourceCalculator.countUnitsInside(province),
-                outside: ResourceCalculator.countUnitsOutside(province)
-            }
-            this.provinceUnitsInside.setText(`Units inside ${units.inside}`);
-            this.provinceUnitsInside.setVisible(!outOfScanningRange);
-            this.provinceUnitsOutside.setText(`Units outside ${units.outside}`);
-            this.provinceUnitsOutside.setVisible(!outOfScanningRange);
-            this.provinceUnitsTotal.setText(`Total units ${units.inside + units.outside}`);
-            this.provinceUnitsTotal.setVisible(!outOfScanningRange);
-            this.provinceTowersTotal.setText(`Towers ${ResourceCalculator.countStructureOfType('TOWER')(province)}`);
-            this.provinceTowersTotal.setVisible(!outOfScanningRange);
+        const units = {
+            inside: ResourceCalculator.countUnitsInside(province),
+            outside: ResourceCalculator.countUnitsOutside(province)
         }
+        this.provinceUnitsInside.setText(`Units inside ${units.inside}`);
+        this.provinceUnitsInside.setVisible(!outOfScanningRange);
+        this.provinceUnitsOutside.setText(`Units outside ${units.outside}`);
+        this.provinceUnitsOutside.setVisible(!outOfScanningRange);
+        this.provinceUnitsTotal.setText(`Total units ${units.inside + units.outside}`);
+        this.provinceUnitsTotal.setVisible(!outOfScanningRange);
+        this.provinceTowersTotal.setText(`Towers ${ResourceCalculator.countStructureOfType('TOWER')(province)}`);
+        this.provinceTowersTotal.setVisible(!outOfScanningRange);
 
         // out of scanning range? hide the zoom button
         if (outOfScanningRange) {
@@ -293,7 +290,7 @@ export default class StrategicOverview extends Scene {
     }
 
     onMissionChanged(mission) {
-        if (mission && this.view !== 'technology') {
+        if (mission) {
             this.mission.visible = true;
             if (mission.description && mission.description.length > 0) {
                 this.mission.setText(`MISSION\n${mission.description}\nObjective: ${mission.objective}\nReward: ${mission.reward}`);
