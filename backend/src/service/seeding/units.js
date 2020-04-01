@@ -18,7 +18,22 @@ module.exports = {
         { "position": { "x": 21, "y": 27 }, "type": "SQUAD", "experience": 1 },
         { "position": { "x": 31, "y": 17 }, "type": "SQUAD", "experience": 1 },
         { "position": { "x": 27, "y": 24 }, "type": "SQUAD", "experience": 1 },
-        { "position": { "x": 26, "y": 28 }, "type": "TANK", "experience": 1 }
+        { "position": { "x": 26, "y": 28 }, "type": "TANK", "experience": 1 },
+        // this province contains units that will help the player as part of the mission
+        { "position": { "x": 23, "y": 39 }, "type": "SQUAD", "experience": 4, "owner": "PLAYER" },
+        { "position": { "x": 29, "y": 39 }, "type": "SQUAD", "experience": 2, "owner": "PLAYER" },
+        { "position": { "x": 32, "y": 38 }, "type": "SQUAD", "experience": 2, "owner": "PLAYER" },
+        { "position": { "x": 30, "y": 39 }, "type": "SQUAD", "experience": 2, "owner": "PLAYER" },
+        { "position": { "x": 26, "y": 39 }, "type": "SQUAD", "experience": 3, "owner": "PLAYER" },
+        { "position": { "x": 25, "y": 42 }, "type": "TANK", "experience": 2, "owner": "PLAYER" },
+        { "position": { "x": 29, "y": 42 }, "type": "TANK", "experience": 4, "owner": "PLAYER" },
+        { "position": { "x": 26, "y": 42 }, "type": "TANK", "experience": 2, "owner": "PLAYER" },
+        { "position": { "x": 23, "y": 42 }, "type": "TANK", "experience": 3, "owner": "PLAYER" },
+        { "position": { "x": 22, "y": 42 }, "type": "TANK", "experience": 2, "owner": "PLAYER" },
+        { "position": { "x": 24, "y": 39 }, "type": "SQUAD", "experience": 2, "owner": "PLAYER" },
+        { "position": { "x": 27, "y": 39 }, "type": "SQUAD", "experience": 3, "owner": "PLAYER" },
+        { "position": { "x": 28, "y": 42 }, "type": "TANK", "experience": 4, "owner": "PLAYER" },
+        { "position": { "x": 21, "y": 38 }, "type": "SQUAD", "experience": 2, "owner": "PLAYER" },
     ],
     "cartasone": [
         { "position": { "x": 40, "y": 21 }, "type": "LTTANK", "experience": 1 },

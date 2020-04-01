@@ -11,7 +11,10 @@ const units = require('./seeding/units');
 const structures = require('./seeding/structures');
 const cash = require('./seeding/cash');
 
-const createUnitInstance = (side) => {
+const createUnitInstance = (containerOwner, side) => {
+    // The containerOwner is either the owner of the province or structure
+    // that is holding the unit which is used by default if the unit itself
+    // isn't owned by a particular person
     const unitLookup = {
         'HUMAN': {
             "SQUAD": "HSQU",
@@ -41,9 +44,17 @@ const createUnitInstance = (side) => {
             'TANK': 'NTNK',
             'LONGRANGE': 'NROC'
         }
-    }[side];
+    };
     return (result, object) => {
-        const ref = UnitData[unitLookup[object.type]];
+        let owner;
+        if (object.owner === 'PLAYER') {
+            owner = side;
+        } else if (object.owner === 'OPPOSITE') {
+            owner = gameService.opposite(side);
+        } else {
+            owner = containerOwner;
+        }
+        const ref = UnitData[unitLookup[owner][object.type]];
         const pos = object.position ? {
             "x": object.position.x,
             "y": object.position.y
@@ -53,13 +64,15 @@ const createUnitInstance = (side) => {
             "position": pos,
             "experience": object.experience,
             "hp": ref.hp,
+            "owner": owner,
             "facing": 0
         };
         return result;
     }
 }
 
-const createStructureInstance = (side) => {
+const createStructureInstance = (containerOwner, side) => {
+    const owner = containerOwner; // structures are always owned by the province owner
     const structureLookup = {
         'HUMAN': {
             "AIRPORT": "HAIR",
@@ -103,10 +116,10 @@ const createStructureInstance = (side) => {
             "STARPORT": "HBAY",
             "TOWER": "HTUR"
         },
-    }[side];
+    }[owner];
     return (result, object) => {
         const ref = StructureData[structureLookup[object.type]];
-        const units = (object.units || []).reduce(createUnitInstance(side), {});
+        const units = (object.units || []).reduce(createUnitInstance(owner, side), {});
         const pos = object.position ? {
             "x": object.position.x,
             "y": object.position.y
@@ -116,17 +129,18 @@ const createStructureInstance = (side) => {
             "kind": ref.kind,
             "units": units,
             "position": pos,
+            "owner": owner,
         }
         return result;
     }
 }
 
-const addExtendedProvinceInformation = (key, province) => {
+const addExtendedProvinceInformation = (key, side, province) => {
     province.mission = missions[key];
     province.walls = province.walls || walls[key] || [];
     province.roads = province.roads || roads[key] || [];
-    province.units = (province.units || units[key] || []).reduce(createUnitInstance(province.owner), {});
-    province.structures = (province.structures || structures[key] || []).reduce(createStructureInstance(province.owner), {});
+    province.units = (province.units || units[key] || []).reduce(createUnitInstance(province.owner, side), {});
+    province.structures = (province.structures || structures[key] || []).reduce(createStructureInstance(province.owner, side), {});
     return province;
 };
 
@@ -231,7 +245,7 @@ module.exports.generateGame = (userId, name, race, difficulty, campaignType) => 
         .filter(province => campaign.includes(province))
         .reduce((provinces, province) => {
             let data = game.provinces[province];
-            provinces[province] = addExtendedProvinceInformation(province, data);
+            provinces[province] = addExtendedProvinceInformation(province, side, data);
             return provinces;
         }, {})
     return game;

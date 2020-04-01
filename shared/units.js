@@ -181,10 +181,10 @@ module.exports = {
             "type": "SQUAD",
             "name": "Squad"
         },
-        "upkeep": 123,
-        "cost": 123,
-        "hp": 123,
-        "actionPoints": 123,
+        "upkeep": 1,
+        "cost": 20,
+        "hp": 10,
+        "actionPoints": 70,
         "movement": "GROUND",
         "display": {
             "tiles": "unit-human",
@@ -225,10 +225,10 @@ module.exports = {
             "type": "TROOP",
             "name": "Ranger"
         },
-        "upkeep": 123,
-        "cost": 123,
-        "hp": 123,
-        "actionPoints": 123,
+        "upkeep": 2,
+        "cost": 40,
+        "hp": 15,
+        "actionPoints": 80,
         "movement": "GROUND",
         "display": {
             "tiles": "unit-human",
@@ -269,10 +269,10 @@ module.exports = {
             "type": "LTTANK",
             "name": "L.A.V"
         },
-        "upkeep": 123,
-        "cost": 123,
-        "hp": 123,
-        "actionPoints": 123,
+        "upkeep": 20,
+        "cost": 100,
+        "hp": 20,
+        "actionPoints": 140,
         "movement": "GROUND",
         "display": {
             "tiles": "unit-human",
@@ -313,10 +313,10 @@ module.exports = {
             "type": "LONGRANGE",
             "name": "Artillery",
         },
-        "upkeep": 123,
-        "cost": 123,
-        "hp": 123,
-        "actionPoints": 123,
+        "upkeep": 30,
+        "cost": 600,
+        "hp": 20,
+        "actionPoints": 60,
         "movement": "GROUND",
         "display": {
             "tiles": "unit-human",
@@ -357,10 +357,10 @@ module.exports = {
             "type": "UNIQUE1",
             "name": "Buggy"
         },
-        "upkeep": 123,
-        "cost": 123,
-        "hp": 123,
-        "actionPoints": 123,
+        "upkeep": 5,
+        "cost": 100,
+        "hp": 15,
+        "actionPoints": 300,
         "movement": "GROUND",
         "display": {
             "tiles": "unit-human",
@@ -401,10 +401,10 @@ module.exports = {
             "type": "TANK",
             "name": "Tank"
         },
-        "upkeep": 123,
-        "cost": 123,
-        "hp": 123,
-        "actionPoints": 123,
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 65,
+        "actionPoints": 100,
         "movement": "GROUND",
         "display": {
             "tiles": "unit-human",
@@ -445,11 +445,11 @@ module.exports = {
             "type": "LTGRAV",
             "name": "Speeder"
         },
-        "upkeep": 123,
-        "cost": 123,
-        "hp": 123,
-        "actionPoints": 123,
-        "movement": "GROUND",
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 20,
+        "actionPoints": 180,
+        "movement": "HOVER",
         "display": {
             "tiles": "unit-human",
             "offset": 16
@@ -489,11 +489,11 @@ module.exports = {
             "type": "HEAVYGRAV",
             "name": "Grav Tank"
         },
-        "upkeep": 123,
-        "cost": 123,
-        "hp": 123,
-        "actionPoints": 123,
-        "movement": "GROUND",
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 55,
+        "actionPoints": 140,
+        "movement": "HOVER",
         "display": {
             "tiles": "unit-human",
             "offset": 24
@@ -533,11 +533,11 @@ module.exports = {
             "type": "LONGRANGEHOVER",
             "name": "GunShip"
         },
-        "upkeep": 123,
-        "cost": 123,
-        "hp": 123,
-        "actionPoints": 123,
-        "movement": "GROUND",
+        "upkeep": 50,
+        "cost": 900,
+        "hp": 75,
+        "actionPoints": 120,
+        "movement": "HOVER",
         "display": {
             "tiles": "unit-human",
             "offset": 64

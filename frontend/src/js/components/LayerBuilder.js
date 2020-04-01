@@ -18,6 +18,7 @@ const buildUnitModel = (id, unit, reference) => {
         experience: unit.experience,
         position: unit.position,
         facing: unit.facing,
+        owner: unit.owner,
         spritesheet: reference.display.tiles,
         offset: reference.display.offset,
     };
@@ -39,6 +40,7 @@ const buildStructureModel = (id, structure, reference, position, displayOffset) 
             max: reference.production.value
         },
         position: position,
+        owner: structure.owner,
         spritesheet: reference.display.tiles,
         offset: displayOffset
     };
@@ -148,9 +150,17 @@ export default class LayerBuilder {
         let findStructure = findObject(this.structureModels);
         let reference = findStructure(index.x, index.y);
         if (!reference) return null;
-        // TODO: we need to add on 17 to all numbers between 17 and 25 to get the right owner
-        // we need to add 0,1,2 to the 68 to get the right owner
-        return this.objectAt(index, [68, 68, 68, 68, 68, 17, 19, 18, 68, 23, 25, 24, 68, 20, 22, 21], (x, y) => {
+
+        // use the correct colour depending on the owner for the overview tile
+        let tileIndexes;
+        if (reference.owner === 'HUMAN') {
+            tileIndexes = [68, 68, 68, 68, 68, 17, 19, 18, 68, 23, 25, 24, 68, 20, 22, 21];
+        } else if (reference.owner === 'NEUTRAL') {
+            tileIndexes = [69, 69, 69, 69, 69, 34, 36, 35, 69, 40, 42, 41, 69, 37, 39, 38];
+        } else if (reference.owner === 'ALIEN') {
+            tileIndexes = [70, 70, 70, 70, 70, 51, 53, 52, 70, 57, 59, 58, 70, 54, 56, 55];
+        }
+        return this.objectAt(index, tileIndexes, (x, y) => {
             let model = findStructure(x, y);
             if (!model) return false;
             return reference.id === model.id;
@@ -159,8 +169,14 @@ export default class LayerBuilder {
 
     unitOverviewAt(index) {
         // touching units don't matter for the overview
-        // TODO: we should return 0, 1, 2 depending on owner
-        return 0;
+        let findStructure = findObject(this.unitModels);
+        let reference = findStructure(index.x, index.y);
+        if (!reference) return null;
+        return {
+            'HUMAN': 0,
+            'NEUTRAL': 1,
+            'ALIEN': 2
+        }[reference.owner];
     }
 
     objectAt(pos, tileIds, evaluator) {

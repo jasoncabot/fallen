@@ -1,4 +1,3 @@
-const uuidv4 = require('uuid/v4');
 const gameService = require('../service/game');
 const information = require('../service/information');
 const initialise = require('../service/initialise');

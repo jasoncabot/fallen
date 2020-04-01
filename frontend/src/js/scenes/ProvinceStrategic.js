@@ -162,8 +162,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.load.image('ui-strategic', uiStrategic);
         this.load.image('active-unit-selection', activeUnitSelection);
 
-        let game = this.cache.json.get(`game-${this.gameId}`);
-        const logo = game.player.owner === 'HUMAN' ? logoHuman : logoAlien;
+        this.game = this.cache.json.get(`game-${this.gameId}`);
+        const logo = this.game.player.owner === 'HUMAN' ? logoHuman : logoAlien;
         this.load.image('logo', logo);
 
         this.sounds.preload(this);
@@ -205,9 +205,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
             return;
         }
         if (this.modalDialog) return;
-        let game = this.cache.json.get(`game-${this.gameId}`);
-        let province = game.provinces[this.province];
-        const dialog = new StructureDialog(this, 13, 28, province, game.player.technology, model, "STRATEGIC", (_structure) => {
+        let province = this.game.provinces[this.province];
+        const dialog = new StructureDialog(this, 13, 28, province, this.game.player.technology, model, "STRATEGIC", (_structure) => {
             this.modalDialog.destroy();
             this.modalDialog = null;
         }, (kind, structure) => {
@@ -221,9 +220,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     // then this should target a specific place for firing a weapon
                     break;
                 case 'BUILD_DROPSHIP':
-                    const game = this.cache.json.get(`game-${this.gameId}`);
                     const dropshipReference = Object.values(StructureData)
-                        .find(s => s.kind.type === 'DROPSHIP' && s.kind.owner.indexOf(game.player.owner) >= 0);
+                        .find(s => s.kind.type === 'DROPSHIP' && s.kind.owner.indexOf(this.game.player.owner) >= 0);
                     this.enterConstructionMode(dropshipReference);
                     break;
                 case 'LAUNCH':
@@ -292,6 +290,9 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     onUnitSelected(model, pos) {
+        // if we don't own this unit then don't allow us to select it
+        if (model.owner !== this.game.player.owner) return;
+
         if (this.currentlySelectedUnit && this.currentlySelectedUnit === model) {
             this.layerBuilder.processCommand({
                 action: 'TURN',
@@ -334,7 +335,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
         if (this.constructionMode && this.constructionMode.kind === 'pending-construction') {
             this.logo.visible = true;
-            let player = this.cache.json.get(`game-${this.gameId}`).player;
+            let player = this.game.player;
             this.modalDialog = new ConstructionDialog(this, 16, 42, player.owner, (structure) => {
                 this.enterConstructionMode(structure);
             }).show();
@@ -609,9 +610,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
     create() {
         registerScenePath(this, '/games/' + this.gameId + '/' + this.province);
 
-        let game = this.cache.json.get(`game-${this.gameId}`);
-
-        let province = game.provinces[this.province];
+        let province = this.game.provinces[this.province];
         let reference = ProvinceData[this.province];
 
         this.unitView = {};
@@ -702,7 +701,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         // Static UI in a container
         let ui = this.add.container(0, 0).setDepth(2);
 
-        this.overviewProvince = new ProvinceOverview(this, 32, 34, game, ui).setVisible(false);
+        this.overviewProvince = new ProvinceOverview(this, 32, 34, this.game, ui).setVisible(false);
         ui.add(this.overviewProvince);
         this.buttonRepair = createButton(this, 12, 410, buttons.strategic.repair, (button) => {
             // TODO: submit a repair command
@@ -788,7 +787,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         ui.add(this.add.text(58, 6, ResourceCalculator.calculateIncome(province, 'RESEARCH'), font).setOrigin(0.5, 0));
         ui.add(this.add.text(133, 6, ResourceCalculator.calculateIncome(province, 'ENERGY'), font).setOrigin(0.5, 0));
         ui.add(this.add.text(320, 6, reference.name, font).setOrigin(0.5, 0));
-        ui.add(this.add.text(569, 6, game.player.globalReserve + "/" + ResourceCalculator.calculateIncome(province, 'CREDITS'), font).setOrigin(0.5, 0));
+        ui.add(this.add.text(569, 6, this.game.player.globalReserve + "/" + ResourceCalculator.calculateIncome(province, 'CREDITS'), font).setOrigin(0.5, 0));
 
         this.centerCameraAtPoint({ x: reference.width / 2, y: reference.height / 2 });
     }
