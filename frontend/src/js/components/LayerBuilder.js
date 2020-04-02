@@ -60,6 +60,7 @@ export default class LayerBuilder {
         this.width = terrain.width;
         this.height = terrain.height;
         this.terrainTiles = terrain.tiles;
+        this.provinceOwner = province.owner;
 
         this.structureReferenceLookup = structures;
         this.unitReferenceLookup = units;
@@ -343,7 +344,8 @@ export default class LayerBuilder {
             position: position,
             kind: reference.kind,
             hp: reference.hp,
-            units: {}
+            units: {},
+            owner: this.provinceOwner
         };
 
         let models = [];

@@ -109,19 +109,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         emitter.on('structureBuilt', ({ models }) => {
             models.forEach((structure) => {
                 let pos = this.screenCoordinates(structure.position.x, structure.position.y);
-                const structureImage = this.add.image(pos.x, pos.y, structure.spritesheet, structure.offset)
-                    .setOrigin(0, 0)
-                    .setInteractive({ cursor: 'url(' + structurePointer + '), pointer', pixelPerfect: true });
-                this.mapContainer.add(structureImage);
-
-                let views = this.structureViews[structure.id] || [];
-                views.push(structureImage)
-                this.structureViews[structure.id] = views;
-
-                structureImage.on('pointerup', (_pointer, _x, _y, _event) => {
-                    if (this.constructionMode) return;
-                    this.onStructureSelected(structure);
-                });
+                this.renderStructure(structure, pos);
             });
         });
         emitter.on('structureDemolished', ({ structureId }) => {
@@ -290,9 +278,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     onUnitSelected(model, pos) {
-        // if we don't own this unit then don't allow us to select it
-        if (model.owner !== this.game.player.owner) return;
-
         if (this.currentlySelectedUnit && this.currentlySelectedUnit === model) {
             this.layerBuilder.processCommand({
                 action: 'TURN',
@@ -483,39 +468,49 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 // render structures
                 let structure = layerBuilder.structureAt(tileIndex);
                 if (structure) {
-                    const structureImage = this.add.image(pos.x, pos.y, structure.spritesheet, structure.offset)
-                        .setOrigin(0, 0)
-                        .setInteractive({ cursor: 'url(' + structurePointer + '), pointer', pixelPerfect: true });
-                    container.add(structureImage);
-
-                    let views = this.structureViews[structure.id] || [];
-                    views.push(structureImage)
-                    this.structureViews[structure.id] = views;
-
-                    structureImage.on('pointerup', (_pointer, _x, _y, _event) => {
-                        if (this.constructionMode) return;
-                        this.onStructureSelected(structure);
-                    });
+                    this.renderStructure(structure, pos);
                 }
 
                 // render units
                 let unit = layerBuilder.unitAt(tileIndex);
                 if (unit) {
                     const unitImage = this.add.image(pos.x, pos.y, unit.spritesheet, unit.offset + unit.facing)
-                        .setOrigin(0, 0)
-                        .setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
+                        .setOrigin(0, 0);
+
+                    // if we don't own this unit then don't allow us to select it
+                    if (unit.owner === this.game.player.owner) {
+                        unitImage.setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
+                        unitImage.on('pointerup', (_pointer, _x, _y, event) => {
+                            if (this.constructionMode) return;
+
+                            event.stopPropagation();
+                            this.onUnitSelected(unit, tileIndex);
+                        });
+                    }
+
                     container.add(unitImage);
-
                     this.unitView[unit.id] = unitImage;
-                    unitImage.on('pointerup', (_pointer, _x, _y, event) => {
-                        if (this.constructionMode) return;
-
-                        event.stopPropagation();
-                        this.onUnitSelected(unit, tileIndex);
-                    });
                 }
             }
             line++;
+        }
+    }
+
+    renderStructure(structure, position) {
+        const structureImage = this.add.image(position.x, position.y, structure.spritesheet, structure.offset)
+            .setOrigin(0, 0);
+        this.mapContainer.add(structureImage);
+
+        let views = this.structureViews[structure.id] || [];
+        views.push(structureImage)
+        this.structureViews[structure.id] = views;
+
+        if (structure.owner === this.game.player.owner) {
+            structureImage.setInteractive({ cursor: 'url(' + structurePointer + '), pointer', pixelPerfect: true });
+            structureImage.on('pointerup', (_pointer, _x, _y, _event) => {
+                if (this.constructionMode) return;
+                this.onStructureSelected(structure);
+            });
         }
     }
 
