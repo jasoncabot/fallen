@@ -66,5 +66,15 @@ module.exports = {
         { "position": { "x": 29, "y": 11 }, "type": "SQUAD", "experience": 1 },
         { "position": { "x": 30, "y": 13 }, "type": "SQUAD", "experience": 1 },
         { "position": { "x": 27, "y": 05 }, "type": "TANK", "experience": 1 }
+    ],
+    "milos": [
+        { "position": { "x": 04, "y": 36 }, "type": "SQUAD", "experience": 1 },
+        { "position": { "x": 40, "y": 21 }, "type": "SQUAD", "experience": 1 },
+        { "position": { "x": 05, "y": 00 }, "type": "SQUAD", "experience": 1 },
+        { "position": { "x": 03, "y": 19 }, "type": "SQUAD", "experience": 1 },
+        { "position": { "x": 42, "y": 38 }, "type": "SQUAD", "experience": 1 },
+        { "position": { "x": 32, "y": 09 }, "type": "SQUAD", "experience": 1 },
+        { "position": { "x": 24, "y": 24 }, "type": "LONGRANGE", "experience": 3 },
+        { "position": { "x": 20, "y": 24 }, "type": "TANK", "experience": 3 }
     ]
 };

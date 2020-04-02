@@ -82,5 +82,26 @@ module.exports = {
         { "position": { "x": 41, "y": 21 }, "type": "MINING" },
         { "position": { "x": 44, "y": 25 }, "type": "MINING" },
         { "position": { "x": 40, "y": 25 }, "type": "MINING" }
+    ],
+    "milos": [
+        { "position": { "x": 23, "y": 25 }, "type": "LAB" },
+        { "position": { "x": 11, "y": 23 }, "type": "ENERGY" },
+        { "position": { "x": 10, "y": 26 }, "type": "ENERGY" },
+        { "position": { "x": 33, "y": 36 }, "type": "ENERGY" },
+        { "position": { "x": 27, "y": 26 }, "type": "ENERGY" },
+        { "position": { "x": 09, "y": 17 }, "type": "MINING" },
+        { "position": { "x": 09, "y": 31 }, "type": "MINING" },
+        { "position": { "x": 09, "y": 36 }, "type": "MINING" },
+        { "position": { "x": 28, "y": 36 }, "type": "MINING" },
+        { "position": { "x": 25, "y": 28 }, "type": "TOWER" },
+        { "position": { "x": 21, "y": 26 }, "type": "TOWER" },
+        { "position": { "x": 26, "y": 23 }, "type": "TOWER" },
+        { "position": { "x": 20, "y": 23 }, "type": "TOWER" },
+        { "position": { "x": 22, "y": 23 }, "type": "TOWER" },
+        { "position": { "x": 16, "y": 32 }, "type": "BARRACKS" },
+        { "position": { "x": 13, "y": 33 }, "type": "FACTORY" },
+        { "position": { "x": 18, "y": 27 }, "type": "ANTIMISSILE" },
+        { "position": { "x": 24, "y": 32 }, "type": "SCANNER" },
+        { "position": { "x": 14, "y": 23 }, "type": "ENERGY" }
     ]
 };
