@@ -75,6 +75,8 @@ class TechnologySlider extends GameObjects.Container {
 
         let valueInput = this.researchValue.getChildByName('slider');
         valueInput.value = value;
+
+        this.value = value;
     }
 }
 
@@ -85,14 +87,12 @@ export default class TechnologyOverview extends GameObjects.Container {
 
         this.game = game;
 
+        this.commandQueue = scene.sys.game.commandQueue;
+
         let title = scene.add.text(56, 0, 'TECHNOLOGY', { font: "20px Verdana", color: 'green' }).setOrigin(0, 0);
         this.add(title);
 
-        // TODO: move somewhere sensible - also check for duplication between this and credits
-        this.totalResearch = Object.values(game.provinces)
-            .filter(p => p.owner === game.player.owner)
-            .map(p => ResourceCalculator.calculateIncome(p, 'RESEARCH'))
-            .reduce((total, current) => total + current);
+        this.totalResearch = ResourceCalculator.calculateTotalIncome(game, 'RESEARCH');
 
         let totalResearchText = scene.add.text(56, 27, `Research Production: ${this.totalResearch} RP`, { font: "14px Verdana", color: 'green' }).setOrigin(0, 0);
         this.add(totalResearchText);
@@ -117,11 +117,16 @@ export default class TechnologyOverview extends GameObjects.Container {
     }
 
     show() {
-        let tech = this.game.player.technology;
+        const tech = this.game.player.technology;
+
+        const allocation = Object.keys(tech).reduce((r, key) => {
+            r[key] = Math.floor(this.totalResearch / this.sliders.length);
+            return r;
+        }, {});
 
         this.sliders.forEach(slider => {
             let current = tech[slider.key];
-            let thisTurn = Math.floor(this.totalResearch / this.sliders.length);
+            let thisTurn = allocation[slider.key];
             slider.visible = true;
             slider.update(current + thisTurn, TechnologyData[slider.key]);
         });
@@ -130,7 +135,23 @@ export default class TechnologyOverview extends GameObjects.Container {
     hide() {
         this.sliders.forEach(slider => {
             slider.visible = false;
-        })
+        });
+
+        const updates = this.sliders.reduce((tech, slider) => {
+            tech[slider.key] = slider.value;
+            return tech;
+        }, {});
+
+        // TODO: this should check if the allocations have changed since the technology scene was opened
+        if (Object.values(updates).filter(update => update !== undefined).length === 0) return;
+
+        this.commandQueue.dispatch({
+            "action": "ADJUST_RESEARCH",
+            "province": null,
+            "targetId": null,
+            "targetType": null,
+            "technology": updates
+        });
     }
 }
 

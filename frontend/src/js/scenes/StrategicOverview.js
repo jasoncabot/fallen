@@ -6,14 +6,13 @@ import {
     MessageBox,
     ProvinceOverview,
     TechnologyOverview,
-    ProvinceMap
+    ProvinceMap,
+    registerScenePath
 } from '../components';
 
 import { StrategicMap } from '../../images/ui';
 
 import * as api from '../models/API';
-
-import { registerScenePath } from './../components/History';
 
 import { ProvinceData, ResourceCalculator } from 'shared';
 import terrain from './../../images/terrain';
@@ -32,6 +31,7 @@ export default class StrategicOverview extends Scene {
 
     preload() {
         ProvinceMap.preload(this);
+        MessageBox.preload(this);
 
         this.load.image('strategic-map', StrategicMap);
 
@@ -92,11 +92,7 @@ export default class StrategicOverview extends Scene {
         let topFont = { color: 'green', fontSize: '14px', fontFamily: 'Verdana' };
         this.add.text(112, 4, `Year ${game.turn.number}`, topFont).setOrigin(0.5, 0);
         this.add.text(320, 4, game.player.name, topFont).setOrigin(0.5, 0);
-        // TODO: move this calculation somewhere sensible
-        let totalIncome = Object.values(game.provinces)
-            .filter(p => p.owner === game.player.owner)
-            .map(p => ResourceCalculator.calculateIncome(p, 'CREDITS'))
-            .reduce((total, current) => total + current);
+        let totalIncome = ResourceCalculator.calculateTotalIncome(game, 'CREDITS');
         this.add.text(538, 4, game.player.globalReserve + "/" + totalIncome, topFont).setOrigin(0.5, 0);
 
         this.buttonMenu = createButton(this, 246, 401, buttons.world.menu, (button) => {
@@ -124,17 +120,14 @@ export default class StrategicOverview extends Scene {
             }
         });
         this.buttonEndTurn = createButton(this, 532, 433, buttons.world.endTurn, (button) => {
-
-            const key = 'end-turn-key';
-            let box = new MessageBox(key, 160, 150, this, 'End Strategic Turn?');
-            box.confirm = () => {
-                this.scene.remove(key);
+            const dialog = new MessageBox(this, 160, 150, "End Strategic Turn?", () => {
+                dialog.destroy();
                 this.onTurnEnded(game);
-            }
-            box.cancel = () => {
-                this.scene.remove(key);
-            }
-            this.scene.add(key, box, true);
+            }, () => {
+                dialog.destroy();
+            })
+            this.add.existing(dialog);
+            dialog.show();
         });
 
         this.onCurrentViewChanged(this.view, game);
@@ -143,11 +136,12 @@ export default class StrategicOverview extends Scene {
     onTurnEnded(game) {
         const data = {
             action: game.turn.action,
-            actions: [], // TODO: submit the actual actions we performed this turn
+            actions: this.game.commandQueue.buffer,
             turn: game.turn.number
         }
         api.post(`/games/${game.id}/turn`, data)
             .then(turn => {
+                this.game.commandQueue.flush();
                 this.cache.json.remove(`game-${game.id}`);
                 this.scene.start('LoadGameResources', { gameId: game.id });
             })

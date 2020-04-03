@@ -50,7 +50,20 @@ const buildStructureModel = (id, structure, reference, position, displayOffset) 
 export default class LayerBuilder {
 
     constructor(emitter) {
-        this.emitter = emitter;
+        if (emitter) {
+            emitter.on('commandSubmitted', this.processCommand.bind(this));
+        }
+
+        // default callbacks
+        this.unitBoarded = (_id) => { };
+        this.unitDemolished = (_id) => { };
+        this.unitMoved = (_unit) => { };
+        this.unitTurned = (_unit) => { };
+        this.structureBuilt = (_models) => { };
+        this.structureDemolished = (_id) => { };
+        this.structuresRepaired = () => { };
+        this.roadsUpdated = (_roads) => { };
+        this.wallsUpdated = (_walls) => { };
     }
 
     // converts a game in a nested format
@@ -59,6 +72,7 @@ export default class LayerBuilder {
 
         this.width = terrain.width;
         this.height = terrain.height;
+        this.terrainType = terrain.type;
         this.terrainTiles = terrain.tiles;
         this.provinceOwner = province.owner;
 
@@ -211,9 +225,9 @@ export default class LayerBuilder {
         return true;
     }
 
-    unitCanOccupy(unit, index, terrainType) {
+    unitCanOccupy(unit, index) {
         if (!this.inBounds(index, { x: 1, y: 1 })) return false;
-        let terrain = TerrainData[terrainType][this.terrainAt(index)];
+        const terrain = TerrainData[this.terrainType][this.terrainAt(index)];
         const validMovements = {
             "GROUND": ["Bridge", "Plain"],
             "HOVER": ["Bridge", "Plain", "Water"],
@@ -229,9 +243,60 @@ export default class LayerBuilder {
         return findObject(this.structureModels)(index.x, index.y);
     }
 
-    validForConstruction(index, size, kind) {
-        // TODO: look at kind and check for collisions with units, structures, walls, roads and terrain
+    validForConstruction(index, size, category) {
         if (!this.inBounds(index, size)) return false;
+
+        // Roads are a special case as they aren't in the structure list
+        if (category === 'ROAD') {
+            if (this.structureAt(index)) return false;
+            if (this.wallAt(index)) return false;
+            if (this.roadAt(index)) return false;
+            const terrain = TerrainData[this.terrainType][this.terrainAt(index)];
+            if (terrain !== 'Plain') return false;
+            if (this.touchingPositions(this.roads, index).length === 1) return false;
+            return true;
+        }
+
+        const reference = this.structureReferenceLookup[category];
+        var isAnyTouchingRoad = false;
+        var isAnyTouchingWall = false;
+        for (let x = 0; x < reference.display.width; x++) {
+            for (let y = 0; y < reference.display.height; y++) {
+                let pos = { x: index.x + x, y: index.y + y };
+                // can't overlap any other structure
+                if (this.structureAt(pos)) return false;
+                if (this.unitAt(pos)) return false;
+                if (this.wallAt(pos)) return false;
+                const terrain = TerrainData[this.terrainType][this.terrainAt(pos)];
+                if (terrain !== 'Plain') return false;
+
+                // this finds all tiles surrounding the current tile (and the current tile itself)
+                //     X
+                //  X  X  X
+                //     X
+                // surrounding tiles are only counted if they exist in the model array
+                // but the current tile is always included, so we check if we have more than 1
+                if (!isAnyTouchingRoad && this.touchingPositions(this.roads, pos).length > 1) {
+                    isAnyTouchingRoad = true;
+                }
+                if (!isAnyTouchingWall && this.touchingPositions(this.walls, pos).length > 1) {
+                    isAnyTouchingWall = true;
+                }
+            }
+        }
+        switch (reference.build.placement) {
+            case 'ANYWHERE':
+                break;
+            case 'B-ROAD':
+                if (!isAnyTouchingRoad) return false;
+                break;
+            case 'B-WALL-OR-ROAD':
+                if (!(isAnyTouchingRoad || isAnyTouchingWall)) return false;
+                break;
+            case 'B-WALL':
+                if (!isAnyTouchingWall) return false;
+                break;
+        }
         return true;
     }
 
@@ -289,7 +354,7 @@ export default class LayerBuilder {
                 }
                 return;
             case 'LAUNCH_DROPSHIP':
-                this.launchDropship(this.findTarget(command));
+                this.launchDropship(this.findTarget(command), command.targetId);
                 return;
             case 'BOARD':
                 const unit = this.findTarget(command);
@@ -299,12 +364,36 @@ export default class LayerBuilder {
                 });
                 this.boardUnit(unit, command.targetId, dropship);
                 return;
+            case 'REPAIR':
+                this.repairAllStructures();
+                return;
+            case 'ADJUST_RESEARCH':
+                return;
             default:
                 throw new Error('No handler for action of type ' + command.action);
         }
     }
 
-    launchDropship(dropship) {
+    repairAllStructures() {
+        Object.keys(this.structureLookup || {}).forEach((structureId) => {
+            let instance = this.structureLookup[structureId];
+            let reference = this.structureReferenceLookup[instance.kind.category];
+
+            instance.hp = reference.hp;
+        });
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                let model = this.structureAt({ x, y });
+                if (!model) continue;
+                model.hp.current = model.hp.max;
+            }
+        }
+
+        this.structuresRepaired();
+    }
+
+    launchDropship(dropship, identifier) {
+        this.demolishStructure(dropship, identifier);
     }
 
     boardUnit(unit, unitId, dropship) {
@@ -312,7 +401,7 @@ export default class LayerBuilder {
         this.writeTileValue(this.unitModels, unit.position, null);
         delete this.unitLookup[unitId];
         unit.position = {};
-        this.emitter.emit('unitBoarded', unitId);
+        this.unitBoarded(unitId);
     }
 
     moveUnit(target, position) {
@@ -322,7 +411,7 @@ export default class LayerBuilder {
         unit.position = position;
         target.position = unit.position;
         this.writeTileValue(this.unitModels, position, unit);
-        this.emitter.emit('unitMoved', unit);
+        this.unitMoved(unit);
     }
 
     turnUnit(target) {
@@ -334,7 +423,7 @@ export default class LayerBuilder {
             unit.facing += 1;
         }
         target.facing = unit.facing;
-        this.emitter.emit('unitTurned', unit);
+        this.unitTurned(unit);
     }
 
     buildStructure(category, position) {
@@ -360,7 +449,7 @@ export default class LayerBuilder {
             }
         }
         this.structureLookup[structureId] = instance;
-        this.emitter.emit('structureBuilt', { instance, models });
+        this.structureBuilt(models);
     }
 
     demolishStructure(structure, structureId) {
@@ -372,13 +461,13 @@ export default class LayerBuilder {
             }
         }
         delete this.structureLookup[structureId];
-        this.emitter.emit('structureDemolished', { position: structure.position, structureId });
+        this.structureDemolished(structureId, structure.position);
     }
 
     demolishUnit(unit, unitId) {
         this.writeTileValue(this.unitModels, unit.position, null);
         delete this.unitLookup[unitId];
-        this.emitter.emit('unitDemolished', { position: unit.position, unitId });
+        this.unitDemolished(unitId, unit.position);
     }
 
     demolishRoad(position) {
@@ -386,7 +475,7 @@ export default class LayerBuilder {
         const index = this.roadLookup.findIndex(item => item.x === position.x && item.y === position.y);
         if (index >= 0) this.roadLookup.splice(index, 1);
         let positions = this.touchingPositions(this.roads, position);
-        this.emitter.emit('roadsUpdated', positions.map(pos => {
+        this.roadsUpdated(positions.map(pos => {
             let { x, y } = pos;
             var tileId = this.roadAt(pos);
             return { x, y, tileId };
@@ -398,7 +487,7 @@ export default class LayerBuilder {
         const index = this.wallLookup.findIndex(item => item.x === position.x && item.y === position.y);
         if (index >= 0) this.wallLookup.splice(index, 1);
         let positions = this.touchingPositions(this.walls, position);
-        this.emitter.emit('wallsUpdated', positions.map(pos => {
+        this.wallsUpdated(positions.map(pos => {
             let { x, y } = pos;
             var tileId = this.wallAt(pos);
             return { x, y, tileId };
@@ -409,7 +498,7 @@ export default class LayerBuilder {
         this.writeTileValue(this.roads, position, true);
         this.roadLookup.push(position);
         let positions = this.touchingPositions(this.roads, position);
-        this.emitter.emit('roadsUpdated', positions.map(pos => {
+        this.roadsUpdated(positions.map(pos => {
             let { x, y } = pos;
             var tileId = this.roadAt(pos);
             return { x, y, tileId };
@@ -420,7 +509,7 @@ export default class LayerBuilder {
         this.writeTileValue(this.walls, position, true);
         this.wallLookup.push(position);
         let positions = this.touchingPositions(this.walls, position);
-        this.emitter.emit('wallsUpdated', positions.map(pos => {
+        this.wallsUpdated(positions.map(pos => {
             let { x, y } = pos;
             var tileId = this.wallAt(pos);
             return { x, y, tileId };

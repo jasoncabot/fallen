@@ -1,7 +1,8 @@
 import { GameObjects } from 'phaser';
 
-import { createButton, buttons } from '../assets/Buttons';
+import { registerButtons, createButton, buttons } from '../assets/Buttons';
 import customPointer from '../../images/misc/FALLEN_218.cur';
+import dialogStructure from '../../images/ui/dialog-structure.png';
 
 import { StructureData, UnitData } from 'shared';
 
@@ -14,6 +15,11 @@ const showUnitInformation = (structure, reference) => {
 }
 
 export default class StructureDialog extends GameObjects.Container {
+
+    static preload(scene) {
+        registerButtons(scene, buttons.manufacturing);
+        scene.load.image('dialog-structure', dialogStructure);
+    }
 
     constructor(scene, x, y, province, technology, structure, mode, onDismiss, onActionSelected) {
         super(scene, x, y);

@@ -1,3 +1,4 @@
+export { default as CommandQueue } from './CommandQueue';
 export { default as ConstructionDialog } from './ConstructionDialog';
 export { registerScenePath } from './History';
 export { default as InfoText } from './InfoText';

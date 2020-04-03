@@ -2,15 +2,15 @@ import Phaser from 'phaser';
 
 import {
     ConstructionDialog,
-    StructureDialog,
     InfoText,
     LayerBuilder,
-    ProvinceOverview
+    MessageBox,
+    ProvinceOverview,
+    registerScenePath,
+    StructureDialog,
 } from '../components/';
 
 import uiStrategic from '../../images/ui/strategic.png';
-import dialogBuild from '../../images/ui/dialog-build.png';
-import dialogStructure from '../../images/ui/dialog-structure.png';
 import logoAlien from '../../images/ui/logo-alien.png';
 import logoHuman from '../../images/ui/logo-human.png';
 import activeUnitSelection from '../../images/icons/active-unit-selection.png';
@@ -25,11 +25,8 @@ import customPointer from '../../images/misc/FALLEN_218.cur';
 import structurePointer from '../../images/misc/FALLEN_218.cur';
 
 import { Sounds } from './../assets/Sounds';
-import { registerScenePath } from './../components/History';
 
 import { UnitData, StructureData, ProvinceData, ResourceCalculator } from 'shared';
-
-const EventEmitter = require('eventemitter3');
 
 export default class ProvinceStrategic extends Phaser.Scene {
 
@@ -53,9 +50,9 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.province = data.province;
         this.view = data.view;
 
-        const emitter = new EventEmitter();
-        this.layerBuilder = new LayerBuilder(emitter);
-        emitter.on('roadsUpdated', (roads) => {
+        this.commandQueue = this.game.commandQueue;
+        const layerBuilder = new LayerBuilder(this.commandQueue.emitter);
+        layerBuilder.roadsUpdated = (roads) => {
             roads.forEach(road => {
                 if (road.tileId) {
                     let existing = this.infrastructureViews[`${road.x}-${road.y}`];
@@ -68,10 +65,46 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     delete this.infrastructureViews[`${road.x}-${road.y}`];
                 }
             });
-
             this.sound.play('road');
-        });
-        emitter.on('wallsUpdated', (walls) => {
+        };
+        layerBuilder.structureBuilt = (models) => {
+            models.forEach((structure) => {
+                let pos = this.screenCoordinates(structure.position.x, structure.position.y);
+                this.renderStructure(structure, pos);
+            });
+        };
+        layerBuilder.structureDemolished = (structureId) => {
+            this.structureViews[structureId].forEach(v => v.destroy());
+            delete this.structureViews[structureId];
+        };
+        layerBuilder.structuresRepaired = () => {
+            // TODO: remove any damaged animations
+        }
+        layerBuilder.unitBoarded = (unitId) => {
+            let view = this.unitView[unitId];
+            view.destroy();
+            delete this.unitView[unitId];
+            this.sound.play('telep');
+            this.currentlySelectedUnit = null;
+            this.onConstructionModeUpdated();
+        };
+        layerBuilder.unitDemolished = (unitId) => {
+            this.unitView[unitId].destroy();
+            delete this.unitView[unitId];
+        };
+        layerBuilder.unitMoved = (unit) => {
+            let view = this.unitView[unit.id];
+            let { x, y } = this.screenCoordinates(unit.position.x, unit.position.y);
+            view.setPosition(x, y);
+            this.sound.play('telep');
+            this.activeUnitSelection.setPosition(view.x, view.y);
+            this.onConstructionModeUpdated();
+        };
+        layerBuilder.unitTurned = (unit) => {
+            let view = this.unitView[unit.id];
+            view.setFrame(unit.offset + unit.facing)
+        };
+        layerBuilder.wallsUpdated = (walls) => {
             walls.forEach(wall => {
                 if (wall.tileId) {
                     let existing = this.infrastructureViews[`${wall.x}-${wall.y}`];
@@ -85,41 +118,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 }
             });
             this.sound.play('wbuild');
-        });
-        emitter.on('unitTurned', (unit) => {
-            let view = this.unitView[unit.id];
-            view.setFrame(unit.offset + unit.facing)
-        });
-        emitter.on('unitMoved', (unit) => {
-            let view = this.unitView[unit.id];
-            let { x, y } = this.screenCoordinates(unit.position.x, unit.position.y);
-            view.setPosition(x, y);
-            this.sound.play('telep');
-            this.activeUnitSelection.setPosition(view.x, view.y);
-            this.onConstructionModeUpdated();
-        });
-        emitter.on('unitBoarded', (unitId) => {
-            let view = this.unitView[unitId];
-            view.destroy();
-            delete this.unitView[unitId];
-            this.sound.play('telep');
-            this.currentlySelectedUnit = null;
-            this.onConstructionModeUpdated();
-        });
-        emitter.on('structureBuilt', ({ models }) => {
-            models.forEach((structure) => {
-                let pos = this.screenCoordinates(structure.position.x, structure.position.y);
-                this.renderStructure(structure, pos);
-            });
-        });
-        emitter.on('structureDemolished', ({ structureId }) => {
-            this.structureViews[structureId].forEach(v => v.destroy());
-            delete this.structureViews[structureId];
-        });
-        emitter.on('unitDemolished', ({ unitId }) => {
-            this.unitView[unitId].destroy();
-            delete this.unitView[unitId];
-        });
+        };
+        this.layerBuilder = layerBuilder;
     }
 
     preload() {
@@ -139,19 +139,19 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.load.spritesheet('overlay-overview', terrain.overlay, { frameWidth: 7, frameHeight: 7 });
 
         registerButtons(this, buttons.strategic);
-        registerButtons(this, buttons.manufacturing);
 
         registerUnits(this);
         registerStructures(this);
 
-        this.load.image('dialog-build', dialogBuild);
-        this.load.image('dialog-structure', dialogStructure);
+        ConstructionDialog.preload(this);
+        StructureDialog.preload(this);
+        MessageBox.preload(this);
 
         this.load.image('ui-strategic', uiStrategic);
         this.load.image('active-unit-selection', activeUnitSelection);
 
-        this.game = this.cache.json.get(`game-${this.gameId}`);
-        const logo = this.game.player.owner === 'HUMAN' ? logoHuman : logoAlien;
+        this.currentGame = this.cache.json.get(`game-${this.gameId}`);
+        const logo = this.currentGame.player.owner === 'HUMAN' ? logoHuman : logoAlien;
         this.load.image('logo', logo);
 
         this.sounds.preload(this);
@@ -175,7 +175,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 cost: reference.build.cost
             }
         };
-        this.updateCurrentConstructionGraphics(null);
+        const tileIndex = this.tileIndexFromCoordinates(this.input.activePointer.worldX, this.input.activePointer.worldY);
+        this.updateCurrentConstructionGraphics(tileIndex);
         this.onConstructionModeUpdated();
     }
 
@@ -183,7 +184,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         if (this.currentlySelectedUnit) {
             if (model.kind !== 'DROPSHIP' || Object.keys(model.units.current).length >= model.units.max) return;
 
-            this.layerBuilder.processCommand({
+            this.commandQueue.dispatch({
                 action: 'BOARD',
                 province: this.province,
                 targetId: this.currentlySelectedUnit.id,
@@ -193,8 +194,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
             return;
         }
         if (this.modalDialog) return;
-        let province = this.game.provinces[this.province];
-        const dialog = new StructureDialog(this, 13, 28, province, this.game.player.technology, model, "STRATEGIC", (_structure) => {
+        let province = this.currentGame.provinces[this.province];
+        const dialog = new StructureDialog(this, 13, 28, province, this.currentGame.player.technology, model, "STRATEGIC", (_structure) => {
             this.modalDialog.destroy();
             this.modalDialog = null;
         }, (kind, structure) => {
@@ -209,7 +210,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                     break;
                 case 'BUILD_DROPSHIP':
                     const dropshipReference = Object.values(StructureData)
-                        .find(s => s.kind.type === 'DROPSHIP' && s.kind.owner.indexOf(this.game.player.owner) >= 0);
+                        .find(s => s.kind.type === 'DROPSHIP' && s.kind.owner.indexOf(this.currentGame.player.owner) >= 0);
                     this.enterConstructionMode(dropshipReference);
                     break;
                 case 'LAUNCH':
@@ -279,7 +280,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
     onUnitSelected(model, pos) {
         if (this.currentlySelectedUnit && this.currentlySelectedUnit === model) {
-            this.layerBuilder.processCommand({
+            this.commandQueue.dispatch({
                 action: 'TURN',
                 province: this.province,
                 targetId: model.id,
@@ -298,7 +299,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
     }
 
     onUnitMoved(model, pos) {
-        this.layerBuilder.processCommand(
+        this.commandQueue.dispatch(
             {
                 action: 'MOVE',
                 province: this.province,
@@ -320,7 +321,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
         if (this.constructionMode && this.constructionMode.kind === 'pending-construction') {
             this.logo.visible = true;
-            let player = this.game.player;
+            let player = this.currentGame.player;
             this.modalDialog = new ConstructionDialog(this, 16, 42, player.owner, (structure) => {
                 this.enterConstructionMode(structure);
             }).show();
@@ -478,7 +479,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                         .setOrigin(0, 0);
 
                     // if we don't own this unit then don't allow us to select it
-                    if (unit.owner === this.game.player.owner) {
+                    if (unit.owner === this.currentGame.player.owner) {
                         unitImage.setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
                         unitImage.on('pointerup', (_pointer, _x, _y, event) => {
                             if (this.constructionMode) return;
@@ -505,7 +506,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         views.push(structureImage)
         this.structureViews[structure.id] = views;
 
-        if (structure.owner === this.game.player.owner) {
+        if (structure.owner === this.currentGame.player.owner) {
             structureImage.setInteractive({ cursor: 'url(' + structurePointer + '), pointer', pixelPerfect: true });
             structureImage.on('pointerup', (_pointer, _x, _y, _event) => {
                 if (this.constructionMode) return;
@@ -530,7 +531,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
 
         let size = { x: this.constructionMode.w, y: this.constructionMode.h };
-        let validForConstruction = this.layerBuilder.validForConstruction(tileIndex, size);
+        let validForConstruction = this.layerBuilder.validForConstruction(tileIndex, size, this.constructionMode.category);
 
         let graphics = this.loadTileSelector(validForConstruction, size);
         graphics.setPosition(pos.x, pos.y);
@@ -605,7 +606,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
     create() {
         registerScenePath(this, '/games/' + this.gameId + '/' + this.province);
 
-        let province = this.game.provinces[this.province];
+        let province = this.currentGame.provinces[this.province];
         let reference = ProvinceData[this.province];
 
         this.unitView = {};
@@ -672,9 +673,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
             if (this.constructionMode) {
                 let command = this.constructionCommand(this.constructionMode, tileIndex);
-                if (command) {
-                    this.layerBuilder.processCommand(command);
-                }
+                this.commandQueue.dispatch(command);
             } else if (this.overviewProvince.visible) {
                 // find the selected tile
                 tileIndex = {
@@ -687,7 +686,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 this.onOverviewToggled();
             } else if (this.currentlySelectedUnit) {
                 // if we already have a selected unit
-                if (this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit, tileIndex, reference.type)) {
+                if (this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit, tileIndex)) {
                     this.onUnitMoved(this.currentlySelectedUnit, tileIndex);
                 }
             }
@@ -696,11 +695,22 @@ export default class ProvinceStrategic extends Phaser.Scene {
         // Static UI in a container
         let ui = this.add.container(0, 0).setDepth(2);
 
-        this.overviewProvince = new ProvinceOverview(this, 32, 34, this.game, ui).setVisible(false);
+        this.overviewProvince = new ProvinceOverview(this, 32, 34, this.currentGame, ui).setVisible(false);
         ui.add(this.overviewProvince);
         this.buttonRepair = createButton(this, 12, 410, buttons.strategic.repair, (button) => {
-            // TODO: submit a repair command
-            alert('No buildings or dropships damaged');
+            const dialog = new MessageBox(this, 160, 150, "Repair?", () => {
+                dialog.destroy();
+                this.commandQueue.dispatch({
+                    action: 'REPAIR',
+                    province: this.province,
+                    targetId: this.province,
+                    targetType: 'province'
+                });
+            }, () => {
+                dialog.destroy();
+            })
+            this.add.existing(dialog);
+            dialog.show();
         })
         ui.add(this.buttonRepair);
         this.buttonBuild = createButton(this, 52, 410, buttons.strategic.build, (button) => {
@@ -716,7 +726,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
             if (this.constructionMode && this.constructionMode.kind === 'road') {
                 this.constructionMode = null;
             } else {
-                this.constructionMode = { w: 1, h: 1, kind: 'road' };
+                this.constructionMode = { w: 1, h: 1, kind: 'road', category: 'ROAD' };
             }
             this.onConstructionModeUpdated();
         })
@@ -782,7 +792,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         ui.add(this.add.text(58, 6, ResourceCalculator.calculateIncome(province, 'RESEARCH'), font).setOrigin(0.5, 0));
         ui.add(this.add.text(133, 6, ResourceCalculator.calculateIncome(province, 'ENERGY'), font).setOrigin(0.5, 0));
         ui.add(this.add.text(320, 6, reference.name, font).setOrigin(0.5, 0));
-        ui.add(this.add.text(569, 6, this.game.player.globalReserve + "/" + ResourceCalculator.calculateIncome(province, 'CREDITS'), font).setOrigin(0.5, 0));
+        ui.add(this.add.text(569, 6, this.currentGame.player.globalReserve + "/" + ResourceCalculator.calculateIncome(province, 'CREDITS'), font).setOrigin(0.5, 0));
 
         this.centerCameraAtPoint({ x: reference.width / 2, y: reference.height / 2 });
     }

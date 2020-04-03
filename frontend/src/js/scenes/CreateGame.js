@@ -2,10 +2,9 @@ import { Scene } from 'phaser';
 
 import * as api from '../models/API';
 
-import { MenuButton } from '../components/MenuButton';
+import { MenuButton, registerScenePath } from '../components';
 
 import creategameBackground from '../../images/ui/creategame-background.png';
-import { registerScenePath } from './../components/History';
 
 export default class CreateGame extends Scene {
     constructor() {

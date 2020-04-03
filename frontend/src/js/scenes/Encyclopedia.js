@@ -1,9 +1,6 @@
 import { Scene } from 'phaser';
 
-import { MenuButton } from '../components/MenuButton';
-
-import { registerScenePath } from './../components/History';
-import { data } from '../Config';
+import { MenuButton, registerScenePath } from '../components';
 
 import background from './../../images/ui/encyclopedia-background.png';
 

@@ -4,6 +4,8 @@ import { ProvincePicker } from '../../images/ui';
 import { ProvinceMap } from '../components';
 import { registerButtons, createButton, buttons } from '../assets/Buttons';
 
+import { ProvinceData } from 'shared';
+
 export default class Launch extends Scene {
 
     constructor() {
@@ -18,7 +20,7 @@ export default class Launch extends Scene {
         this.dropship = data.dropship;
         this.position = data.position;
 
-        this.targetProvince = null;
+        this.targetProvince = data.from;
     }
 
     preload() {
@@ -38,6 +40,16 @@ export default class Launch extends Scene {
 
         if (this.mode === 'DROPSHIP') {
             this.buttonLand = createButton(this, 463, 361, buttons.launch.land, (button) => {
+                // can't select starting province
+                if (this.targetProvince === this.province) return;
+
+                // we must own a touching province
+                const destination = ProvinceData[this.targetProvince];
+                const touchingOwnedProvince = destination.touching.find(key => {
+                    return game.provinces[key].owner === game.player.owner
+                });
+                if (!touchingOwnedProvince) return;
+
                 const command = {
                     action: 'LAUNCH_DROPSHIP',
                     province: this.province,
@@ -47,18 +59,22 @@ export default class Launch extends Scene {
                     targetProvince: this.targetProvince
                 };
 
-                // TODO: dispatch this command to the appropriate place
-                console.log('Dispatching command: ' + JSON.stringify(command));
+                this.game.commandQueue.dispatch(command);
+                this.onInteractionEnded();
             });
         } else if (this.mode === 'MISSILE') {
             this.buttonNuke = createButton(this, 463, 361, buttons.launch.nuke, (button) => {
             });
         }
         this.buttonCancel = createButton(this, 463, 417, buttons.launch.cancel, (button) => {
-            this.scene.start('LoadGameResources', {
-                gameId: this.gameId,
-                province: this.province
-            });
+            this.onInteractionEnded();
+        });
+    }
+
+    onInteractionEnded() {
+        this.scene.start('LoadGameResources', {
+            gameId: this.gameId,
+            province: this.province
         });
     }
 }

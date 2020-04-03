@@ -1,5 +1,6 @@
 
 import * as scenes from './scenes';
+import { CommandQueue } from './components';
 export class App {
 
     constructor(game) {
@@ -11,6 +12,7 @@ export class App {
         Object.keys(scenes).forEach(key => {
             this.game.scene.add(key, scenes[key]);
         });
+        this.game.commandQueue = new CommandQueue();
     }
 
     route(path, query) {

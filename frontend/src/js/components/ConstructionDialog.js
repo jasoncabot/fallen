@@ -1,10 +1,17 @@
 import { GameObjects } from 'phaser';
 
-import { createButton, buttons } from '../assets/Buttons';
+import { registerButtons, createButton, buttons } from '../assets/Buttons';
 
 import { StructureData } from 'shared';
 
+import dialogBuild from '../../images/ui/dialog-build.png';
+
 export default class ConstructionDialog extends GameObjects.Container {
+
+    static preload(scene) {
+        registerButtons(scene, buttons.manufacturing);
+        scene.load.image('dialog-build', dialogBuild);
+    }
 
     constructor(scene, x, y, side, callback) {
         super(scene, x, y);
