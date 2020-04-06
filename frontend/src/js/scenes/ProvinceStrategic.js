@@ -672,8 +672,12 @@ export default class ProvinceStrategic extends Phaser.Scene {
             let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
 
             if (this.constructionMode) {
-                let command = this.constructionCommand(this.constructionMode, tileIndex);
-                this.commandQueue.dispatch(command);
+                let size = { x: this.constructionMode.w, y: this.constructionMode.h };
+                let validForConstruction = this.layerBuilder.validForConstruction(tileIndex, size, this.constructionMode.category);
+                if (validForConstruction) {
+                    let command = this.constructionCommand(this.constructionMode, tileIndex);
+                    this.commandQueue.dispatch(command);
+                }
             } else if (this.overviewProvince.visible) {
                 // find the selected tile
                 tileIndex = {
