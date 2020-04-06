@@ -189,6 +189,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
     onStructureSelected(model) {
         if (this.currentlySelectedUnit) {
             if (model.kind !== 'DROPSHIP' || Object.keys(model.units.current).length >= model.units.max) return;
+            if (model.state === 'UNDER_CONSTRUCTION') return;
 
             this.commandQueue.dispatch({
                 action: 'BOARD',
