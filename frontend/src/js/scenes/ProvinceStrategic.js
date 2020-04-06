@@ -505,7 +505,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
     renderStructure(structure, position) {
         const structureImage = this.add.image(position.x, position.y, structure.spritesheet, structure.offset)
-            .setOrigin(0, 0);
+            .setOrigin(0, 0)
+            .setAlpha(structure.state === 'UNDER_CONSTRUCTION' ? 0.5 : 1.0);
         this.mapContainer.add(structureImage);
 
         let views = this.structureViews[structure.id] || [];

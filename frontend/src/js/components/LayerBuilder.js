@@ -41,6 +41,7 @@ const buildStructureModel = (id, structure, reference, position, displayOffset) 
         },
         position: position,
         owner: structure.owner,
+        state: structure.state,
         spritesheet: reference.display.tiles,
         offset: displayOffset
     };
@@ -450,7 +451,8 @@ export default class LayerBuilder {
             kind: reference.kind,
             hp: reference.hp,
             units: {},
-            owner: this.provinceOwner
+            owner: this.provinceOwner,
+            state: 'UNDER_CONSTRUCTION'
         };
 
         let models = [];

@@ -7,6 +7,7 @@ import dialogStructure from '../../images/ui/dialog-structure.png';
 import { StructureData, UnitData } from 'shared';
 
 const showUnitInformation = (structure, reference) => {
+    if (structure.state === 'UNDER_CONSTRUCTION') return false;
     const containsUnits = structure.units.current && Object.keys(structure.units.current).length > 0;
     const canBuildUnits = ['TROOP', 'FACTORY', 'HOVER'].indexOf(reference.production.category) >= 0;
     const canCarryUnits = ['DROPSHIP'].indexOf(reference.kind.type) >= 0;
@@ -45,7 +46,7 @@ export default class StructureDialog extends GameObjects.Container {
             })
         );
 
-        if (structureRef.action && structureRef.action[mode]) {
+        if (structureRef.action && structureRef.action[mode] && structure.state !== 'UNDER_CONSTRUCTION') {
             this.storedCommand = structureRef.action[mode];
         }
 
