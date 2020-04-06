@@ -51,8 +51,9 @@ export default class LayerBuilder {
 
     constructor(emitter) {
         if (emitter) {
-            emitter.on('commandSubmitted', this.processCommand.bind(this));
+            emitter.on('commandSubmitted', this.processCommand, this);
         }
+        this.emitter = emitter;
 
         // default callbacks
         this.unitBoarded = (_id) => { };
@@ -64,6 +65,11 @@ export default class LayerBuilder {
         this.structuresRepaired = () => { };
         this.roadsUpdated = (_roads) => { };
         this.wallsUpdated = (_walls) => { };
+    }
+
+    shutdown() {
+        this.emitter.removeListener('commandSubmitted', this.processCommand, this);
+        this.emitter = null;
     }
 
     // converts a game in a nested format
@@ -255,6 +261,16 @@ export default class LayerBuilder {
             if (terrain !== 'Plain') return false;
             if (this.touchingPositions(this.roads, index).length === 1) return false;
             return true;
+        }
+
+        if (category === 'RECYCLE') {
+            // not all locations can be recycled, there must exist something that
+            // isn't just terrain here
+            if (this.structureAt(index)) return true;
+            if (this.wallAt(index)) return true;
+            if (this.roadAt(index)) return true;
+            if (this.unitAt(index)) return true;
+            return false;
         }
 
         const reference = this.structureReferenceLookup[category];

@@ -120,6 +120,12 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.sound.play('wbuild');
         };
         this.layerBuilder = layerBuilder;
+
+        this.events.on('shutdown', () => {
+            this.events.off('shutdown');
+            this.layerBuilder.shutdown();
+            this.layerBuilder = null;
+        });
     }
 
     preload() {
@@ -739,7 +745,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
             if (this.constructionMode && this.constructionMode.kind === 'recycle') {
                 this.constructionMode = null;
             } else {
-                this.constructionMode = { w: 1, h: 1, kind: 'recycle' };
+                this.constructionMode = { w: 1, h: 1, kind: 'recycle', category: 'RECYCLE' };
             }
             this.onConstructionModeUpdated();
         })
