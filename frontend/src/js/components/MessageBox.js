@@ -2,12 +2,12 @@ import { GameObjects } from 'phaser';
 
 import { registerButtons, createButton, buttons } from '../assets/Buttons';
 
-import { Messagebox } from '../../images/ui/';
+import { MessageBoxBackground } from '../../images/ui';
 
 export default class MessageBox extends GameObjects.Container {
 
     static preload(scene) {
-        scene.load.image('messagebox-background', Messagebox);
+        scene.load.image('messagebox-background', MessageBoxBackground);
         registerButtons(scene, buttons.confirmCancel);
     }
 

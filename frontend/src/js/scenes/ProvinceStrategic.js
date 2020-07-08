@@ -10,9 +10,7 @@ import {
     StructureDialog,
 } from '../components/';
 
-import uiStrategic from '../../images/ui/strategic.png';
-import logoAlien from '../../images/ui/logo-alien.png';
-import logoHuman from '../../images/ui/logo-human.png';
+import { Strategic, LogoAlien, LogoHuman } from '../../images/ui';
 import activeUnitSelection from '../../images/icons/active-unit-selection.png';
 
 import terrain from './../../images/terrain';
@@ -106,15 +104,16 @@ export default class ProvinceStrategic extends Phaser.Scene {
         };
         layerBuilder.wallsUpdated = (walls) => {
             walls.forEach(wall => {
+                const key = `${wall.x}-${wall.y}`;
                 if (wall.tileId) {
-                    let existing = this.infrastructureViews[`${wall.x}-${wall.y}`];
+                    let existing = this.infrastructureViews[key];
                     if (existing) existing.destroy();
                     let { x, y } = this.screenCoordinates(wall.x, wall.y);
                     let obj = this.infrastructureBlitter.create(x, y, wall.tileId);
-                    this.infrastructureViews[`${wall.x}-${wall.y}`] = obj;
+                    this.infrastructureViews[key] = obj;
                 } else {
-                    this.infrastructureViews[`${wall.x}-${wall.y}`].destroy();
-                    delete this.infrastructureViews[`${wall.x}-${wall.y}`];
+                    this.infrastructureViews[key].destroy();
+                    delete this.infrastructureViews[key];
                 }
             });
             this.sound.play('wbuild');
@@ -153,11 +152,11 @@ export default class ProvinceStrategic extends Phaser.Scene {
         StructureDialog.preload(this);
         MessageBox.preload(this);
 
-        this.load.image('ui-strategic', uiStrategic);
+        this.load.image('ui-strategic', Strategic);
         this.load.image('active-unit-selection', activeUnitSelection);
 
         this.currentGame = this.cache.json.get(`game-${this.gameId}`);
-        const logo = this.currentGame.player.owner === 'HUMAN' ? logoHuman : logoAlien;
+        const logo = this.currentGame.player.owner === 'HUMAN' ? LogoHuman : LogoAlien;
         this.load.image('logo', logo);
 
         this.sounds.preload(this);

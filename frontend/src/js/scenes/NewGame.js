@@ -3,7 +3,7 @@ import { Scene } from 'phaser';
 import { MenuButton, registerScenePath } from '../components';
 import { GameOptions } from '../models/GameOptions';
 
-import newgameBackground from '../../images/ui/newgame-background.png';
+import { NewGameBackground } from '../../images/ui';
 
 export default class NewGame extends Scene {
     constructor() {
@@ -14,7 +14,7 @@ export default class NewGame extends Scene {
     }
 
     preload() {
-        this.load.image('newgame-background', newgameBackground);
+        this.load.image('newgame-background', NewGameBackground);
     }
 
     create() {

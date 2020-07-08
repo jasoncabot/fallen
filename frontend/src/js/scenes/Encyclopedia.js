@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 
 import { MenuButton, registerScenePath } from '../components';
 
-import background from './../../images/ui/encyclopedia-background.png';
+import { EncyclopediaBackground } from './../../images/ui';
 
 import images from './../../images/encyclopedia';
 
@@ -20,7 +20,7 @@ export default class Encyclopedia extends Scene {
     }
 
     preload() {
-        this.load.image('encyclopedia-background', background);
+        this.load.image('encyclopedia-background', EncyclopediaBackground);
 
         if (this.item) {
             const loweredKey = this.item.toLowerCase();

@@ -4,13 +4,13 @@ import { registerButtons, createButton, buttons } from '../assets/Buttons';
 
 import { StructureData } from 'shared';
 
-import dialogBuild from '../../images/ui/dialog-build.png';
+import { DialogBuild } from '../../images/ui';
 
 export default class ConstructionDialog extends GameObjects.Container {
 
     static preload(scene) {
         registerButtons(scene, buttons.manufacturing);
-        scene.load.image('dialog-build', dialogBuild);
+        scene.load.image('dialog-build', DialogBuild);
     }
 
     constructor(scene, x, y, side, callback) {

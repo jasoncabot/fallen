@@ -4,7 +4,7 @@ import * as api from '../models/API';
 
 import { MenuButton, registerScenePath } from '../components';
 
-import creategameBackground from '../../images/ui/creategame-background.png';
+import { CreateGameBackground } from '../../images/ui';
 
 export default class CreateGame extends Scene {
     constructor() {
@@ -19,7 +19,7 @@ export default class CreateGame extends Scene {
     }
 
     preload() {
-        this.load.image('creategame-background', creategameBackground);
+        this.load.image('creategame-background', CreateGameBackground);
     }
 
     create() {

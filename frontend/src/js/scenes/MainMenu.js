@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 
 import { MenuButton, registerScenePath } from '../components';
 
-import background from '../../images/ui/mainmenu-background.png';
+import { MainMenuBackground } from '../../images/ui';
 
 export default class MainMenu extends Scene {
 
@@ -11,7 +11,7 @@ export default class MainMenu extends Scene {
     }
 
     preload() {
-        this.load.image('background', background);
+        this.load.image('background', MainMenuBackground);
     }
 
     create() {
