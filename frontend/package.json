@@ -32,7 +32,7 @@
     "minimist": ">=1.2.2",
     "node-sass": "^4.13.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "phaser": "^3.22.0",
+    "phaser": "3.22.0",
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
     "sass": "^1.26.3",
