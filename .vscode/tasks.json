@@ -1,0 +1,31 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "start",
+			"path": "frontend/",
+			"isBackground": true,
+			"problemMatcher": [
+				{
+					"pattern": [
+						{
+							"regexp": ".",
+							"file": 1,
+							"location": 2,
+							"message": 3
+						}
+					],
+					"background": {
+						"activeOnStart": true,
+						"beginsPattern": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.js --no-progress",
+						"endsPattern": "Compiled successfully",
+					}
+				}
+			],
+			"group": "build",
+			"label": "npm: start - frontend",
+			"detail": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.js --no-progress"
+		}
+	]
+}

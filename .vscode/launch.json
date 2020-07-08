@@ -25,6 +25,7 @@
             "name": "Debug in Firefox",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}/src",
+            "preLaunchTask": "npm: start - frontend",
             "reAttach": true,
             "pathMappings": [
                 {
