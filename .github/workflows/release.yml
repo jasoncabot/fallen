@@ -1,0 +1,53 @@
+name: Release versioned container image
+
+on:
+  push:
+    tags:        
+      - release/v*
+
+jobs:
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Version from Tag Name
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 4)
+  
+      - name: Azure Container Registry Login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_HOST }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push frontend
+        run: |
+          # .env file is copied as part of Dockerfile
+          echo "API_ENDPOINT=$API_ENDPOINT" >> frontend/.env
+          echo "ASSET_ENDPOINT=/assets/data" >> frontend/.env
+          echo "CANVAS_RENDERER=true" >> frontend/.env
+          echo "WEBGL_RENDERER=true" >> frontend/.env
+          DOCKER_BUILDKIT=1 docker build -f Dockerfile.frontend . -t ${{ secrets.REGISTRY_HOST }}/fallenhaven/frontend:${{ steps.get_version.outputs.VERSION }}
+          docker push ${{ secrets.REGISTRY_HOST }}/fallenhaven/frontend:${{ steps.get_version.outputs.VERSION }}
+        env:
+          API_ENDPOINT: https://fallenhavenapi.jasoncabot.me
+
+      - name: Build and push backend
+        run: |
+          # .env file is copied as part of Dockerfile
+          echo "REDIS_HOST=$REDIS_HOST" >> backend/.env
+          echo "REDIS_KEY=$REDIS_KEY" >> backend/.env
+          echo "REDIS_PORT=$REDIS_PORT" >> backend/.env
+          echo "PORT=$PORT" >> backend/.env
+          DOCKER_BUILDKIT=1 docker build -f Dockerfile.backend . -t ${{ secrets.REGISTRY_HOST }}/fallenhaven/backend:${{ steps.get_version.outputs.VERSION }}
+          docker push ${{ secrets.REGISTRY_HOST }}/fallenhaven/backend:${{ steps.get_version.outputs.VERSION }}
+        env:
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_KEY: ${{ secrets.REDIS_KEY }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          PORT: 4500
