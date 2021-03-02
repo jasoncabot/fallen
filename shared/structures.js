@@ -28,7 +28,7 @@ module.exports = {
             "placement": "B-WALL-OR-ROAD"
         },
         "encyclopedia": {
-            "description": "This is a longer description",
+            "description": "Protects from ranged fire",
             "short": "Passive defence capacity",
             "next": "",
             "prev": ""
@@ -63,7 +63,7 @@ module.exports = {
             "placement": "B-WALL"
         },
         "encyclopedia": {
-            "description": "This is a longer description",
+            "description": "Attacks with a ranged attack",
             "short": "Automatic active defense",
             "next": "HAIR",
             "prev": ""
@@ -449,7 +449,7 @@ module.exports = {
             "placement": "B-WALL"
         },
         "encyclopedia": {
-            "description": "This is a longer description",
+            "description": "Attacks with a ranged attack",
             "short": "Automatic active defense",
             "next": "AAIR",
             "prev": ""
