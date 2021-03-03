@@ -277,13 +277,15 @@ export default class LayerBuilder {
         const reference = this.structureReferenceLookup[category];
         var isAnyTouchingRoad = false;
         var isAnyTouchingWall = false;
-        for (let x = 0; x < reference.display.width; x++) {
-            for (let y = 0; y < reference.display.height; y++) {
+        for (let x = 0; x < size.x; x++) {
+            for (let y = 0; y < size.y; y++) {
                 let pos = { x: index.x + x, y: index.y + y };
                 // can't overlap any other structure
                 if (this.structureAt(pos)) return false;
                 if (this.unitAt(pos)) return false;
                 if (this.wallAt(pos)) return false;
+                // depending on build type, can't overlap
+                if (this.roadAt(pos) && reference.build.placement !== 'ANYWHERE') return false;
                 const terrain = TerrainData[this.terrainType][this.terrainAt(pos)];
                 if (terrain !== 'Plain') return false;
 
