@@ -233,9 +233,9 @@ export default class ProvinceStrategic extends Phaser.Scene {
                         h: 1,
                         kind: 'pending-unit-exit',
                         model: {
-                            name: context.name,
-                            upkeep: context.upkeep,
-                            experience: context.experience,
+                            name: context.unit.kind.name,
+                            experience: context.unit.experience,
+                            reference: context.reference,
                             unitId: context.id,
                             container: context.container
                         }
@@ -376,9 +376,10 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 this.currentlySelectedUnit = null;
                 this.updateCurrentConstructionGraphics(null);
             } else if (this.constructionMode.kind === 'pending-unit-exit') {
-                // TODO: show the hovering image, name of unit e.t.c in the bottom middle
                 this.logo.visible = false;
-                this.infoText.setUnitMode(this.constructionMode.model).setVisible(true);
+                const { name, experience } = this.constructionMode.model;
+                const { upkeep } = this.constructionMode.model.reference;
+                this.infoText.setUnitMode(name, upkeep, experience).setVisible(true);
             } else {
                 this.logo.visible = false;
                 this.infoText.setConstructionMode(this.constructionMode).setVisible(true);
@@ -388,7 +389,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
             }
         } else if (this.currentlySelectedUnit) {
             this.logo.visible = false;
-            this.infoText.setUnitMode(this.currentlySelectedUnit).setVisible(true);
+            const { name, upkeep, experience } = this.currentlySelectedUnit;
+            this.infoText.setUnitMode(name, upkeep, experience).setVisible(true);
             hideModalDialog();
             // this hides the selection when using overview map with a selected unit to 
             // easily move it to another location
@@ -578,7 +580,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
     updateCurrentConstructionGraphics(tileIndex) {
 
-        if (!this.constructionMode || !tileIndex || (this.constructionMode && ['pending-unit-exit', 'pending-construction'].indexOf(this.constructionMode.kind) >= 0)) {
+        if (!(this.constructionMode || this.currentlySelectedUnit) || !tileIndex || (this.constructionMode && this.constructionMode.kind === 'pending-construction')) {
             // hide all tile selectors
             Object.values(this.cachedTileSelectors).forEach(graphics => { graphics.visible = false });
             return;
@@ -586,10 +588,27 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
         let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
 
-        let size = { x: this.constructionMode.w, y: this.constructionMode.h };
-        let validForConstruction = this.layerBuilder.validForConstruction(tileIndex, size, this.constructionMode.category);
+        // show the white square (and potentially add a cross through it when disabled) for:
+        // - Taking a unit out of a structure
+        // - Building a structure
+        // - Moving a unit
+        let enabledSelector;
+        let size;
+        if (this.constructionMode) {
+            size = { x: this.constructionMode.w, y: this.constructionMode.h };
+            if (this.constructionMode.kind === 'pending-unit-exit') {
+                const { reference, container } = this.constructionMode.model;
+                enabledSelector = this.layerBuilder.unitCanDisembark(reference, container, tileIndex);
+            } else {
+                enabledSelector = this.layerBuilder.validForConstruction(tileIndex, size, this.constructionMode.category);
+            }
+        } else if (this.currentlySelectedUnit) {
+            // Assume all units are 1x1
+            size = { x: 1, y: 1 };
+            enabledSelector = this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit.movement, tileIndex);
+        }
 
-        let graphics = this.loadTileSelector(validForConstruction, size);
+        let graphics = this.loadTileSelector(enabledSelector, size);
         graphics.setPosition(pos.x, pos.y);
 
         // Only show the current tile selector graphic
@@ -729,16 +748,9 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
             if (this.constructionMode) {
                 if (this.constructionMode.kind === 'pending-unit-exit') {
-                    const container = this.constructionMode.model.container;
-                    const unitId = this.constructionMode.model.unitId;
-                    if (this.layerBuilder.unitCanDisembark(unitId, container, tileIndex)) {
-                        this.onUnitDisembarked({
-                            id: unitId,
-                            type: 'unit'
-                        }, {
-                            id: container.id,
-                            type: container.type
-                        }, tileIndex);
+                    const { unitId, container, reference } = this.constructionMode.model;
+                    if (this.layerBuilder.unitCanDisembark(reference, container, tileIndex)) {
+                        this.onUnitDisembarked({ id: unitId, type: 'unit' }, { id: container.id, type: container.type }, tileIndex);
                     }
                 } else {
                     let size = { x: this.constructionMode.w, y: this.constructionMode.h };
@@ -760,7 +772,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 this.onOverviewToggled();
             } else if (this.currentlySelectedUnit) {
                 // if we already have a selected unit
-                if (this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit, tileIndex)) {
+                if (this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit.movement, tileIndex)) {
                     this.onUnitMoved(this.currentlySelectedUnit, tileIndex);
                 }
             }

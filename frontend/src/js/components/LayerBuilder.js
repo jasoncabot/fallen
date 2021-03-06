@@ -233,23 +233,24 @@ export default class LayerBuilder {
         return true;
     }
 
-    unitCanOccupy(unit, index) {
+    unitCanOccupy(movement, index) {
         if (!this.inBounds(index, { x: 1, y: 1 })) return false;
         const terrain = TerrainData[this.terrainType][this.terrainAt(index)];
         const validMovements = {
             "GROUND": ["Bridge", "Plain"],
             "HOVER": ["Bridge", "Plain", "Water"],
         }
-        if (!validMovements[unit.movement].find(x => x === terrain)) return false;
+        if (!validMovements[movement].find(x => x === terrain)) return false;
         if (this.unitAt(index)) return false;
         if (this.structureAt(index)) return false;
         if (this.wallAt(index)) return false;
         return true;
     }
 
-    unitCanDisembark(unitId, container, index) {
-        // TODO: check valid exit location
-        return true;
+    unitCanDisembark(unitReference, container, index) {
+        // TODO: if in tactical mode, we can only disembark next to the position of the container
+        // - check that container.position is next to index.position but not overlapping
+        return this.unitCanOccupy(unitReference.movement, index);
     }
 
     structureAt(index) {
