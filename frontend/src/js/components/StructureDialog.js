@@ -135,7 +135,7 @@ export default class StructureDialog extends GameObjects.Container {
         }
     }
 
-    drawUnit(unit, offset) {
+    drawUnit(unitId, unit, offset) {
         const pos = {
             x: 304 + (offset * 70),
             y: 145
@@ -150,7 +150,7 @@ export default class StructureDialog extends GameObjects.Container {
 
         unitImage.on('pointerup', (_pointer, _x, _y, event) => {
             event.stopPropagation();
-            this.onUnitSelected(unit);
+            this.onUnitSelected(unitId);
         });
     }
 
@@ -217,8 +217,11 @@ export default class StructureDialog extends GameObjects.Container {
         return lines;
     }
 
-    onUnitSelected(unit) {
-        console.log('selected unit ' + unit);
+    onUnitSelected(unitId) {
+        this.onActionSelected('EXIT_STRUCTURE', {
+            id: unitId,
+            container: this.structure
+        });
     }
 
     onUnitPageChanged() {
@@ -230,7 +233,7 @@ export default class StructureDialog extends GameObjects.Container {
 
         visibleKeys.forEach((key, index) => {
             const unit = this.structure.units.current[key];
-            this.drawUnit(unit, index);
+            this.drawUnit(key, unit, index);
         });
 
         if (this.unitOffset === 0) {

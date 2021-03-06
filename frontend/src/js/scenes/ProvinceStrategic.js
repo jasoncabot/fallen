@@ -98,6 +98,14 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.activeUnitSelection.setPosition(view.x, view.y);
             this.onConstructionModeUpdated();
         };
+        layerBuilder.unitDisembarked = (unit) => {
+            const view = this.renderUnit(unit, unit.position);
+            let { x, y } = this.screenCoordinates(unit.position.x, unit.position.y);
+            view.setPosition(x, y);
+            this.sound.play('telep');
+            this.activeUnitSelection.setPosition(view.x, view.y);
+            this.onDeselected();
+        }
         layerBuilder.unitTurned = (unit) => {
             let view = this.unitView[unit.id];
             view.setFrame(unit.offset + unit.facing)
@@ -204,7 +212,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         const dialog = new StructureDialog(this, 13, 28, province, this.currentGame.player.technology, model, "STRATEGIC", (_structure) => {
             this.modalDialog.destroy();
             this.modalDialog = null;
-        }, (kind, structure) => {
+        }, (kind, context) => {
             this.modalDialog.destroy();
             this.modalDialog = null;
 
@@ -219,13 +227,29 @@ export default class ProvinceStrategic extends Phaser.Scene {
                         .find(s => s.kind.type === 'DROPSHIP' && s.kind.owner.indexOf(this.currentGame.player.owner) >= 0);
                     this.enterConstructionMode(dropshipReference);
                     break;
+                case 'EXIT_STRUCTURE':
+                    this.constructionMode = {
+                        w: 1,
+                        h: 1,
+                        kind: 'pending-unit-exit',
+                        model: {
+                            // TODO: set proper details here
+                            title: "TITLE",
+                            name: "NAME",
+                            cost: "COST",
+                            unitId: context.id,
+                            container: context.container
+                        }
+                    };
+                    this.onConstructionModeUpdated();
+                    break;
                 case 'LAUNCH':
                     this.scene.start('Launch', {
                         mode: 'DROPSHIP',
                         from: this.province,
                         gameId: this.gameId,
                         dropship: model.id,
-                        position: structure.position
+                        position: context.position
                     });
                     break;
                 case 'MISSILE':
@@ -304,6 +328,21 @@ export default class ProvinceStrategic extends Phaser.Scene {
         this.onConstructionModeUpdated();
     }
 
+    onUnitDisembarked(model, container, pos) {
+        this.commandQueue.dispatch(
+            {
+                action: 'DISEMBARK',
+                province: this.province,
+                targetId: model.id,
+                targetType: model.type,
+                position: pos,
+                facing: 0, // always come out facing same direction
+                containerId: container.id,
+                containerType: container.type
+            }
+        )
+    }
+
     onUnitMoved(model, pos) {
         this.commandQueue.dispatch(
             {
@@ -325,23 +364,28 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.modalDialog = null;
         }
 
-        if (this.constructionMode && this.constructionMode.kind === 'pending-construction') {
-            this.logo.visible = true;
-            let player = this.currentGame.player;
-            this.modalDialog = new ConstructionDialog(this, 16, 42, player.owner, (structure) => {
-                this.enterConstructionMode(structure);
-            }).show();
-            this.uiContainer.add(this.modalDialog);
-            this.infoText.visible = false;
-            this.activeUnitSelection.visible = false;
-            this.currentlySelectedUnit = null;
-            this.updateCurrentConstructionGraphics(null);
-        } else if (this.constructionMode) {
-            this.logo.visible = false;
-            this.infoText.setConstructionMode(this.constructionMode).setVisible(true);
-            this.activeUnitSelection.visible = false;
-            this.currentlySelectedUnit = null;
-            hideModalDialog();
+        if (this.constructionMode) {
+            if (this.constructionMode.kind === 'pending-construction') {
+                this.logo.visible = true;
+                let player = this.currentGame.player;
+                this.modalDialog = new ConstructionDialog(this, 16, 42, player.owner, (structure) => {
+                    this.enterConstructionMode(structure);
+                }).show();
+                this.uiContainer.add(this.modalDialog);
+                this.infoText.visible = false;
+                this.activeUnitSelection.visible = false;
+                this.currentlySelectedUnit = null;
+                this.updateCurrentConstructionGraphics(null);
+            } else if (this.constructionMode.kind === 'pending-unit-exit') {
+                // TODO: show the hovering image, name of unit e.t.c in the bottom middle
+
+            } else {
+                this.logo.visible = false;
+                this.infoText.setConstructionMode(this.constructionMode).setVisible(true);
+                this.activeUnitSelection.visible = false;
+                this.currentlySelectedUnit = null;
+                hideModalDialog();
+            }
         } else if (this.currentlySelectedUnit) {
             this.logo.visible = false;
             this.infoText.setUnitMode(this.currentlySelectedUnit).setVisible(true);
@@ -481,26 +525,31 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 // render units
                 let unit = layerBuilder.unitAt(tileIndex);
                 if (unit) {
-                    const unitImage = this.add.image(pos.x, pos.y, unit.spritesheet, unit.offset + unit.facing)
-                        .setOrigin(0, 0);
-
-                    // if we don't own this unit then don't allow us to select it
-                    if (unit.owner === this.currentGame.player.owner) {
-                        unitImage.setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
-                        unitImage.on('pointerup', (_pointer, _x, _y, event) => {
-                            if (this.constructionMode) return;
-
-                            event.stopPropagation();
-                            this.onUnitSelected(unit, tileIndex);
-                        });
-                    }
-
+                    const unitImage = this.renderUnit(container, unit, pos);
                     container.add(unitImage);
-                    this.unitView[unit.id] = unitImage;
                 }
             }
             line++;
         }
+    }
+
+    renderUnit(unit, pos) {
+        const unitImage = this.add.image(pos.x, pos.y, unit.spritesheet, unit.offset + unit.facing)
+            .setOrigin(0, 0);
+
+        // if we don't own this unit then don't allow us to select it
+        if (unit.owner === this.currentGame.player.owner) {
+            unitImage.setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
+            unitImage.on('pointerup', (_pointer, _x, _y, event) => {
+                if (this.constructionMode) return;
+
+                event.stopPropagation();
+                this.onUnitSelected(unit, pos);
+            });
+        }
+
+        this.unitView[unit.id] = unitImage;
+        return unitImage;
     }
 
     renderStructure(structure, position) {
@@ -529,7 +578,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
     updateCurrentConstructionGraphics(tileIndex) {
 
-        if (!this.constructionMode || !tileIndex || (this.constructionMode && this.constructionMode.kind === 'pending-construction')) {
+        if (!this.constructionMode || !tileIndex || (this.constructionMode && ['pending-unit-exit', 'pending-construction'].indexOf(this.constructionMode.kind) >= 0)) {
             // hide all tile selectors
             Object.values(this.cachedTileSelectors).forEach(graphics => { graphics.visible = false });
             return;
@@ -679,11 +728,25 @@ export default class ProvinceStrategic extends Phaser.Scene {
             let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
 
             if (this.constructionMode) {
-                let size = { x: this.constructionMode.w, y: this.constructionMode.h };
-                let validForConstruction = this.layerBuilder.validForConstruction(tileIndex, size, this.constructionMode.category);
-                if (validForConstruction) {
-                    let command = this.constructionCommand(this.constructionMode, tileIndex);
-                    this.commandQueue.dispatch(command);
+                if (this.constructionMode.kind === 'pending-unit-exit') {
+                    const container = this.constructionMode.model.container;
+                    const unitId = this.constructionMode.model.unitId;
+                    if (this.layerBuilder.unitCanDisembark(unitId, container, tileIndex)) {
+                        this.onUnitDisembarked({
+                            id: unitId,
+                            type: 'unit'
+                        }, {
+                            id: container.id,
+                            type: container.type
+                        }, tileIndex);
+                    }
+                } else {
+                    let size = { x: this.constructionMode.w, y: this.constructionMode.h };
+                    let validForConstruction = this.layerBuilder.validForConstruction(tileIndex, size, this.constructionMode.category);
+                    if (validForConstruction) {
+                        let command = this.constructionCommand(this.constructionMode, tileIndex);
+                        this.commandQueue.dispatch(command);
+                    }
                 }
             } else if (this.overviewProvince.visible) {
                 // find the selected tile

@@ -60,6 +60,7 @@ export default class LayerBuilder {
         this.unitBoarded = (_id) => { };
         this.unitDemolished = (_id) => { };
         this.unitMoved = (_unit) => { };
+        this.unitDisembarked = (_unit) => { };
         this.unitTurned = (_unit) => { };
         this.structureBuilt = (_models) => { };
         this.structureDemolished = (_id) => { };
@@ -246,6 +247,11 @@ export default class LayerBuilder {
         return true;
     }
 
+    unitCanDisembark(unitId, container, index) {
+        // TODO: check valid exit location
+        return true;
+    }
+
     structureAt(index) {
         return findObject(this.structureModels)(index.x, index.y);
     }
@@ -383,6 +389,13 @@ export default class LayerBuilder {
                 });
                 this.boardUnit(unit, command.targetId, dropship);
                 return;
+            case 'DISEMBARK': {
+                const container = this.findTarget({
+                    targetId: command.containerId,
+                    targetType: command.containerType
+                });
+                this.disembarkUnit(command.targetId, command.position, container);
+            }
             case 'REPAIR':
                 this.repairAllStructures();
                 return;
@@ -421,6 +434,17 @@ export default class LayerBuilder {
         delete this.unitLookup[unitId];
         unit.position = {};
         this.unitBoarded(unitId);
+    }
+
+    disembarkUnit(unitId, position, container) {
+        const unit = container.units[unitId];
+        unit.position = position;
+        this.unitLookup[unitId] = unit;
+        const reference = this.unitReferenceLookup[unit.kind.category];
+        delete container.units[unitId];
+        let model = buildUnitModel(unitId, unit, reference);
+        this.writeTileValue(this.unitModels, position, model);
+        this.unitDisembarked(model);
     }
 
     moveUnit(target, position) {
