@@ -82,7 +82,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
             let view = this.unitView[unitId];
             view.destroy();
             delete this.unitView[unitId];
-            this.sound.play('telep');
+            this.sound.play('inout');
             this.currentlySelectedUnit = null;
             this.onConstructionModeUpdated();
         };
@@ -102,7 +102,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
             const view = this.renderUnit(unit, unit.position);
             let { x, y } = this.screenCoordinates(unit.position.x, unit.position.y);
             view.setPosition(x, y);
-            this.sound.play('telep');
+            this.sound.play('inout');
             this.activeUnitSelection.setPosition(view.x, view.y);
             this.onDeselected();
         }
@@ -525,7 +525,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 // render units
                 let unit = layerBuilder.unitAt(tileIndex);
                 if (unit) {
-                    const unitImage = this.renderUnit(container, unit, pos);
+                    const unitImage = this.renderUnit(unit, pos);
                     container.add(unitImage);
                 }
             }

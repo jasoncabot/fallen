@@ -54,5 +54,6 @@ export class Sounds {
         scene.load.audio('road', [road]);
         scene.load.audio('telep', [telep]);
         scene.load.audio('wbuild', [wbuild]);
+        scene.load.audio('inout', [inout]);
     }
 }
