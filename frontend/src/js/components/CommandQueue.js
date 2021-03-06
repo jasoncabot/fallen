@@ -11,7 +11,7 @@ export default class CommandQueue {
         if (!command) return;
 
         console.log('Dispatching command: ' + JSON.stringify(command));
-        this.buffer.push(command);
+        this.buffer.push({ timestamp: new Date().getTime(), ...command });
 
         this.emitter.emit('commandSubmitted', command);
     }
