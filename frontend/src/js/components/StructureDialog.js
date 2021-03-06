@@ -218,9 +218,14 @@ export default class StructureDialog extends GameObjects.Container {
     }
 
     onUnitSelected(unitId) {
+        const unit = this.structure.units.current[unitId];
+        const reference = UnitData[unit.kind.category];
         this.onActionSelected('EXIT_STRUCTURE', {
             id: unitId,
-            container: this.structure
+            container: this.structure,
+            name: unit.kind.name,
+            experience: unit.experience,
+            upkeep: reference.upkeep
         });
     }
 

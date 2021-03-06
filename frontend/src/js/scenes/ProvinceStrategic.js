@@ -233,10 +233,9 @@ export default class ProvinceStrategic extends Phaser.Scene {
                         h: 1,
                         kind: 'pending-unit-exit',
                         model: {
-                            // TODO: set proper details here
-                            title: "TITLE",
-                            name: "NAME",
-                            cost: "COST",
+                            name: context.name,
+                            upkeep: context.upkeep,
+                            experience: context.experience,
                             unitId: context.id,
                             container: context.container
                         }
@@ -378,7 +377,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 this.updateCurrentConstructionGraphics(null);
             } else if (this.constructionMode.kind === 'pending-unit-exit') {
                 // TODO: show the hovering image, name of unit e.t.c in the bottom middle
-
+                this.logo.visible = false;
+                this.infoText.setUnitMode(this.constructionMode.model).setVisible(true);
             } else {
                 this.logo.visible = false;
                 this.infoText.setConstructionMode(this.constructionMode).setVisible(true);
