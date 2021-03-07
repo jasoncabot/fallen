@@ -16,6 +16,7 @@ RUN npm ci --only=production
 
 COPY ./backend /src/backend
 
+EXPOSE 3500
 EXPOSE 4500
 
 CMD npm start

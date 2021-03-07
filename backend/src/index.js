@@ -3,6 +3,7 @@ const express = require('express');
 const api = require('./api');
 
 const port = process.env.PORT;
+const socketPort = process.env.WS_PORT;
 
 const initialise = async () => {
 
@@ -20,6 +21,10 @@ const initialise = async () => {
         }
         console.log(`Listening for connections on port ${port}`);
     });
+    middleware.socketio.listen(socketPort);
+
+    console.log(`Listening for websocket connections on port ${socketPort}`);
+
 }
 
 initialise()

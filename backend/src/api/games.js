@@ -3,11 +3,11 @@ const information = require('../service/information');
 const initialise = require('../service/initialise');
 const auth = require('./auth');
 
-module.exports.register = (app, redis) => {
+module.exports.register = ({ express, redis }) => {
 
     // GET /games/:id
     // Read game
-    app.get('/games/:id', auth.requireUser, (req, res) => {
+    express.get('/games/:id', auth.requireUser, (req, res) => {
         gameService.findByIdAndUser(redis, req.params.id, req.user)
             .then((game) => {
                 return information.removeUnknown(game, req.user);
@@ -22,7 +22,7 @@ module.exports.register = (app, redis) => {
 
     // GET /games
     // Find in-progress games
-    app.get('/games', auth.requireUser, (req, res) => {
+    express.get('/games', auth.requireUser, (req, res) => {
         gameService.findAllByUser(redis, req.user)
             .then((games) => {
                 res.status(200).json(games);
@@ -34,7 +34,7 @@ module.exports.register = (app, redis) => {
 
     // POST /games
     // Create game
-    app.post('/games', auth.requireUser, (req, res) => {
+    express.post('/games', auth.requireUser, (req, res) => {
         const game = initialise.generateGame(req.user, req.body.name, req.body.race, req.body.difficulty, req.body.campaign);
         // save game to database
         gameService.create(redis, game, req.user)
@@ -48,14 +48,14 @@ module.exports.register = (app, redis) => {
 
     // POST /games/:id/action
     // Performs a serialised action without ending your turn
-    app.post('/games/:id/action', auth.requireUser, (req, res) => {
+    express.post('/games/:id/action', auth.requireUser, (req, res) => {
         // TODO: this needs to actually apply the changes to the game and return
         res.status(201).json({ id: req.params.id });
     });
 
     // POST /games/:id/turn
     // Ends your current turn and ensures validating all actions have been sent
-    app.post('/games/:id/turn', auth.requireUser, (req, res) => {
+    express.post('/games/:id/turn', auth.requireUser, (req, res) => {
         gameService.findByIdAndUser(redis, req.params.id, req.user)
             .then((game) => {
                 // perform some validation to ensure user has submitted all moves for this turn

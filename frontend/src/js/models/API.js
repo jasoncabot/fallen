@@ -1,10 +1,10 @@
-import config from '../Config';
+import { endpoint } from '../Config';
 import { Authenticator } from './Authenticator';
 
 const auth = new Authenticator();
 
 const url = (path) => {
-    return config.endpoint + path;
+    return endpoint + path;
 }
 
 const getAndCache = (path, scene, key) => {
