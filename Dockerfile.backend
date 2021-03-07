@@ -1,10 +1,10 @@
-FROM node:10-alpine
+FROM node:12-alpine
 
 COPY shared/package*.json /src/shared/
 
 WORKDIR /src/shared
 
-RUN npm install --silent
+RUN npm ci --only=production
 
 COPY ./shared /src/shared
 
@@ -12,7 +12,7 @@ COPY backend/package*.json /src/backend/
 
 WORKDIR /src/backend
 
-RUN npm install --silent
+RUN npm ci --only=production
 
 COPY ./backend /src/backend
 

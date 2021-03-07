@@ -1,20 +1,18 @@
-FROM node:10-alpine as build-stage
+FROM node:12-alpine as build-stage
 
 COPY shared/package*.json /src/shared/
 
 WORKDIR /src/shared
 
-RUN npm install --silent
+RUN npm ci --only=production
 
 COPY ./shared /src/shared
 
 WORKDIR /src/frontend
 
-COPY frontend/package*.json /src/frontend/
-
-RUN npm install --silent
-
 COPY ./frontend /src/frontend
+
+RUN npm ci
 
 RUN npm run build
 
