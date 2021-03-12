@@ -1,3 +1,4 @@
+const auth = require('./../api/auth');
 const gamesController = require('./../api/games');
 
 const options = {
@@ -11,5 +12,9 @@ const options = {
 };
 
 module.exports = async () => {
-    return require("socket.io")(options);
+    const io = require("socket.io")(options);
+
+    io.use(auth.requireSocketUser);
+
+    return io;
 }

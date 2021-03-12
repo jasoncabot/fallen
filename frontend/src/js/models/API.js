@@ -7,6 +7,12 @@ const url = (path) => {
     return endpoint + path;
 }
 
+const socketAuth = (cb) => {
+    return cb({
+        token: btoa(auth.id)
+    });
+}
+
 const getAndCache = (path, scene, key) => {
     scene.load.json(key, url(path), null, {
         header: 'Authorization',
@@ -49,5 +55,5 @@ const post = (path, data) => {
 }
 
 export {
-    auth, post, getAndCache
+    auth, socketAuth, post, getAndCache
 }

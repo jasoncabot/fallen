@@ -92,12 +92,12 @@ module.exports.register = ({ express, redis, socketio }) => {
 
     socketio.on("connection", socket => {
         const joinGame = (gameId) => {
-            console.log('socket ' + socket.id + ' joined ' + gameId);
+            console.log('user ' + socket.user + ' joined ' + gameId);
             socket.join(gameId);
         }
 
         const leaveGame = (gameId) => {
-            console.log('socket ' + socket.id + ' left ' + gameId);
+            console.log('user ' + socket.user + ' left ' + gameId);
             socket.leave(gameId);
         }
 
