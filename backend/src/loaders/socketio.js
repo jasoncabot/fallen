@@ -1,3 +1,5 @@
+const gamesController = require('./../api/games');
+
 const options = {
     serveClient: false,
     cookie: false,
@@ -9,14 +11,5 @@ const options = {
 };
 
 module.exports = async () => {
-    const io = require("socket.io")(options);
-
-    io.on("connection", socket => {
-        console.log('client connected');
-    });
-    io.on("disconnect", reason => {
-        console.log('client disconnected');
-    });
-
-    return io;
+    return require("socket.io")(options);
 }

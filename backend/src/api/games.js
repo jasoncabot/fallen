@@ -3,7 +3,7 @@ const information = require('../service/information');
 const initialise = require('../service/initialise');
 const auth = require('./auth');
 
-module.exports.register = ({ express, redis }) => {
+module.exports.register = ({ express, redis, socketio }) => {
 
     // GET /games/:id
     // Read game
@@ -88,5 +88,25 @@ module.exports.register = ({ express, redis }) => {
             .catch((error) => {
                 res.status(404).json({ error: error.message });
             });
+    });
+
+    socketio.on("connection", socket => {
+        const joinGame = (gameId) => {
+            console.log('socket ' + socket.id + ' joined ' + gameId);
+            socket.join(gameId);
+        }
+
+        const leaveGame = (gameId) => {
+            console.log('socket ' + socket.id + ' left ' + gameId);
+            socket.leave(gameId);
+        }
+
+        console.log('client connected');
+        socket.on("game:join", joinGame);
+        socket.on("game:leave", leaveGame);
+    });
+
+    socketio.on("disconnect", reason => {
+        console.log('client disconnected');
     });
 }

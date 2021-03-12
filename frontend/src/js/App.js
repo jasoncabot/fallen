@@ -15,10 +15,7 @@ export class App {
             this.game.scene.add(key, scenes[key]);
         });
         this.game.commandQueue = new CommandQueue();
-
-        const socket = io(socketEndpoint, {
-            path: '/ws'
-        });
+        this.game.socket = io(socketEndpoint, {path: '/ws'});
     }
 
     route(path, query) {

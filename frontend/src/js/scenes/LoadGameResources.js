@@ -13,6 +13,8 @@ export default class LoadGameResources extends Scene {
         this.gameId = data.gameId;
         this.province = data.province;
         this.view = data.view;
+
+        this.game.socket.emit("game:join", data.gameId);
     }
 
     preload() {
