@@ -1,9 +1,6 @@
 
 import * as scenes from './scenes';
-import { CommandQueue } from './components';
-import { io } from "socket.io-client";
-import { socketEndpoint } from "./Config";
-import { socketAuth } from "./models/API";
+import { CommandQueue, SocketController } from './components';
 
 export class App {
 
@@ -17,12 +14,7 @@ export class App {
             this.game.scene.add(key, scenes[key]);
         });
         this.game.commandQueue = new CommandQueue();
-
-
-        this.game.socket = io(socketEndpoint, {
-            path: '/ws',
-            auth: socketAuth
-        });
+        this.game.socketController = new SocketController();
     }
 
     route(path, query) {
