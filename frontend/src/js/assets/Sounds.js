@@ -47,13 +47,60 @@ import telep from '../../sounds/SOUNDS/TELEP.WAV';
 import wbuild from '../../sounds/SOUNDS/WBUILD.WAV';
 import yessir from '../../sounds/SOUNDS/YESSIR.WAV';
 
-export class Sounds {
-    preload(scene) {
-        scene.load.audio('aargh', [aargh]);
-        scene.load.audio('yessir', [yessir]);
-        scene.load.audio('road', [road]);
-        scene.load.audio('telep', [telep]);
-        scene.load.audio('wbuild', [wbuild]);
-        scene.load.audio('inout', [inout]);
-    }
-}
+const preloadSounds = (scene, sounds) => {
+
+    const lookup = {
+        'impact2': [impact2],
+        'aargh': [aargh],
+        'cbuild': [cbuild],
+        'crysfire': [crysfire],
+        'destcash': [destcash],
+        'error': [error],
+        'explb': [explb],
+        'expmb': [expmb],
+        'expnuk': [expnuk],
+        'expsb': [expsb],
+        'expsqua': [expsqua],
+        'expsquh': [expsquh],
+        'expvehic': [expvehic],
+        'impact1': [impact1],
+        'impact3': [impact3],
+        'impact4': [impact4],
+        'impact5': [impact5],
+        'impact6': [impact6],
+        'impact7': [impact7],
+        'impact8': [impact8],
+        'inout': [inout],
+        'land': [land],
+        'megfire': [megfire],
+        'megimp': [megimp],
+        'movehov': [movehov],
+        'movesq': [movesq],
+        'movetrk': [movetrk],
+        'movewhee': [movewhee],
+        'nocash': [nocash],
+        'nosound': [nosound],
+        'popup': [popup],
+        'repair': [repair],
+        'road': [road],
+        'shot01': [shot01],
+        'shot02': [shot02],
+        'shot03': [shot03],
+        'shot04': [shot04],
+        'shot05': [shot05],
+        'shot06': [shot06],
+        'shot07': [shot07],
+        'shot08': [shot08],
+        'shot09': [shot09],
+        'shot10': [shot10],
+        'shot11': [shot11],
+        'silence': [silence],
+        'telep': [telep],
+        'wbuild': [wbuild],
+        'yessir': [yessir]
+    };
+
+    sounds.forEach((sound) => scene.load.audio(sound, lookup[sound]));
+};
+
+export { preloadSounds };

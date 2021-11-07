@@ -1,13 +1,12 @@
-const paths = require('./paths')
+const paths = require('./paths');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const DotenvPlugin = require('dotenv-webpack');
 
 module.exports = {
-  entry: [paths.src + '/index.js'],
   output: {
     path: paths.build,
-    filename: '[name].bundle.js',
+    filename: '[name].js',
     publicPath: '/',
   },
   plugins: [
@@ -27,7 +26,7 @@ module.exports = {
         test: /\.js$/,
         include: paths.src,
         exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        use: ['babel-loader'],
       },
       {
         test: /\.(scss|css)$/,

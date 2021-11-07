@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import LayerBuilder from "./LayerBuilder";
+import { LayerBuilder } from "./ProvincePresenter";
 import { UnitData, StructureData, ProvinceData } from 'shared';
 
 export default class ProvinceOverview extends GameObjects.Container {

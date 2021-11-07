@@ -15,7 +15,7 @@ import { StrategicMap } from '../../images/ui';
 import * as api from '../models/API';
 
 import { ProvinceData, ResourceCalculator } from 'shared';
-import terrain from './../../images/terrain';
+import { preloadTerrainForProvince } from '../../images/terrain';
 
 export default class StrategicOverview extends Scene {
     constructor() {
@@ -26,6 +26,7 @@ export default class StrategicOverview extends Scene {
 
     init(data) {
         this.gameId = data.gameId;
+        this.province = data.province;
         this.view = data.view || 'overview';
     }
 
@@ -35,10 +36,9 @@ export default class StrategicOverview extends Scene {
 
         this.load.image('strategic-map', StrategicMap);
 
-        this.load.spritesheet('rocky-overview', terrain.rocky.overview, { frameWidth: 7, frameHeight: 7 });
-        this.load.spritesheet('forest-overview', terrain.forest.overview, { frameWidth: 7, frameHeight: 7 });
-        this.load.spritesheet('desert-overview', terrain.desert.overview, { frameWidth: 7, frameHeight: 7 });
-        this.load.spritesheet('overlay-overview', terrain.overlay, { frameWidth: 7, frameHeight: 7 });
+        if (this.province) {
+            preloadTerrainForProvince(this, ProvinceData[this.province].type);
+        }
 
         registerButtons(this, buttons.world);
     }

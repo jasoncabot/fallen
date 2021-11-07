@@ -1,0 +1,27 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "firefox",
+            "request": "launch",
+            "name": "Debug in Firefox",
+            "url": "http://192.168.1.40:8080",
+            "webRoot": "${workspaceFolder}/src",
+            "preLaunchTask": "npm: start - frontend",
+            "reAttach": true,
+            "pathMappings": [
+                {
+                    "url": "webpack://fallen/src",
+                    "path": "${workspaceFolder}/src"
+                },
+                {
+                    "url": "webpack://fallen/node_modules",
+                    "path": "${workspaceFolder}/node_modules"
+                }
+            ]
+        }
+    ]
+}

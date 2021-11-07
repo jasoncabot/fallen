@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "./frontend"
+		},
+		{
+			"path": "./backend"
+		},
+		{
+			"path": "./shared"
+		},
+		{
+			"path": "./extractor"
+		}
+	],
+	"settings": {}
+}

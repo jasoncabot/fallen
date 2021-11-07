@@ -21,7 +21,7 @@ Then you can run the frontend with a standard `npm start`
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm start
 ```
 

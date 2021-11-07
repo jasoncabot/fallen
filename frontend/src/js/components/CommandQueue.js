@@ -1,9 +1,10 @@
-const EventEmitter = require('eventemitter3');
+
+import Phaser from "phaser";
 
 export default class CommandQueue {
 
     constructor() {
-        this.emitter = new EventEmitter();
+        this.emitter = new Phaser.Events.EventEmitter();
         this.buffer = [];
     }
 

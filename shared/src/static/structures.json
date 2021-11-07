@@ -1,0 +1,1122 @@
+{
+    "WALL": {
+        "kind": {
+            "category": "WALL",
+            "type": "WALL",
+            "name": "Wall",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "ALIEN",
+                "NEUTRAL"
+            ]
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 0,
+        "hp": 20,
+        "storage": {
+            "category": "",
+            "size": 0
+        },
+        "build": {
+            "cost": 10,
+            "placement": "B-WALL-OR-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Protects from ranged fire",
+            "short": "Passive defence capacity",
+            "next": "",
+            "prev": ""
+        },
+        "display": {
+            "tileset": "infra",
+            "tiles": [
+                [
+                    0
+                ]
+            ]
+        }
+    },
+    "HTUR": {
+        "kind": {
+            "category": "HTUR",
+            "type": "TOWER",
+            "name": "Fusion Tower",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "action": {
+            "TACTICAL": "FIRE"
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 25,
+        "hp": 50,
+        "build": {
+            "cost": 100,
+            "placement": "B-WALL"
+        },
+        "encyclopedia": {
+            "description": "Attacks with a ranged attack",
+            "short": "Automatic active defense",
+            "next": "HAIR",
+            "prev": ""
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    66
+                ]
+            ]
+        }
+    },
+    "HAIR": {
+        "kind": {
+            "category": "HAIR",
+            "type": "AIRPORT",
+            "name": "Gravport",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "production": {
+            "category": "HOVER",
+            "value": 12
+        },
+        "energyUsage": 50,
+        "hp": 250,
+        "build": {
+            "cost": 300,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of hover units.",
+            "short": "Production capacity: Hover units",
+            "next": "HBAR",
+            "prev": "HTUR"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    0,
+                    4,
+                    8
+                ],
+                [
+                    1,
+                    5,
+                    9
+                ],
+                [
+                    2,
+                    6,
+                    10
+                ],
+                [
+                    3,
+                    7,
+                    11
+                ]
+            ]
+        }
+    },
+    "HBAR": {
+        "kind": {
+            "category": "HBAR",
+            "type": "BARRACKS",
+            "name": "Barrack",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "production": {
+            "category": "TROOP",
+            "value": 8
+        },
+        "energyUsage": 5,
+        "hp": 150,
+        "build": {
+            "cost": 200,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of squad units.",
+            "short": "Production capacity: Squad units",
+            "next": "HBAY",
+            "prev": "HAIR"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    12,
+                    14
+                ],
+                [
+                    13,
+                    15
+                ]
+            ]
+        }
+    },
+    "HBAY": {
+        "kind": {
+            "category": "HBAY",
+            "type": "STARPORT",
+            "name": "Shipyard",
+            "constructable": false,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "action": {
+            "STRATEGIC": "BUILD_DROPSHIP"
+        },
+        "production": {
+            "category": "DROPSHIP",
+            "value": 1
+        },
+        "energyUsage": 50,
+        "hp": 20000,
+        "build": {
+            "cost": 300,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "The only building that allows construction of dropships",
+            "short": "Short description",
+            "next": "HDEF",
+            "prev": "HBAR"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    16,
+                    20,
+                    24
+                ],
+                [
+                    17,
+                    21,
+                    25
+                ],
+                [
+                    18,
+                    22,
+                    26
+                ],
+                [
+                    19,
+                    23,
+                    27
+                ]
+            ]
+        }
+    },
+    "HDEF": {
+        "kind": {
+            "category": "HDEF",
+            "type": "ANTIMISSILE",
+            "name": "Anti-Missile",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 50,
+        "hp": 200,
+        "build": {
+            "cost": 400,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Defense against incoming missiles.",
+            "short": "Defense power: Antimissile",
+            "next": "HENY",
+            "prev": "HBAY"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    28,
+                    30
+                ],
+                [
+                    29,
+                    31
+                ]
+            ]
+        }
+    },
+    "HENY": {
+        "kind": {
+            "category": "HENY",
+            "type": "ENERGY",
+            "name": "Power Plant",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "production": {
+            "category": "ENERGY",
+            "value": 100
+        },
+        "energyUsage": 0,
+        "hp": 100,
+        "build": {
+            "cost": 50,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Produces energy to maintain buildings.",
+            "short": "Energy production: 100 EP",
+            "next": "HFAC",
+            "prev": "HDEF"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    32,
+                    34
+                ],
+                [
+                    33,
+                    35
+                ]
+            ]
+        }
+    },
+    "HFAC": {
+        "kind": {
+            "category": "HFAC",
+            "type": "FACTORY",
+            "name": "Factory",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "production": {
+            "category": "FACTORY",
+            "value": 12
+        },
+        "energyUsage": 50,
+        "hp": 250,
+        "build": {
+            "cost": 300,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of ground units.",
+            "short": "Production capacity: Ground units",
+            "next": "HLAB",
+            "prev": "HENY"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    36,
+                    39,
+                    42
+                ],
+                [
+                    37,
+                    40,
+                    43
+                ],
+                [
+                    38,
+                    41,
+                    44
+                ]
+            ]
+        }
+    },
+    "HLAB": {
+        "kind": {
+            "category": "HLAB",
+            "type": "LAB",
+            "name": "Laboratory",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "production": {
+            "category": "RESEARCH",
+            "value": 100
+        },
+        "energyUsage": 10,
+        "hp": 50,
+        "build": {
+            "cost": 400,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Produces research points to improve the Tech Level in six Research Fields.",
+            "short": "Research Production: 100 RP",
+            "next": "HMIN",
+            "prev": "HFAC"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    45,
+                    47
+                ],
+                [
+                    46,
+                    48
+                ]
+            ]
+        }
+    },
+    "HMIN": {
+        "kind": {
+            "category": "HMIN",
+            "type": "MINING",
+            "name": "Mining Facility",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "production": {
+            "category": "CREDITS",
+            "value": 100
+        },
+        "energyUsage": 10,
+        "hp": 250,
+        "build": {
+            "cost": 100,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Produces credits income to build units and structures.",
+            "short": "Credits production: 100 Credits",
+            "next": "HRAD",
+            "prev": "HLAB"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    49,
+                    52,
+                    55
+                ],
+                [
+                    50,
+                    53,
+                    56
+                ],
+                [
+                    51,
+                    54,
+                    57
+                ]
+            ]
+        }
+    },
+    "HRAD": {
+        "kind": {
+            "category": "HRAD",
+            "type": "SCANNER",
+            "name": "Radar",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 30,
+        "hp": 30,
+        "build": {
+            "cost": 200,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Gives information on adjacent provinces, improves Nuclear attack and defense.",
+            "short": "Capacity: Scanning adjacent provinces",
+            "next": "HSHP",
+            "prev": "HMIN"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    58,
+                    60
+                ],
+                [
+                    59,
+                    61
+                ]
+            ]
+        }
+    },
+    "HSHP": {
+        "kind": {
+            "category": "HSHP",
+            "type": "DROPSHIP",
+            "name": "Dropship",
+            "constructable": false,
+            "owner": [
+                "HUMAN"
+            ]
+        },
+        "action": {
+            "STRATEGIC": "LAUNCH",
+            "TACTICAL": "LAUNCH"
+        },
+        "production": {
+            "category": "NONE",
+            "value": 8
+        },
+        "energyUsage": 0,
+        "hp": 75,
+        "build": {
+            "cost": 600,
+            "placement": "ANYWHERE"
+        },
+        "encyclopedia": {
+            "description": "Dropships transport units from one province to another.",
+            "short": "",
+            "next": "HSIL",
+            "prev": "HRAD"
+        },
+        "display": {
+            "tileset": "huma_ssi",
+            "tiles": [
+                [
+                    0,
+                    3,
+                    6
+                ],
+                [
+                    1,
+                    4,
+                    7
+                ],
+                [
+                    2,
+                    5,
+                    8
+                ]
+            ]
+        }
+    },
+    "HSIL": {
+        "kind": {
+            "category": "HSIL",
+            "name": "Nuclear Silo",
+            "type": "MISSILE",
+            "constructable": true,
+            "owner": [
+                "HUMAN",
+                "NEUTRAL"
+            ]
+        },
+        "action": {
+            "STRATEGIC": "MISSILE",
+            "TACTICAL": null
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 50,
+        "hp": 200,
+        "build": {
+            "cost": 800,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of nuclear missiles.",
+            "short": "Long-range attack",
+            "next": "",
+            "prev": "HSHP"
+        },
+        "display": {
+            "tileset": "huma_si",
+            "tiles": [
+                [
+                    62,
+                    64
+                ],
+                [
+                    63,
+                    65
+                ]
+            ]
+        }
+    },
+    "ATUR": {
+        "kind": {
+            "category": "ATUR",
+            "type": "TOWER",
+            "name": "Fusion Tower",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "action": {
+            "TACTICAL": "FIRE"
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 25,
+        "hp": 40,
+        "build": {
+            "cost": 75,
+            "placement": "B-WALL"
+        },
+        "encyclopedia": {
+            "description": "Attacks with a ranged attack",
+            "short": "Automatic active defense",
+            "next": "AAIR",
+            "prev": ""
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    66
+                ]
+            ]
+        }
+    },
+    "AAIR": {
+        "kind": {
+            "category": "AAIR",
+            "type": "AIRPORT",
+            "name": "Hover Pads",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "production": {
+            "category": "HOVER",
+            "value": 12
+        },
+        "energyUsage": 50,
+        "hp": 200,
+        "build": {
+            "cost": 225,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of hover units.",
+            "short": "Production capacity: Hover units",
+            "next": "ABAR",
+            "prev": "ATUR"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    0,
+                    4,
+                    8
+                ],
+                [
+                    1,
+                    5,
+                    9
+                ],
+                [
+                    2,
+                    6,
+                    10
+                ],
+                [
+                    3,
+                    7,
+                    11
+                ]
+            ]
+        }
+    },
+    "ABAR": {
+        "kind": {
+            "category": "ABAR",
+            "type": "BARRACKS",
+            "name": "Nest Center",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "production": {
+            "category": "TROOP",
+            "value": 8
+        },
+        "energyUsage": 5,
+        "hp": 110,
+        "build": {
+            "cost": 150,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of squad units.",
+            "short": "Production capacity: Squad units",
+            "next": "ABAY",
+            "prev": "AAIR"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    12,
+                    14
+                ],
+                [
+                    13,
+                    15
+                ]
+            ]
+        }
+    },
+    "ABAY": {
+        "kind": {
+            "category": "ABAY",
+            "type": "STARPORT",
+            "name": "Landing Site",
+            "constructable": false,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "action": {
+            "STRATEGIC": "BUILD_DROPSHIP"
+        },
+        "production": {
+            "category": "DROPSHIP",
+            "value": 1
+        },
+        "energyUsage": 50,
+        "hp": 20000,
+        "build": {
+            "cost": 225,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "The only building that allows construction of dropships",
+            "short": "Short description",
+            "next": "ADEF",
+            "prev": "ABAR"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    16,
+                    20,
+                    24
+                ],
+                [
+                    17,
+                    21,
+                    25
+                ],
+                [
+                    18,
+                    22,
+                    26
+                ],
+                [
+                    19,
+                    23,
+                    27
+                ]
+            ]
+        }
+    },
+    "ADEF": {
+        "kind": {
+            "category": "ADEF",
+            "type": "ANTIMISSILE",
+            "name": "Anti-Missile",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 50,
+        "hp": 150,
+        "build": {
+            "cost": 300,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Defense against incoming missiles.",
+            "short": "Defense power: Antimissile",
+            "next": "AENY",
+            "prev": "ABAY"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    28,
+                    30
+                ],
+                [
+                    29,
+                    31
+                ]
+            ]
+        }
+    },
+    "AENY": {
+        "kind": {
+            "category": "AENY",
+            "type": "ENERGY",
+            "name": "Energy Center",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "production": {
+            "category": "ENERGY",
+            "value": 100
+        },
+        "energyUsage": 0,
+        "hp": 75,
+        "build": {
+            "cost": 40,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Produces energy to maintain buildings.",
+            "short": "Energy production: 100 EP",
+            "next": "AFAC",
+            "prev": "ADEF"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    32,
+                    34
+                ],
+                [
+                    33,
+                    35
+                ]
+            ]
+        }
+    },
+    "AFAC": {
+        "kind": {
+            "category": "AFAC",
+            "type": "FACTORY",
+            "name": "Production Center",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "production": {
+            "category": "FACTORY",
+            "value": 12
+        },
+        "energyUsage": 50,
+        "hp": 200,
+        "build": {
+            "cost": 225,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of ground units.",
+            "short": "Production capacity: Ground units",
+            "next": "ALAB",
+            "prev": "AENY"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    36,
+                    39,
+                    42
+                ],
+                [
+                    37,
+                    40,
+                    43
+                ],
+                [
+                    38,
+                    41,
+                    44
+                ]
+            ]
+        }
+    },
+    "ALAB": {
+        "kind": {
+            "category": "ALAB",
+            "type": "LAB",
+            "name": "Research Center",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "production": {
+            "category": "RESEARCH",
+            "value": 100
+        },
+        "energyUsage": 10,
+        "hp": 40,
+        "build": {
+            "cost": 300,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Produces research points to improve the Tech Level in six Research Fields.",
+            "short": "Research Production: 100 RP",
+            "next": "AMIN",
+            "prev": "AFAC"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    45,
+                    47
+                ],
+                [
+                    46,
+                    48
+                ]
+            ]
+        }
+    },
+    "AMIN": {
+        "kind": {
+            "category": "AMIN",
+            "type": "MINING",
+            "name": "Refinery",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "production": {
+            "category": "CREDITS",
+            "value": 100
+        },
+        "energyUsage": 10,
+        "hp": 200,
+        "build": {
+            "cost": 75,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Produces credits income to build units and structures.",
+            "short": "Credits production: 100 Credits",
+            "next": "ARAD",
+            "prev": "ALAB"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    49,
+                    52,
+                    55
+                ],
+                [
+                    50,
+                    53,
+                    56
+                ],
+                [
+                    51,
+                    54,
+                    57
+                ]
+            ]
+        }
+    },
+    "ARAD": {
+        "kind": {
+            "category": "ARAD",
+            "type": "SCANNER",
+            "name": "Scanning Device",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 30,
+        "hp": 25,
+        "build": {
+            "cost": 150,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Gives information on adjacent provinces, improves Nuclear attack and defense.",
+            "short": "Capacity: Scanning adjacent provinces",
+            "next": "ASHP",
+            "prev": "AMIN"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    58,
+                    60
+                ],
+                [
+                    59,
+                    61
+                ]
+            ]
+        }
+    },
+    "ASHP": {
+        "kind": {
+            "category": "ASHP",
+            "type": "DROPSHIP",
+            "name": "Dropship",
+            "constructable": false,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "action": {
+            "STRATEGIC": "LAUNCH",
+            "TACTICAL": "LAUNCH"
+        },
+        "production": {
+            "category": "NONE",
+            "value": 8
+        },
+        "energyUsage": 0,
+        "hp": 75,
+        "build": {
+            "cost": 800,
+            "placement": "ANYWHERE"
+        },
+        "encyclopedia": {
+            "description": "Dropships transport units from one province to another.",
+            "short": "",
+            "next": "ASIL",
+            "prev": "ARAD"
+        },
+        "display": {
+            "tileset": "alie_ssi",
+            "tiles": [
+                [
+                    0,
+                    3,
+                    6
+                ],
+                [
+                    1,
+                    4,
+                    7
+                ],
+                [
+                    2,
+                    5,
+                    8
+                ]
+            ]
+        }
+    },
+    "ASIL": {
+        "kind": {
+            "category": "ASIL",
+            "name": "Nuclear Launcher",
+            "type": "MISSILE",
+            "constructable": true,
+            "owner": [
+                "ALIEN"
+            ]
+        },
+        "action": {
+            "STRATEGIC": "MISSILE",
+            "TACTICAL": null
+        },
+        "production": {
+            "category": "NONE",
+            "value": 0
+        },
+        "energyUsage": 50,
+        "hp": 150,
+        "build": {
+            "cost": 600,
+            "placement": "B-ROAD"
+        },
+        "encyclopedia": {
+            "description": "Allows construction of nuclear missiles.",
+            "short": "Long-range attack",
+            "next": "",
+            "prev": "ASHP"
+        },
+        "display": {
+            "tileset": "alie_si",
+            "tiles": [
+                [
+                    62,
+                    64
+                ],
+                [
+                    63,
+                    65
+                ]
+            ]
+        }
+    }
+}

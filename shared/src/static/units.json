@@ -1,0 +1,1058 @@
+{
+    "NATV": {
+        "kind": {
+            "category": "NATV",
+            "type": "LTTANK",
+            "name": "Strike Car"
+        },
+        "upkeep": 5,
+        "cost": 100,
+        "hp": 20,
+        "actionPoints": 140,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "NTNK",
+            "prev": null
+        },
+        "display": {
+            "tileset": "neut_ui",
+            "tiles": [
+                [
+                    0
+                ]
+            ]
+        }
+    },
+    "NTNK": {
+        "kind": {
+            "category": "NTNK",
+            "type": "TANK",
+            "name": "Tank"
+        },
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 50,
+        "actionPoints": 100,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "NGRV",
+            "prev": "NATV"
+        },
+        "display": {
+            "tileset": "neut_ui",
+            "tiles": [
+                [
+                    16
+                ]
+            ]
+        }
+    },
+    "NGRV": {
+        "kind": {
+            "category": "NGRV",
+            "type": "SQUAD",
+            "name": "Grav Bike"
+        },
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 20,
+        "actionPoints": 180,
+        "movement": "HOVER",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "NROC",
+            "prev": "NTNK"
+        },
+        "display": {
+            "tileset": "neut_ui",
+            "tiles": [
+                [
+                    24
+                ]
+            ]
+        }
+    },
+    "NROC": {
+        "kind": {
+            "category": "NROC",
+            "type": "LONGRANGE",
+            "name": "Launcher"
+        },
+        "upkeep": 15,
+        "cost": 600,
+        "hp": 20,
+        "actionPoints": 80,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": null,
+            "prev": "NGRV"
+        },
+        "display": {
+            "tileset": "neut_ui",
+            "tiles": [
+                [
+                    8
+                ]
+            ]
+        }
+    },
+    "HSQU": {
+        "kind": {
+            "category": "HSQU",
+            "type": "SQUAD",
+            "name": "Squad"
+        },
+        "upkeep": 1,
+        "cost": 20,
+        "hp": 10,
+        "actionPoints": 70,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HRAN",
+            "prev": null
+        },
+        "display": {
+            "tileset": "huma_ui",
+            "tiles": [
+                [
+                    32
+                ]
+            ]
+        }
+    },
+    "HRAN": {
+        "kind": {
+            "category": "HRAN",
+            "type": "TROOP",
+            "name": "Ranger"
+        },
+        "upkeep": 2,
+        "cost": 40,
+        "hp": 15,
+        "actionPoints": 80,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HATV",
+            "prev": "HSQU"
+        },
+        "display": {
+            "tileset": "huma_ui",
+            "tiles": [
+                [
+                    72
+                ]
+            ]
+        }
+    },
+    "HATV": {
+        "kind": {
+            "category": "HATV",
+            "type": "LTTANK",
+            "name": "L.A.V"
+        },
+        "upkeep": 20,
+        "cost": 100,
+        "hp": 20,
+        "actionPoints": 140,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HART",
+            "prev": "HRAN"
+        },
+        "display": {
+            "tileset": "huma_ui",
+            "tiles": [
+                [
+                    8
+                ]
+            ]
+        }
+    },
+    "HART": {
+        "kind": {
+            "category": "HART",
+            "type": "LONGRANGE",
+            "name": "Artillery"
+        },
+        "upkeep": 30,
+        "cost": 600,
+        "hp": 20,
+        "actionPoints": 60,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HBUG",
+            "prev": "HATV"
+        },
+        "display": {
+            "tileset": "huma_ui",
+            "tiles": [
+                [
+                    0
+                ]
+            ]
+        }
+    },
+    "HBUG": {
+        "kind": {
+            "category": "HBUG",
+            "type": "UNIQUE1",
+            "name": "Buggy"
+        },
+        "upkeep": 5,
+        "cost": 100,
+        "hp": 15,
+        "actionPoints": 300,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HTNK",
+            "prev": "HART"
+        },
+        "display": {
+            "tileset": "huma_ui",
+            "tiles": [
+                [
+                    48
+                ]
+            ]
+        }
+    },
+    "HTNK": {
+        "kind": {
+            "category": "HTNK",
+            "type": "TANK",
+            "name": "Tank"
+        },
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 65,
+        "actionPoints": 100,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HSPE",
+            "prev": "HBUG"
+        },
+        "display": {
+            "tileset": "huma_ui",
+            "tiles": [
+                [
+                    40
+                ]
+            ]
+        }
+    },
+    "HSPE": {
+        "kind": {
+            "category": "HSPE",
+            "type": "LTGRAV",
+            "name": "Speeder"
+        },
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 20,
+        "actionPoints": 180,
+        "movement": "HOVER",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HGRV",
+            "prev": "HTNK"
+        },
+        "display": {
+            "tileset": "huma_ui",
+            "tiles": [
+                [
+                    16
+                ]
+            ]
+        }
+    },
+    "HGRV": {
+        "kind": {
+            "category": "HGRV",
+            "type": "HEAVYGRAV",
+            "name": "Grav Tank"
+        },
+        "upkeep": 10,
+        "cost": 200,
+        "hp": 55,
+        "actionPoints": 140,
+        "movement": "HOVER",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "HGUN",
+            "prev": "HSPE"
+        },
+        "display": {
+            "tileset": "huma_ui",
+            "tiles": [
+                [
+                    24
+                ]
+            ]
+        }
+    },
+    "HGUN": {
+        "kind": {
+            "category": "HGUN",
+            "type": "LONGRANGEHOVER",
+            "name": "GunShip"
+        },
+        "upkeep": 50,
+        "cost": 900,
+        "hp": 75,
+        "actionPoints": 120,
+        "movement": "HOVER",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": null,
+            "prev": "HGRV"
+        },
+        "display": {
+            "tileset": "huma_ui",
+            "tiles": [
+                [
+                    64
+                ]
+            ]
+        }
+    },
+    "ASQD": {
+        "kind": {
+            "category": "ASQD",
+            "type": "SQUAD",
+            "name": "Trooper"
+        },
+        "upkeep": 2,
+        "cost": 30,
+        "hp": 15,
+        "actionPoints": 50,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "ASNI",
+            "prev": null
+        },
+        "display": {
+            "tileset": "alie_ui",
+            "tiles": [
+                [
+                    40
+                ]
+            ]
+        }
+    },
+    "ASNI": {
+        "kind": {
+            "category": "ASNI",
+            "type": "TROOP",
+            "name": "Sniper"
+        },
+        "upkeep": 3,
+        "cost": 60,
+        "hp": 20,
+        "actionPoints": 70,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "ALTK",
+            "prev": "ASQD"
+        },
+        "display": {
+            "tileset": "alie_ui",
+            "tiles": [
+                [
+                    72
+                ]
+            ]
+        }
+    },
+    "ALTK": {
+        "kind": {
+            "category": "ALTK",
+            "type": "LTTANK",
+            "name": "Light Tank"
+        },
+        "upkeep": 10,
+        "cost": 150,
+        "hp": 30,
+        "actionPoints": 100,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "APLA",
+            "prev": "ASNI"
+        },
+        "display": {
+            "tileset": "alie_ui",
+            "tiles": [
+                [
+                    8
+                ]
+            ]
+        }
+    },
+    "APLA": {
+        "kind": {
+            "category": "APLA",
+            "type": "LONGRANGE",
+            "name": "Artillery"
+        },
+        "upkeep": 25,
+        "cost": 500,
+        "hp": 30,
+        "actionPoints": 50,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "AGRV",
+            "prev": "ALTK"
+        },
+        "display": {
+            "tileset": "alie_ui",
+            "tiles": [
+                [
+                    32
+                ]
+            ]
+        }
+    },
+    "AGRV": {
+        "kind": {
+            "category": "AGRV",
+            "type": "HEAVYGRAV",
+            "name": "Hover Tank"
+        },
+        "upkeep": 15,
+        "cost": 300,
+        "hp": 60,
+        "actionPoints": 100,
+        "movement": "HOVER",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "AFLY",
+            "prev": "APLA"
+        },
+        "display": {
+            "tileset": "alie_ui",
+            "tiles": [
+                [
+                    48
+                ]
+            ]
+        }
+    },
+    "AFLY": {
+        "kind": {
+            "category": "AFLY",
+            "type": "LTGRAV",
+            "name": "Flyer"
+        },
+        "upkeep": 15,
+        "cost": 300,
+        "hp": 30,
+        "actionPoints": 140,
+        "movement": "HOVER",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "AMDT",
+            "prev": "AGRV"
+        },
+        "display": {
+            "tileset": "alie_ui",
+            "tiles": [
+                [
+                    0
+                ]
+            ]
+        }
+    },
+    "AMDT": {
+        "kind": {
+            "category": "AMDT",
+            "type": "TANK",
+            "name": "Tank"
+        },
+        "upkeep": 15,
+        "cost": 300,
+        "hp": 75,
+        "actionPoints": 70,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "ASUP",
+            "prev": "AFLY"
+        },
+        "display": {
+            "tileset": "alie_ui",
+            "tiles": [
+                [
+                    16
+                ]
+            ]
+        }
+    },
+    "ASUP": {
+        "kind": {
+            "category": "ASUP",
+            "type": "LONGRANGEHOVER",
+            "name": "S.H.O.G"
+        },
+        "upkeep": 30,
+        "cost": 600,
+        "hp": 75,
+        "actionPoints": 100,
+        "movement": "HOVER",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": "AMEG",
+            "prev": "AMDT"
+        },
+        "display": {
+            "tileset": "alie_ui",
+            "tiles": [
+                [
+                    64
+                ]
+            ]
+        }
+    },
+    "AMEG": {
+        "kind": {
+            "category": "AMEG",
+            "type": "UNIQUE1",
+            "name": "Mega Tank"
+        },
+        "upkeep": 30,
+        "cost": 600,
+        "hp": 90,
+        "actionPoints": 70,
+        "movement": "GROUND",
+        "weapons": {
+            "light": {
+                "name": "PLASMA LAUNCHER",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            },
+            "heavy": {
+                "name": "EXPLOSIVE MINE",
+                "range": 4,
+                "damage": {
+                    "contact": 15,
+                    "close": 4,
+                    "far": 0
+                },
+                "precision": 1,
+                "percentActionPoints": 35
+            }
+        },
+        "encyclopedia": {
+            "next": null,
+            "prev": "ASUP"
+        },
+        "display": {
+            "tileset": "alie_ui",
+            "tiles": [
+                [
+                    24
+                ]
+            ]
+        }
+    }
+}

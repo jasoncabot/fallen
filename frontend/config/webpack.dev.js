@@ -1,7 +1,6 @@
-const paths = require('./paths')
-const webpack = require('webpack')
-const merge = require('webpack-merge')
-const common = require('./webpack.common.js')
+const { merge } = require('webpack-merge');
+const paths = require('./paths.js');
+const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
   mode: 'development',
@@ -9,14 +8,11 @@ module.exports = merge(common, {
 
   devServer: {
     historyApiFallback: true,
-    contentBase: paths.build,
-    open: true,
+    static: {
+      directory: paths.build,
+    },
     compress: true,
-    hot: true,
     host: process.env.HOST,
     port: 8080
-  },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ]
+  }
 });

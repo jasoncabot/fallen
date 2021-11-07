@@ -1,0 +1,744 @@
+{
+    "milos": {
+        "x": 48,
+        "y": 204,
+        "iconX": 95,
+        "iconY": 253,
+        "width": 48,
+        "height": 48,
+        "name": "Milos",
+        "type": "desert",
+        "energy": 30,
+        "credits": 15,
+        "research": 15,
+        "touching": [
+            "cartasone",
+            "high-point",
+            "sparta",
+            "elkin"
+        ]
+    },
+    "marshall": {
+        "x": 95,
+        "y": 31,
+        "width": 48,
+        "height": 48,
+        "name": "Marshall",
+        "type": "rocky",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "kinabal",
+            "delos",
+            "sparta",
+            "aberdeen",
+            "roanoke"
+        ]
+    },
+    "rock-castle": {
+        "x": 165,
+        "y": 125,
+        "width": 48,
+        "height": 48,
+        "name": "Rock Castle",
+        "type": "rocky",
+        "energy": 15,
+        "credits": 30,
+        "research": 15,
+        "touching": [
+            "aberdeen",
+            "sparta",
+            "high-point",
+            "ayden"
+        ]
+    },
+    "elkin": {
+        "x": 56,
+        "y": 183,
+        "width": 48,
+        "height": 48,
+        "name": "Elkin",
+        "type": "forest",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "sparta",
+            "milos"
+        ]
+    },
+    "aberdeen": {
+        "x": 161,
+        "y": 78,
+        "width": 48,
+        "height": 48,
+        "name": "Aberdeen",
+        "type": "forest",
+        "energy": 5,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "rock-castle",
+            "sparta",
+            "marshall",
+            "roanoke",
+            "creedmoor",
+            "garland"
+        ]
+    },
+    "delos": {
+        "x": 78,
+        "y": 50,
+        "width": 48,
+        "height": 48,
+        "name": "Delos",
+        "type": "desert",
+        "energy": 10,
+        "credits": 10,
+        "research": 30,
+        "touching": [
+            "sparta",
+            "marshall",
+            "kinabal",
+            "norwood"
+        ]
+    },
+    "sparta": {
+        "x": 117,
+        "y": 100,
+        "width": 48,
+        "height": 48,
+        "name": "Sparta",
+        "type": "forest",
+        "energy": 10,
+        "credits": 5,
+        "research": 10,
+        "touching": [
+            "elkin",
+            "milos",
+            "high-point",
+            "rock-castle",
+            "aberdeen",
+            "marshall",
+            "delos"
+        ]
+    },
+    "roanoke": {
+        "x": 194,
+        "y": 37,
+        "width": 48,
+        "height": 48,
+        "name": "Roanoke",
+        "type": "forest",
+        "energy": 15,
+        "credits": 15,
+        "research": 15,
+        "touching": [
+            "marshall",
+            "aberdeen",
+            "creedmoor"
+        ]
+    },
+    "chaos": {
+        "x": 291,
+        "y": 55,
+        "iconX": 362,
+        "iconY": 135,
+        "width": 48,
+        "height": 48,
+        "name": "Chaos",
+        "type": "forest",
+        "energy": 30,
+        "credits": 15,
+        "research": 10,
+        "touching": [
+            "garland",
+            "creedmoor"
+        ]
+    },
+    "cartasone": {
+        "x": 146,
+        "y": 223,
+        "width": 48,
+        "height": 48,
+        "name": "Cartasone",
+        "type": "rocky",
+        "energy": 15,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "haven",
+            "eagle-nest",
+            "high-point",
+            "milos"
+        ]
+    },
+    "high-point": {
+        "x": 171,
+        "y": 176,
+        "width": 48,
+        "height": 48,
+        "name": "High Point",
+        "type": "forest",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "rock-castle",
+            "ayden",
+            "eagle-nest",
+            "cartasone",
+            "milos",
+            "sparta"
+        ]
+    },
+    "haven": {
+        "x": 181,
+        "y": 249,
+        "width": 48,
+        "height": 48,
+        "iconX": 240,
+        "iconY": 274,
+        "name": "Haven",
+        "type": "forest",
+        "energy": 10,
+        "credits": 15,
+        "research": 10,
+        "touching": [
+            "cartasone",
+            "eagle-nest"
+        ]
+    },
+    "garland": {
+        "x": 271,
+        "y": 82,
+        "width": 48,
+        "height": 48,
+        "name": "Garland",
+        "type": "rocky",
+        "energy": 10,
+        "credits": 10,
+        "research": 15,
+        "touching": [
+            "aberdeen",
+            "creedmoor",
+            "chaos"
+        ]
+    },
+    "creedmoor": {
+        "x": 239,
+        "y": 31,
+        "width": 48,
+        "height": 48,
+        "name": "Creedmoor",
+        "type": "desert",
+        "energy": 15,
+        "credits": 15,
+        "research": 5,
+        "touching": [
+            "roanoke",
+            "aberdeen",
+            "garland",
+            "chaos"
+        ]
+    },
+    "eagle-nest": {
+        "x": 226,
+        "y": 213,
+        "iconX": 261,
+        "iconY": 238,
+        "width": 48,
+        "height": 48,
+        "name": "Eagle Nest",
+        "type": "desert",
+        "energy": 15,
+        "credits": 10,
+        "research": 15,
+        "touching": [
+            "haven",
+            "cartasone",
+            "high-point",
+            "ayden",
+            "snake-river"
+        ]
+    },
+    "chertsy": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Chertsy",
+        "type": "desert",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "rolland",
+            "sutton",
+            "rawdon",
+            "masson-lake"
+        ]
+    },
+    "sherbrooke": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Sherbrooke",
+        "type": "desert",
+        "energy": 15,
+        "credits": 15,
+        "research": 15,
+        "touching": [
+            "masson-lake",
+            "hull",
+            "thetfordmines",
+            "three-rivers",
+            "kamouraska"
+        ]
+    },
+    "three-rivers": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Three Rivers",
+        "type": "forest",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "valleyfield",
+            "orford",
+            "kamouraska",
+            "sherbrooke",
+            "thetfordmines"
+        ]
+    },
+    "masson-lake": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Masson Lake",
+        "type": "forest",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "chertsy",
+            "sherbrooke"
+        ]
+    },
+    "rawdon": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Rawdon",
+        "type": "forest",
+        "energy": 10,
+        "credits": 5,
+        "research": 5,
+        "touching": [
+            "chertsy",
+            "sutton",
+            "bromont",
+            "granby"
+        ]
+    },
+    "kamouraska": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Kamouraska",
+        "type": "forest",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "esterel",
+            "orford",
+            "three-rivers",
+            "sherbrooke"
+        ]
+    },
+    "esterel": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Esterel",
+        "type": "forest",
+        "energy": 15,
+        "credits": 15,
+        "research": 15,
+        "touching": [
+            "kamouraska",
+            "orford",
+            "valleyfield"
+        ]
+    },
+    "bromont": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Bromont",
+        "type": "rocky",
+        "energy": 10,
+        "credits": 15,
+        "research": 5,
+        "touching": [
+            "lachine",
+            "sutton",
+            "rawdon",
+            "granby",
+            "alma"
+        ]
+    },
+    "brome-lake": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Brome Lake",
+        "type": "forest",
+        "energy": 30,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "granby",
+            "alma",
+            "hull",
+            "norenda"
+        ]
+    },
+    "lachine": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Lachine",
+        "type": "forest",
+        "energy": 5,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "free-city",
+            "sutton",
+            "bromont"
+        ]
+    },
+    "sutton": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Sutton",
+        "type": "forest",
+        "energy": 30,
+        "credits": 10,
+        "research": 5,
+        "touching": [
+            "free-city",
+            "rolland",
+            "chertsy",
+            "rawdon",
+            "bromont",
+            "lachine"
+        ]
+    },
+    "hull": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Hull",
+        "type": "forest",
+        "energy": 5,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "brome-lake",
+            "norenda",
+            "thetfordmines",
+            "sherbrooke"
+        ]
+    },
+    "rolland": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Rolland",
+        "type": "forest",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "free-city",
+            "sutton",
+            "chertsy"
+        ]
+    },
+    "granby": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Granby",
+        "type": "forest",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "rawdon",
+            "bromont",
+            "alma",
+            "brome-lake"
+        ]
+    },
+    "alma": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Alma",
+        "type": "rocky",
+        "energy": 10,
+        "credits": 10,
+        "research": 15,
+        "touching": [
+            "bromont",
+            "granby",
+            "brome-lake"
+        ]
+    },
+    "free-city": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Free City",
+        "type": "rocky",
+        "energy": 30,
+        "credits": 30,
+        "research": 15,
+        "touching": [
+            "lachine",
+            "sutton",
+            "rolland"
+        ]
+    },
+    "norenda": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Norenda",
+        "type": "desert",
+        "energy": 15,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "brome-lake",
+            "hull",
+            "thetfordmines",
+            "brimstone"
+        ]
+    },
+    "thetfordmines": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Thetfordmines",
+        "type": "rocky",
+        "energy": 15,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "three-rivers",
+            "sherbrooke",
+            "hull",
+            "norenda",
+            "brimstone"
+        ]
+    },
+    "brimstone": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Brimstone",
+        "type": "forest",
+        "energy": 15,
+        "credits": 15,
+        "research": 30,
+        "touching": [
+            "norenda",
+            "thetfordmines"
+        ]
+    },
+    "orford": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Orford",
+        "type": "rocky",
+        "energy": 10,
+        "credits": 10,
+        "research": 5,
+        "touching": [
+            "esterel",
+            "valleyfield",
+            "three-rivers",
+            "kamouraska"
+        ]
+    },
+    "waterloo": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Waterloo",
+        "type": "desert",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": []
+    },
+    "valleyfield": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Valleyfield",
+        "type": "forest",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "esterel",
+            "orford",
+            "three-rivers"
+        ]
+    },
+    "balkany": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48,
+        "name": "Balkany",
+        "type": "rocky",
+        "energy": 10,
+        "credits": 10,
+        "research": 15,
+        "touching": []
+    },
+    "snake-river": {
+        "x": 268,
+        "y": 185,
+        "width": 48,
+        "height": 48,
+        "name": "Snake River",
+        "type": "forest",
+        "energy": 5,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "eagle-nest",
+            "ayden",
+            "canuck",
+            "point-harbour"
+        ]
+    },
+    "ayden": {
+        "x": 232,
+        "y": 168,
+        "width": 48,
+        "height": 48,
+        "name": "Ayden",
+        "type": "forest",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "rock-castle",
+            "high-point",
+            "eagle-nest",
+            "snake-river",
+            "canuck"
+        ]
+    },
+    "canuck": {
+        "x": 309,
+        "y": 159,
+        "iconX": 366,
+        "iconY": 202,
+        "width": 48,
+        "height": 48,
+        "name": "Canuck",
+        "type": "rocky",
+        "energy": 10,
+        "credits": 10,
+        "research": 10,
+        "touching": [
+            "ayden",
+            "snake-river",
+            "point-harbour"
+        ]
+    },
+    "point-harbour": {
+        "x": 319,
+        "y": 231,
+        "width": 48,
+        "height": 48,
+        "name": "Point Harbour",
+        "type": "forest",
+        "energy": 10,
+        "credits": 15,
+        "research": 5,
+        "touching": [
+            "snake-river",
+            "canuck"
+        ]
+    },
+    "norwood": {
+        "x": 40,
+        "y": 71,
+        "width": 48,
+        "height": 48,
+        "name": "Norwood",
+        "type": "forest",
+        "energy": 10,
+        "credits": 5,
+        "research": 10,
+        "touching": [
+            "kinabal",
+            "delos"
+        ]
+    },
+    "kinabal": {
+        "x": 27,
+        "y": 21,
+        "iconX": 62,
+        "iconY": 48,
+        "width": 48,
+        "height": 48,
+        "name": "Kinabal",
+        "type": "forest",
+        "energy": 15,
+        "credits": 15,
+        "research": 15,
+        "touching": [
+            "norwood",
+            "delos",
+            "marshall"
+        ]
+    }
+}

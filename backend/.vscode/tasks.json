@@ -1,0 +1,51 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Redis",
+			"type": "shell",
+			"command": "docker run -it --rm --name local-redis -p 6280:6379 redis:6.2 --requirepass \"password123\"",
+			"isBackground": true,
+			"problemMatcher": [
+				{
+					"pattern": [
+						{
+							"regexp": ".",
+							"file": 1,
+							"location": 2,
+							"message": 3
+						}
+					],
+					"background": {
+						"activeOnStart": true,
+						"beginsPattern": ".* oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo",
+						"endsPattern": ".* Ready to accept connections"
+					}
+				}
+			]
+		},
+		{
+			"label": "npm: watch",
+			"type": "npm",
+			"script": "watch",
+			"isBackground": true,
+			"problemMatcher": [
+				{
+					"pattern": [
+						{
+							"regexp": ".",
+							"file": 1,
+							"location": 2,
+							"message": 3
+						}
+					],
+					"background": {
+						"activeOnStart": true,
+						"beginsPattern": "$ parcel watch",
+						"endsPattern": "✨ Built in .*"
+					}
+				}
+			]
+		}
+	]
+}

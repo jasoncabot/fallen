@@ -2,7 +2,6 @@ export { default as CommandQueue } from './CommandQueue';
 export { default as ConstructionDialog } from './ConstructionDialog';
 export { registerScenePath } from './History';
 export { default as InfoText } from './InfoText';
-export { default as LayerBuilder } from './LayerBuilder';
 export { MenuButton } from './MenuButton';
 export { default as MessageBox } from './MessageBox';
 export { default as ProvinceMap } from './ProvinceMap';

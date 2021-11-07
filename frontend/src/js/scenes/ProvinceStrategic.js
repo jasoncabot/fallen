@@ -3,28 +3,31 @@ import Phaser from 'phaser';
 import {
     ConstructionDialog,
     InfoText,
-    LayerBuilder,
     MessageBox,
     ProvinceOverview,
     registerScenePath,
     StructureDialog,
 } from '../components/';
 
+import { LayerBuilder } from '../components/ProvincePresenter';
+
 import { Strategic, LogoAlien, LogoHuman } from '../../images/ui';
 import activeUnitSelection from '../../images/icons/active-unit-selection.png';
 
-import terrain from './../../images/terrain';
+import { preloadTerrainForProvince } from '../../images/terrain';
+import { buildMapDataForProvince } from '../../maps';
+import { preloadStructures } from '../../images/structures';
+import { preloadUnits } from '../../images/units';
 
-import { registerUnits, registerStructures } from '../assets/Resources';
 import { registerButtons, createButton, buttons } from '../assets/Buttons';
 
 import customCursor from '../../images/misc/FALLEN_223.cur';
 import customPointer from '../../images/misc/FALLEN_218.cur';
 import structurePointer from '../../images/misc/FALLEN_218.cur';
 
-import { Sounds } from './../assets/Sounds';
+import { preloadSounds } from './../assets/Sounds';
 
-import { UnitData, StructureData, ProvinceData, ResourceCalculator } from 'shared';
+import { ProvinceData, ProvinceIndexer, ResourceCalculator } from 'shared';
 
 export default class ProvinceStrategic extends Phaser.Scene {
 
@@ -32,15 +35,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
         super({
             key: 'ProvinceStrategic'
         });
-
-        this.constructionMode = null;
-
-        this.tileSize = {
-            w: 70 / 2,
-            h: 36
-        };
-
-        this.sounds = new Sounds();
     }
 
     init(data) {
@@ -55,7 +49,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 if (road.tileId) {
                     let existing = this.infrastructureViews[`${road.x}-${road.y}`];
                     if (existing) existing.destroy();
-                    let { x, y } = this.screenCoordinates(road.x, road.y);
+                    let { x, y } = { x: 0, y: 0 }; // TODO: this.screenCoordinates(road.x, road.y);
                     let obj = this.infrastructureBlitter.create(x, y, road.tileId);
                     this.infrastructureViews[`${road.x}-${road.y}`] = obj;
                 } else {
@@ -128,8 +122,13 @@ export default class ProvinceStrategic extends Phaser.Scene {
         };
         this.layerBuilder = layerBuilder;
 
-        this.events.on('shutdown', () => {
-            this.events.off('shutdown');
+        this.constructionMode = null;
+
+        this.events.on(Phaser.Input.Events.SHUTDOWN, () => {
+            this.input.off(Phaser.Input.Events.POINTER_UP);
+            this.input.off(Phaser.Input.Events.POINTER_MOVE);
+            this.input.keyboard.off('keyup-H');
+            this.events.off(Phaser.Input.Events.SHUTDOWN);
             this.layerBuilder.shutdown();
             this.layerBuilder = null;
         });
@@ -142,19 +141,10 @@ export default class ProvinceStrategic extends Phaser.Scene {
             this.onDeselected();
         });
 
-        this.load.spritesheet('rocky', terrain.rocky.isometric, { frameWidth: 70, frameHeight: 54 });
-        this.load.spritesheet('forest', terrain.forest.isometric, { frameWidth: 70, frameHeight: 54 });
-        this.load.spritesheet('desert', terrain.desert.isometric, { frameWidth: 70, frameHeight: 54 });
-
-        this.load.spritesheet('rocky-overview', terrain.rocky.overview, { frameWidth: 7, frameHeight: 7 });
-        this.load.spritesheet('forest-overview', terrain.forest.overview, { frameWidth: 7, frameHeight: 7 });
-        this.load.spritesheet('desert-overview', terrain.desert.overview, { frameWidth: 7, frameHeight: 7 });
-        this.load.spritesheet('overlay-overview', terrain.overlay, { frameWidth: 7, frameHeight: 7 });
-
         registerButtons(this, buttons.strategic);
 
-        registerUnits(this);
-        registerStructures(this);
+        preloadUnits(this);
+        preloadStructures(this);
 
         ConstructionDialog.preload(this);
         StructureDialog.preload(this);
@@ -167,7 +157,8 @@ export default class ProvinceStrategic extends Phaser.Scene {
         const logo = this.currentGame.player.owner === 'HUMAN' ? LogoHuman : LogoAlien;
         this.load.image('logo', logo);
 
-        this.sounds.preload(this);
+        preloadSounds(this, ['aargh', 'yessir', 'road', 'telep', 'wbuild', 'inout']);
+        preloadTerrainForProvince(this, this.province);
     }
 
     onDeselected() {
@@ -188,7 +179,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
                 cost: reference.build.cost
             }
         };
-        const tileIndex = this.tileIndexFromCoordinates(this.input.activePointer.worldX, this.input.activePointer.worldY);
+        const tileIndex = this.map.tileToWorldXY(this.input.activePointer.worldX, this.input.activePointer.worldY, true);
         this.updateCurrentConstructionGraphics(tileIndex);
         this.onConstructionModeUpdated();
     }
@@ -410,38 +401,15 @@ export default class ProvinceStrategic extends Phaser.Scene {
         if (this.overviewProvince.visible) {
             this.overviewProvince.visible = false;
             this.overviewProvince.hide();
-            this.mapContainer.visible = true;
+            // this.terrainLayer.visible = true;
         } else {
             this.constructionMode = null;
             this.overviewProvince.visible = true;
             this.overviewProvince.show(this.province, this.currentlySelectedUnit);
-            this.mapContainer.visible = false;
+            // this.terrainLayer.visible = false;
         }
 
         this.onConstructionModeUpdated();
-    }
-
-    // Converts pointer coordinates to tile x, y
-    tileIndexFromCoordinates(x, y) {
-        let h = this.tileSize.h;
-        let w = this.tileSize.w * 2;
-        x = x - (w / 2.0);
-        y = y - (h / 2.0);
-        return {
-            x: Math.floor((x / (w / 2.0) + y / (h / 2.0)) / 2.0),
-            y: Math.floor((y / (h / 2.0) - (x / (w / 2.0))) / 2.0)
-        };
-    }
-
-    screenCoordinates(x, y) {
-        let screenIndex = {
-            x: x - y,
-            y: (x + y) / 2
-        };
-        return {
-            x: screenIndex.x * this.tileSize.w,
-            y: screenIndex.y * this.tileSize.h
-        }
     }
 
     // TODO: all this needs to move to real modules
@@ -484,57 +452,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
         return graphics;
     }
 
-    pointerUpNearPointerDown(downStart) {
-        const tolerance = 5;
-        const movedX = Math.abs(Math.round(this.cameras.main.scrollX) - downStart.x) > tolerance;
-        const movedY = Math.abs(Math.round(this.cameras.main.scrollY) - downStart.y) > tolerance;
-        return !movedX && !movedY
-    }
-
-    renderTileLayers(container, layerBuilder) {
-        container.add(this.terrainBlitter);
-        container.add(this.infrastructureBlitter);
-
-        let scanLines = (layerBuilder.height + layerBuilder.width) - 1;
-        var line = 0;
-        while (line < scanLines) {
-            for (let i = 0, j = line; i <= line; i++, j--) {
-                if (i >= layerBuilder.width) continue;
-                if (j >= layerBuilder.height) continue;
-
-                let tileIndex = { x: i, y: j };
-                let pos = this.screenCoordinates(i, j);
-
-                // render terrain
-                this.terrainBlitter.create(pos.x, pos.y, layerBuilder.terrainAt(tileIndex));
-
-                // render roads and walls
-                if (layerBuilder.roadAt(tileIndex)) {
-                    let obj = this.infrastructureBlitter.create(pos.x, pos.y, layerBuilder.roadAt(tileIndex));
-                    this.infrastructureViews[`${i}-${j}`] = obj;
-                }
-                if (layerBuilder.wallAt(tileIndex)) {
-                    let obj = this.infrastructureBlitter.create(pos.x, pos.y, layerBuilder.wallAt(tileIndex));
-                    this.infrastructureViews[`${i}-${j}`] = obj;
-                }
-
-                // render structures
-                let structure = layerBuilder.structureAt(tileIndex);
-                if (structure) {
-                    this.renderStructure(structure, pos);
-                }
-
-                // render units
-                let unit = layerBuilder.unitAt(tileIndex);
-                if (unit) {
-                    const unitImage = this.renderUnit(unit, pos);
-                    container.add(unitImage);
-                }
-            }
-            line++;
-        }
-    }
-
     renderUnit(unit, pos) {
         const unitImage = this.add.image(pos.x, pos.y, unit.spritesheet, unit.offset + unit.facing)
             .setOrigin(0, 0);
@@ -542,7 +459,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
         // if we don't own this unit then don't allow us to select it
         if (unit.owner === this.currentGame.player.owner) {
             unitImage.setInteractive({ cursor: 'url(' + customPointer + '), pointer' });
-            unitImage.on('pointerup', (_pointer, _x, _y, event) => {
+            unitImage.on(Phaser.Input.Events.POINTER_UP, (_pointer, _x, _y, event) => {
                 if (this.constructionMode) return;
 
                 event.stopPropagation();
@@ -558,7 +475,6 @@ export default class ProvinceStrategic extends Phaser.Scene {
         const structureImage = this.add.image(position.x, position.y, structure.spritesheet, structure.offset)
             .setOrigin(0, 0)
             .setAlpha(structure.state === 'UNDER_CONSTRUCTION' ? 0.5 : 1.0);
-        this.mapContainer.add(structureImage);
 
         let views = this.structureViews[structure.id] || [];
         views.push(structureImage)
@@ -566,16 +482,11 @@ export default class ProvinceStrategic extends Phaser.Scene {
 
         if (structure.owner === this.currentGame.player.owner) {
             structureImage.setInteractive({ cursor: 'url(' + structurePointer + '), pointer', pixelPerfect: true });
-            structureImage.on('pointerup', (_pointer, _x, _y, _event) => {
+            structureImage.on(Phaser.Input.Events.POINTER_UP, (_pointer, _x, _y, _event) => {
                 if (this.constructionMode) return;
                 this.onStructureSelected(structure);
             });
         }
-    }
-
-    centerCameraAtPoint(tileIndex) {
-        let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
-        this.cameras.main.centerOn(pos.x, pos.y);
     }
 
     updateCurrentConstructionGraphics(tileIndex) {
@@ -586,7 +497,7 @@ export default class ProvinceStrategic extends Phaser.Scene {
             return;
         }
 
-        let pos = this.screenCoordinates(tileIndex.x, tileIndex.y);
+        let pos = this.map.tileToWorldXY(tileIndex.x, tileIndex.y);
 
         // show the white square (and potentially add a cross through it when disabled) for:
         // - Taking a unit out of a structure
@@ -598,14 +509,14 @@ export default class ProvinceStrategic extends Phaser.Scene {
             size = { x: this.constructionMode.w, y: this.constructionMode.h };
             if (this.constructionMode.kind === 'pending-unit-exit') {
                 const { reference, container } = this.constructionMode.model;
-                enabledSelector = this.layerBuilder.unitCanDisembark(reference, container, tileIndex);
+                enabledSelector = this.presenter.unitCanDisembark(reference, container, tileIndex);
             } else {
-                enabledSelector = this.layerBuilder.validForConstruction(tileIndex, size, this.constructionMode.category);
+                enabledSelector = this.presenter.validForConstruction(tileIndex, size, this.constructionMode.category);
             }
         } else if (this.currentlySelectedUnit) {
             // Assume all units are 1x1
             size = { x: 1, y: 1 };
-            enabledSelector = this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit.movement, tileIndex);
+            enabledSelector = this.presenter.unitCanOccupy(this.currentlySelectedUnit.movement, tileIndex);
         }
 
         let graphics = this.loadTileSelector(enabledSelector, size);
@@ -682,34 +593,27 @@ export default class ProvinceStrategic extends Phaser.Scene {
         registerScenePath(this, '/games/' + this.gameId + '/' + this.province);
 
         let province = this.currentGame.provinces[this.province];
-        let reference = ProvinceData[this.province];
+        this.presenter = new ProvinceIndexer(ProvinceData[this.province], province);
 
-        this.unitView = {};
-        this.structureViews = {};
-        this.infrastructureViews = {};
-        this.cachedTileSelectors = {};
+        const { map, terrain, structures, units } = buildMapDataForProvince(this, this.province, province);
+        this.map = map;
 
-        this.layerBuilder.initialise(province, UnitData, StructureData, reference);
-
-        this.mapContainer = this.add.container(0, 0).setInteractive({
-            hitArea: new Phaser.Geom.Polygon([
-                35, 18,
-                36, 18,
-                35 + (35 * reference.width), 18 + (18 * reference.width),
-                35 + (35 * reference.width) - (35 * reference.height), 19 + (18 * reference.width) + (18 * reference.height),
-                35 - (35 * reference.height), 19 + (18 * reference.height),
-                35 - (35 * reference.height), 18 + (18 * reference.height)
-            ]),
-            hitAreaCallback: Phaser.Geom.Polygon.Contains,
-            useHandCursor: true,
-            draggable: true
+        terrain.on(Phaser.Input.Events.GAMEOBJECT_DRAG, (_pointer, dragX, dragY) => {
+            this.cameras.main.setScroll(
+                this.cameras.main.scrollX - (dragX / this.cameras.main.zoom),
+                this.cameras.main.scrollY - (dragY / this.cameras.main.zoom)
+            );
+        });
+        terrain.on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, (pointer, _localX, _localY, event) => {
+            if (((pointer.getDistance() < 5) && (pointer.upTime - pointer.downTime) < 250)) {
+                let tileIndex = this.map.worldToTileXY(pointer.worldX, pointer.worldY, true);
+                tileIndex.x -= 1;
+                // TODO: do something with the selection
+                console.log(`selected ${JSON.stringify(tileIndex)}`);
+            }
         });
 
-        this.add.existing(this.mapContainer);
-
-        this.terrainBlitter = this.add.blitter(0, 0, reference.type);
-        this.infrastructureBlitter = this.add.blitter(0, 0, 'structure-infra');
-        this.renderTileLayers(this.mapContainer, this.layerBuilder);
+        this.cachedTileSelectors = {};
 
         // Render active unit selection
         this.activeUnitSelection = this.add.image(0, 0, 'active-unit-selection')
@@ -717,66 +621,47 @@ export default class ProvinceStrategic extends Phaser.Scene {
             .setVisible(false)
             .setDepth(2);
 
-        this.uiCamera = this.cameras.add(0, 0, 640, 480)
-            .setOrigin(0, 0);
+        this.uiCamera = this.cameras.add(0, 0, this.cameras.main.width, this.cameras.main.height)
+            .setOrigin(0, 0)
+            .ignore(this.map.layers.map(l => l.tilemapLayer));
 
-        let dragStart = { x: 0, y: 0 };
-        this.input.on('dragstart', () => {
-            dragStart = { x: this.cameras.main.scrollX, y: this.cameras.main.scrollY };
-        });
-
-        this.input.on('drag', function (_pointer, _gameObject, dragX, dragY) {
-            this.cameras.main.scrollX = dragStart.x - (dragX / this.cameras.main.zoom);
-            this.cameras.main.scrollY = dragStart.y - (dragY / this.cameras.main.zoom);
-        }.bind(this));
-
-        let downStart = { x: 0, y: 0 };
-        this.input.on('pointerdown', (_pointer) => {
-            if (this.modalDialog) return;
-            downStart = { x: Math.round(this.cameras.main.scrollX), y: Math.round(this.cameras.main.scrollY) };
-        }, this);
-
-        this.input.on('pointermove', (pointer, _localX, _localY, _event) => {
-            let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
+        this.input.on(Phaser.Input.Events.POINTER_MOVE, (pointer, _localX, _localY, _event) => {
+            let tileIndex = this.map.worldToTileXY(pointer.worldX, pointer.worldY, true);
+            tileIndex.x -= 1;
             this.updateCurrentConstructionGraphics(tileIndex);
         }, this);
 
-        this.input.on('pointerup', (pointer) => {
-            if (!this.pointerUpNearPointerDown(downStart)) return;
-
-            let tileIndex = this.tileIndexFromCoordinates(pointer.worldX, pointer.worldY);
-
-            if (this.constructionMode) {
-                if (this.constructionMode.kind === 'pending-unit-exit') {
-                    const { unitId, container, reference } = this.constructionMode.model;
-                    if (this.layerBuilder.unitCanDisembark(reference, container, tileIndex)) {
-                        this.onUnitDisembarked({ id: unitId, type: 'unit' }, { id: container.id, type: container.type }, tileIndex);
-                    }
-                } else {
-                    let size = { x: this.constructionMode.w, y: this.constructionMode.h };
-                    let validForConstruction = this.layerBuilder.validForConstruction(tileIndex, size, this.constructionMode.category);
-                    if (validForConstruction) {
-                        let command = this.constructionCommand(this.constructionMode, tileIndex);
-                        this.commandQueue.dispatch(command);
-                    }
-                }
-            } else if (this.overviewProvince.visible) {
-                // find the selected tile
-                tileIndex = {
-                    x: Math.floor((pointer.x - this.overviewProvince.x) / 7),
-                    y: Math.floor((pointer.y - this.overviewProvince.y) / 7),
-                }
-                // center it on the screen
-                this.centerCameraAtPoint(tileIndex);
-                // and hide the overview
-                this.onOverviewToggled();
-            } else if (this.currentlySelectedUnit) {
-                // if we already have a selected unit
-                if (this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit.movement, tileIndex)) {
-                    this.onUnitMoved(this.currentlySelectedUnit, tileIndex);
-                }
-            }
-        }, this);
+        //     if (this.constructionMode) {
+        //         if (this.constructionMode.kind === 'pending-unit-exit') {
+        //             const { unitId, container, reference } = this.constructionMode.model;
+        //             if (this.layerBuilder.unitCanDisembark(reference, container, tileIndex)) {
+        //                 this.onUnitDisembarked({ id: unitId, type: 'unit' }, { id: container.id, type: container.type }, tileIndex);
+        //             }
+        //         } else {
+        //             let size = { x: this.constructionMode.w, y: this.constructionMode.h };
+        //             let validForConstruction = this.layerBuilder.validForConstruction(tileIndex, size, this.constructionMode.category);
+        //             if (validForConstruction) {
+        //                 let command = this.constructionCommand(this.constructionMode, tileIndex);
+        //                 this.commandQueue.dispatch(command);
+        //             }
+        //         }
+        //     } else if (this.overviewProvince.visible) {
+        //         // find the selected tile
+        //         tileIndex = {
+        //             x: Math.floor((pointer.x - this.overviewProvince.x) / 7),
+        //             y: Math.floor((pointer.y - this.overviewProvince.y) / 7),
+        //         }
+        //         // center it on the screen
+        //         this.centerCameraAtPoint(tileIndex);
+        //         // and hide the overview
+        //         this.onOverviewToggled();
+        //     } else if (this.currentlySelectedUnit) {
+        //         // if we already have a selected unit
+        //         if (this.layerBuilder.unitCanOccupy(this.currentlySelectedUnit.movement, tileIndex)) {
+        //             this.onUnitMoved(this.currentlySelectedUnit, tileIndex);
+        //         }
+        //     }
+        // }, this);
 
         // Static UI in a container
         let ui = this.add.container(0, 0).setDepth(2);
@@ -852,16 +737,14 @@ export default class ProvinceStrategic extends Phaser.Scene {
         let infoTextZone = this.add.zone(232, 413, 183, 64)
             .setOrigin(0, 0)
             .setInteractive({ useHandCursor: true })
-            .on('pointerup', (_pointer, _x, _y, event) => {
+            .on(Phaser.Input.Events.POINTER_UP, (_pointer, _x, _y, event) => {
                 event.stopPropagation();
                 this.onDeselected();
             });
         ui.add(infoTextZone);
         this.uiContainer = ui;
-        this.add.existing(ui);
 
         this.cameras.main.ignore(ui);
-        this.uiCamera.ignore(this.mapContainer);
 
         this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
             camera: this.cameras.main,
@@ -877,10 +760,15 @@ export default class ProvinceStrategic extends Phaser.Scene {
         let font = { color: 'green', fontSize: '12px', fontFamily: 'Verdana' };
         ui.add(this.add.text(58, 6, ResourceCalculator.calculateIncome(province, 'RESEARCH'), font).setOrigin(0.5, 0));
         ui.add(this.add.text(133, 6, ResourceCalculator.calculateIncome(province, 'ENERGY'), font).setOrigin(0.5, 0));
-        ui.add(this.add.text(320, 6, reference.name, font).setOrigin(0.5, 0));
+        ui.add(this.add.text(320, 6, province.name, font).setOrigin(0.5, 0));
         ui.add(this.add.text(569, 6, this.currentGame.player.globalReserve + "/" + ResourceCalculator.calculateIncome(province, 'CREDITS'), font).setOrigin(0.5, 0));
 
-        this.centerCameraAtPoint({ x: reference.width / 2, y: reference.height / 2 });
+        const { x, y } = this.map.tileToWorldXY(this.map.width / 2, this.map.height / 2);
+        this.input.keyboard.on('keyup-H', () => {
+            this.cameras.main.zoom = 1;
+            this.cameras.main.centerOn(x, y);
+        });
+        this.cameras.main.centerOn(x, y);
     }
 
     update(time, delta) {
