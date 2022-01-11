@@ -121,9 +121,12 @@ const gameToValue = (game: GameDetails, userId: UserID, date: Date) => {
 };
 
 export {
-    findByIdAndUser,
+    create,
     findAllByUser,
     findById,
-    opposite
+    findByIdAndUser,
+    nextTurn,
+    opposite,
+    save
 }
 

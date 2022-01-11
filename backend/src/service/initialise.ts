@@ -162,7 +162,7 @@ const addExtendedProvinceInformation = (key: string, side: Side, province: Provi
     return province as ProvinceDetails;
 };
 
-module.exports.generateGame = (userId: string, name: string, race: number, difficulty: number, campaignType: number) => {
+const generateGame = (userId: string, name: string, race: number, difficulty: number, campaignType: number) => {
     const side: Side = [Side.Human, Side.Alien][race];
     const sides: Record<UserID, SideDetails> = {};
     sides[userId] = {
@@ -271,4 +271,8 @@ module.exports.generateGame = (userId: string, name: string, race: number, diffi
             return provinces;
         }, {})
     return game;
+};
+
+export {
+    generateGame
 };

@@ -12,7 +12,7 @@ const touchingOwnedWithScanner = (provinceKey: string, owner: string, provinces:
         .find(calculator.hasStructureOfType('SCANNER'));
 }
 
-module.exports.removeUnknown = (game: any, userId: string) => {
+const removeUnknown = (game: any, userId: string) => {
     // hide information not known by userId
     let user = game.sides[userId];
     delete game.sides;
@@ -36,3 +36,4 @@ module.exports.removeUnknown = (game: any, userId: string) => {
     return game;
 }
 
+export { removeUnknown };
