@@ -41,18 +41,12 @@ jobs:
       - name: Build and push backend
         run: |
           # .env file is copied as part of Dockerfile
-          echo "REDIS_HOST=$REDIS_HOST" >> backend/.env
-          echo "REDIS_KEY=$REDIS_KEY" >> backend/.env
-          echo "REDIS_PORT=$REDIS_PORT" >> backend/.env
           echo "PORT=$PORT" >> backend/.env
           echo "WS_PORT=$WS_PORT" >> backend/.env
           echo "WS_ORIGIN=$WS_ORIGIN" >> backend/.env
           DOCKER_BUILDKIT=1 docker build -f Dockerfile.backend . -t ${{ secrets.REGISTRY_HOST }}/fallenhaven/backend:${{ steps.get_version.outputs.VERSION }}
           docker push ${{ secrets.REGISTRY_HOST }}/fallenhaven/backend:${{ steps.get_version.outputs.VERSION }}
         env:
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_KEY: ${{ secrets.REDIS_KEY }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
           PORT: 4500
           WS_PORT: 3500
           WS_ORIGIN: "https://fallenhaven.jasoncabot.me"
