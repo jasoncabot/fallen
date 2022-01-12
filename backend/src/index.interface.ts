@@ -7,9 +7,6 @@ interface Middleware {
     socketio: Server;
 }
 
-type UserID = string;
-
 export {
-    Middleware,
-    UserID
+    Middleware
 }

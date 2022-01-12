@@ -15,9 +15,8 @@ import {
     UnitData,
     UnitDetails,
     UnitID,
+    UserID
 } from "shared";
-import { UserID } from "../index.interface";
-
 
 const { v4: uuidv4 } = require('uuid');
 
@@ -166,12 +165,12 @@ const generateGame = (userId: string, name: string, race: number, difficulty: nu
     const side: Side = [Side.Human, Side.Alien][race];
     const sides: Record<UserID, SideDetails> = {};
     sides[userId] = {
-        "globalReserve": cash[difficulty],
-        "name": name,
-        "type": SideType.Human,
-        "owner": side,
-        "difficulty": difficulty,
-        "technology": {
+        globalReserve: cash[difficulty],
+        name: name,
+        type: SideType.Human,
+        owner: side,
+        difficulty: difficulty,
+        technology: {
             "energy-efficiency": 0,
             "armour": 0,
             "speed": 0,
@@ -265,10 +264,10 @@ const generateGame = (userId: string, name: string, race: number, difficulty: nu
     game.defaultProvince = campaigns.startingProvinces[campaignType];
     game.provinces = Object.keys(provinces)
         .filter(province => campaign.includes(province))
-        .reduce((provinces: Record<ProvinceID, ProvinceDetails>, key: ProvinceID) => {
+        .reduce((provinceInstances: Record<ProvinceID, ProvinceDetails>, key: ProvinceID) => {
             const overview = provinces[key];
-            provinces[key] = addExtendedProvinceInformation(key, side, overview);
-            return provinces;
+            provinceInstances[key] = addExtendedProvinceInformation(key, side, overview);
+            return provinceInstances;
         }, {})
     return game;
 };

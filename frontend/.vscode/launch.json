@@ -8,7 +8,7 @@
             "type": "firefox",
             "request": "launch",
             "name": "Debug in Firefox",
-            "url": "http://192.168.1.40:8080",
+            "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}/src",
             "preLaunchTask": "npm: start - frontend",
             "reAttach": true,

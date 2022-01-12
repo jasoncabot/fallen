@@ -1,0 +1,21 @@
+@token = NzAwYmM4ZDUtZDUwMi00NjdlLWFlZWQtYTY5NmRmYjc1YTJh
+
+
+### Create Game
+# @name create
+POST http://localhost:3000/games
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name":"Jason",
+    "race":0,
+    "difficulty":0,
+    "campaign":0
+}
+
+### Show Game
+
+GET http://localhost:3000/games/{{create.response.body.id}}
+Authorization: Bearer {{token}}
+Content-Type: application/json

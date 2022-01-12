@@ -1,7 +1,6 @@
 const MAX_GAMES = 10;
 
-import { GameDetails, GameRow, opposite, GameID } from 'shared';
-import { UserID } from '../index.interface';
+import { GameDetails, GameRow, opposite, GameID, UserID } from 'shared';
 
 const findByIdAndUser = async (redis: any, gameId: GameID, userId: UserID) => {
     const game = await findById(redis, gameId);
@@ -12,13 +11,13 @@ const findByIdAndUser = async (redis: any, gameId: GameID, userId: UserID) => {
 }
 
 const findAllByUser = async (redis: any, userId: UserID) => {
-    const games = await redis.lrangeAsync(`games-${userId}`, 0, MAX_GAMES);
+    const games = await redis.LRANGE(`games-${userId}`, 0, MAX_GAMES);
     return games.map(valueToGameRow);
 }
 
 const findById = async (redis: any, id: GameID) => {
     try {
-        const value = await redis.getAsync(`game-${id}`)
+        const value = await redis.get(`game-${id}`)
         const game = JSON.parse(value);
         if (!game) {
             throw new Error('Game not found');
@@ -33,9 +32,9 @@ const create = async (redis: any, game: GameDetails, userId: UserID) => {
     const gameData = JSON.stringify(game, null, 0);
     const gameRowData = gameToValue(game, userId, new Date());
     try {
-        await redis.lpushAsync(`games-${userId}`, gameRowData);
-        await redis.ltrimAsync(`games-${userId}`, 0, MAX_GAMES - 1);
-        await redis.setAsync(`game-${game.id}`, gameData);
+        await redis.LPUSH(`games-${userId}`, gameRowData);
+        await redis.LTRIM(`games-${userId}`, 0, MAX_GAMES - 1);
+        await redis.SET(`game-${game.id}`, gameData);
         return game.id;
     } catch (err) {
         throw new Error('Unable to create game with id ' + game.id);
@@ -61,7 +60,7 @@ const save = async (redis: any, game: GameDetails) => {
 
     const gameData = JSON.stringify(game, null, 0);
     try {
-        await redis.setAsync(`game-${game.id}`, gameData);
+        await redis.set(`game-${game.id}`, gameData);
     } catch (e) {
         throw new Error('Unable to save game with id ' + game.id);
     }
@@ -74,8 +73,8 @@ const save = async (redis: any, game: GameDetails) => {
             // id to the front of the list and update the date associated with it
             // simplest way to update the (small) list is to just delete and reset
 
-            const games = await redis.lrangeAsync(userGamesKey, 0, MAX_GAMES);
-            await redis.delAsync(userGamesKey);
+            const games = await redis.LRANGE(userGamesKey, 0, MAX_GAMES);
+            await redis.DEL(userGamesKey);
             const list = games.map(valueToGameRow)
                 .map((g: GameRow) => {
                     if (g.id === game.id) {
@@ -91,9 +90,9 @@ const save = async (redis: any, game: GameDetails) => {
 
             let multi = redis.multi();
             list.forEach((value: string) => {
-                multi.rpush(userGamesKey, value);
+                multi.RPUSH(userGamesKey, value);
             });
-            await multi.execAsync();
+            await multi.exec();
         });
     } catch (e) {
         throw new Error('Unable to update game lists');

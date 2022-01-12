@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { UserID } from "../index.interface";
+import { UserID } from "shared";
 
 const requireUser = (req: any, res: any, next: any) => {
     const token = (req.headers.authorization || "").split(' ')[1] || "";
@@ -21,4 +21,4 @@ const requireSocketUser = (socket: any, next: any) => {
     next();
 }
 
-export { requireUser, requireSocketUser, UserID };
+export { requireUser, requireSocketUser };

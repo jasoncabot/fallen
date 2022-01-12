@@ -71,7 +71,7 @@ interface Placeable {
 
 interface UnitDetails {
     kind: string // TODO: strongly type these
-    position: Placeable
+    position?: Placeable
     experience: number
     hp: number
     owner: Side
@@ -86,6 +86,7 @@ interface StructureDetails {
     owner: Side
 }
 
+type UserID = string;
 type GameID = string;
 type ProvinceID = string;
 type UnitID = string;
@@ -101,7 +102,7 @@ interface GameDetails {
         kind: TurnKind
         owner: Side
     }
-    sides: Record<Side, SideDetails>
+    sides: Record<UserID, SideDetails>
     provinces: Record<ProvinceID, ProvinceDetails>
 }
 
@@ -138,4 +139,5 @@ export {
     TurnKind,
     UnitDetails,
     UnitID,
+    UserID,
 };

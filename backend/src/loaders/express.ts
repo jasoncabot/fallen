@@ -6,6 +6,7 @@ const load = async () => {
     app.use(cors({
         origin: process.env.WS_ORIGIN
     }));
+    app.use(express.json());
 
     app.get('/status', (_req, res) => { res.status(200).end(); });
     app.head('/status', (_req, res) => { res.status(200).end(); });
