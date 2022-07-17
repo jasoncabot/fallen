@@ -1,0 +1,62 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_worker:
+    runs-on: ubuntu-latest
+    name: Worker
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v2
+      - name: Read Node version from .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+      - run: yarn
+      - name: Publish
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          workingDirectory: 'backend'
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: publish
+  deploy_pages:
+    runs-on: ubuntu-latest
+    name: Pages
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v2
+      - name: Read Node version from .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+      - run: echo "API_ENDPOINT=${{ secrets.API_ENDPOINT }}" > .env
+      - run: echo "ASSET_ENDPOINT=${{ secrets.ASSET_ENDPOINT }}" >> .env
+      - run: echo "CANVAS_RENDERER=true" >> .env
+      - run: echo "WEBGL_RENDERER=true" >> .env
+      - run: echo "WS_ENDPOINT=${{ secrets.WS_ENDPOINT }}" >> .env
+      - run: yarn
+      - run: yarn build
+      - name: Publish
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: 'frontend'
+          command: pages publish --project-name=$SITE build
+        env:
+          SITE: fallen
