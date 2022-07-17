@@ -1,18 +1,8 @@
-enum Side {
-    Human = 'HUMAN',
-    Alien = 'ALIEN',
-    Neutral = 'NEUTRAL',
-}
+type Side = 'HUMAN' | 'ALIEN' | 'NEUTRAL';
 
-enum TurnKind {
-    Strategic = "STRATEGIC",
-    Tactical = "TACTICAL"
-}
+type TurnKind = "STRATEGIC" | "TACTICAL";
 
-enum SideType {
-    AI = 'AI',
-    Human = 'Player'
-}
+type SideType = 'AI' | 'Player';
 
 interface Technology {
     "energy-efficiency": number
@@ -38,11 +28,7 @@ interface ProvinceOverview {
     capital?: Side
 }
 
-enum TerrainType {
-    Desert = 'desert',
-    Forest = 'forest',
-    Rocky = 'rocky'
-}
+type TerrainType = 'desert' | 'forest' | 'rocky';
 
 interface ProvinceDetails {
     x: number
@@ -70,7 +56,7 @@ interface Placeable {
 }
 
 interface UnitDetails {
-    kind: string // TODO: strongly type these
+    kind: UnitType
     position?: Placeable
     experience: number
     hp: number
@@ -80,11 +66,14 @@ interface UnitDetails {
 
 interface StructureDetails {
     hp: number
-    kind: string // TODO: strongly type these
+    kind: StructureType // TODO: strongly type these
     units: UnitDetails[]
     position: Placeable
     owner: Side
 }
+
+type UnitType = "LTTANK" | "TANK" | "SQUAD" | "LONGRANGE" | "TROOP" | "UNIQUE1" | "LTGRAV" | "HEAVYGRAV" | "LONGRANGEHOVER";
+type StructureType = "WALL" | "TOWER" | "AIRPORT" | "BARRACKS" | "STARPORT" | "ANTIMISSILE" | "ENERGY" | "FACTORY" | "LAB" | "MINING" | "SCANNER" | "DROPSHIP" | "MISSILE";
 
 type UserID = string;
 type GameID = string;
@@ -134,10 +123,12 @@ export {
     SideType,
     StructureDetails,
     StructureID,
+    StructureType,
     Technology,
     TerrainType,
     TurnKind,
     UnitDetails,
     UnitID,
+    UnitType,
     UserID,
 };

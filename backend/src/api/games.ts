@@ -1,3 +1,5 @@
+import { IRouter, Request, Response } from "express";
+
 import { GameID } from "shared";
 
 import { Middleware } from "../index.interface";
@@ -8,7 +10,6 @@ import { removeUnknown } from '../service/information';
 import { requireUser } from "./auth";
 
 // TODO: type these properly
-type AuthenticatedRequest = any;
 type AuthenticatedSocket = any;
 
 const register = (middleware: Middleware) => {
@@ -17,7 +18,7 @@ const register = (middleware: Middleware) => {
 
     // // GET /games/:id
     // // Read game
-    express.get('/games/:id', requireUser, (req: AuthenticatedRequest, res) => {
+    express.get('/games/:id', requireUser, (req: Request, res) => {
         findByIdAndUser(redis, req.params.id, req.user)
             .then((game) => {
                 return removeUnknown(game, req.user);
@@ -32,7 +33,7 @@ const register = (middleware: Middleware) => {
 
     // GET /games
     // Find in-progress games
-    express.get('/games', requireUser, (req: AuthenticatedRequest, res) => {
+    express.get('/games', requireUser, (req: Request, res) => {
         findAllByUser(redis, req.user)
             .then((games) => {
                 res.status(200).json(games);
@@ -44,7 +45,7 @@ const register = (middleware: Middleware) => {
 
     // // POST /games
     // // Create game
-    express.post('/games', requireUser, (req: AuthenticatedRequest, res) => {
+    express.post('/games', requireUser, (req: Request, res) => {
         const game = generateGame(req.user, req.body.name, req.body.race, req.body.difficulty, req.body.campaign);
         // save game to database
         create(redis, game, req.user)
@@ -58,14 +59,14 @@ const register = (middleware: Middleware) => {
 
     // POST /games/:id/action
     // Performs a serialised action without ending your turn
-    express.post('/games/:id/action', requireUser, (req: AuthenticatedRequest, res) => {
+    express.post('/games/:id/action', requireUser, (req: Request, res) => {
         // TODO: this needs to actually apply the changes to the game and return
         res.status(201).json({ id: req.params.id });
     });
 
     // POST /games/:id/turn
     // Ends your current turn and ensures validating all actions have been sent
-    express.post('/games/:id/turn', requireUser, (req: AuthenticatedRequest, res) => {
+    express.post('/games/:id/turn', requireUser, (req: Request, res) => {
         findByIdAndUser(redis, req.params.id, req.user)
             .then((game) => {
                 // perform some validation to ensure user has submitted all moves for this turn

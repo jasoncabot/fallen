@@ -23,7 +23,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "redis": "^4.0.1",
-    "shared": "file:../shared",
+    "shared": "file:./../shared",
     "socket.io": "^4.3.1",
     "uuid": "^8.3.2"
   },

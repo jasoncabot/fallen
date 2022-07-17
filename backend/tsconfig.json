@@ -8,17 +8,23 @@
         "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "dist",
-        "baseUrl": ".",
+        "baseUrl": "./src",
         "paths": {
             "*": [
                 "node_modules/*"
+            ],
+            "@shared/*": [
+                "./../../shared/dist/*"
             ]
         }
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "src/custom.d.ts"
     ],
     "exclude": [
-        "src/client"
+        "src/client",
+        "node_modules",
+        "dist"
     ]
 }

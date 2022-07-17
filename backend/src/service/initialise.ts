@@ -162,12 +162,12 @@ const addExtendedProvinceInformation = (key: string, side: Side, province: Provi
 };
 
 const generateGame = (userId: string, name: string, race: number, difficulty: number, campaignType: number) => {
-    const side: Side = [Side.Human, Side.Alien][race];
+    const side: Side = (["HUMAN", "ALIEN"] as Side[])[race];
     const sides: Record<UserID, SideDetails> = {};
     sides[userId] = {
         globalReserve: cash[difficulty],
         name: name,
-        type: SideType.Human,
+        type: 'Player',
         owner: side,
         difficulty: difficulty,
         technology: {
@@ -186,7 +186,7 @@ const generateGame = (userId: string, name: string, race: number, difficulty: nu
     sides[computerId] = {
         globalReserve: cash[2 - difficulty],
         name: "Computer",
-        type: SideType.AI,
+        type: 'AI',
         owner: opposite(side),
         difficulty: difficulty,
         technology: {
@@ -200,29 +200,29 @@ const generateGame = (userId: string, name: string, race: number, difficulty: nu
     } as SideDetails;
 
     const provinces: Record<ProvinceID, ProvinceOverview> = {
-        "cartasone": { "owner": Side.Neutral, "name": ProvinceData['cartasone'].name },
-        "eagle-nest": { "owner": Side.Neutral, "name": ProvinceData['eagle-nest'].name },
+        "cartasone": { "owner": 'NEUTRAL', "name": ProvinceData['cartasone'].name },
+        "eagle-nest": { "owner": 'NEUTRAL', "name": ProvinceData['eagle-nest'].name },
         "haven": { "owner": side, "capital": side /* always own haven */, "name": ProvinceData['haven'].name },
         "free-city": { "owner": side, "capital": side /* you only own this side */, "name": ProvinceData['free-city'].name },
         "lachine": { "owner": opposite(side), "name": ProvinceData['lachine'].name },
         "sutton": { "owner": opposite(side), "name": ProvinceData['sutton'].name },
-        "milos": { "owner": Side.Neutral, "name": ProvinceData['milos'].name },
-        "high-point": { "owner": Side.Neutral, "name": ProvinceData['high-point'].name },
-        "ayden": { "owner": Side.Neutral, "name": ProvinceData['ayden'].name },
-        "snake-river": { "owner": Side.Neutral, "name": ProvinceData['snake-river'].name },
-        "canuck": { "owner": Side.Neutral, "name": ProvinceData['canuck'].name },
-        "point-harbour": { "owner": Side.Neutral, "name": ProvinceData['point-harbour'].name },
-        "rock-castle": { "owner": Side.Neutral, "name": ProvinceData['rock-castle'].name },
-        "sparta": { "owner": Side.Neutral, "name": ProvinceData['sparta'].name },
-        "aberdeen": { "owner": Side.Neutral, "name": ProvinceData['aberdeen'].name },
-        "delos": { "owner": Side.Neutral, "name": ProvinceData['delos'].name },
-        "elkin": { "owner": Side.Neutral, "name": ProvinceData['elkin'].name },
-        "norwood": { "owner": Side.Neutral, "name": ProvinceData['norwood'].name },
-        "kinabal": { "owner": Side.Neutral, "name": ProvinceData['kinabal'].name },
-        "marshall": { "owner": Side.Neutral, "name": ProvinceData['marshall'].name },
-        "roanoke": { "owner": Side.Neutral, "name": ProvinceData['roanoke'].name },
-        "creedmoor": { "owner": Side.Neutral, "name": ProvinceData['creedmoor'].name },
-        "garland": { "owner": Side.Neutral, "name": ProvinceData['garland'].name },
+        "milos": { "owner": 'NEUTRAL', "name": ProvinceData['milos'].name },
+        "high-point": { "owner": 'NEUTRAL', "name": ProvinceData['high-point'].name },
+        "ayden": { "owner": 'NEUTRAL', "name": ProvinceData['ayden'].name },
+        "snake-river": { "owner": 'NEUTRAL', "name": ProvinceData['snake-river'].name },
+        "canuck": { "owner": 'NEUTRAL', "name": ProvinceData['canuck'].name },
+        "point-harbour": { "owner": 'NEUTRAL', "name": ProvinceData['point-harbour'].name },
+        "rock-castle": { "owner": 'NEUTRAL', "name": ProvinceData['rock-castle'].name },
+        "sparta": { "owner": 'NEUTRAL', "name": ProvinceData['sparta'].name },
+        "aberdeen": { "owner": 'NEUTRAL', "name": ProvinceData['aberdeen'].name },
+        "delos": { "owner": 'NEUTRAL', "name": ProvinceData['delos'].name },
+        "elkin": { "owner": 'NEUTRAL', "name": ProvinceData['elkin'].name },
+        "norwood": { "owner": 'NEUTRAL', "name": ProvinceData['norwood'].name },
+        "kinabal": { "owner": 'NEUTRAL', "name": ProvinceData['kinabal'].name },
+        "marshall": { "owner": 'NEUTRAL', "name": ProvinceData['marshall'].name },
+        "roanoke": { "owner": 'NEUTRAL', "name": ProvinceData['roanoke'].name },
+        "creedmoor": { "owner": 'NEUTRAL', "name": ProvinceData['creedmoor'].name },
+        "garland": { "owner": 'NEUTRAL', "name": ProvinceData['garland'].name },
         "chaos": { "owner": opposite(side), "capital": opposite(side), "name": ProvinceData['chaos'].name },
         "rolland": { "owner": opposite(side), "name": ProvinceData['rolland'].name },
         "chertsy": { "owner": opposite(side), "name": ProvinceData['chertsy'].name },
@@ -251,7 +251,7 @@ const generateGame = (userId: string, name: string, race: number, difficulty: nu
             seed: Math.floor(Math.random() * Math.floor(2147483647)),
             number: 1,
             action: 0,
-            kind: TurnKind.Strategic,
+            kind: "STRATEGIC",
             owner: side // starts on your turn
         },
         sides: sides,
