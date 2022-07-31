@@ -1,0 +1,78 @@
+include "common.fbs";
+include "maps.fbs";
+
+namespace Buffer.Data;
+
+enum TerrainType : byte {
+    Desert,
+    Forest,
+    Rock
+}
+
+enum ProvinceKey : byte {
+    Aberdeen,
+    Alma,
+    Ayden,
+    Balkany,
+    Brimstone,
+    BromeLake,
+    Bromont,
+    Canuck,
+    Cartasone,
+    Chaos,
+    Chertsy,
+    Creedmoor,
+    Delos,
+    EagleNest,
+    Elkin,
+    Esterel,
+    FreeCity,
+    Garland,
+    Granby,
+    Haven,
+    HighPoint,
+    Hull,
+    Kamouraska,
+    Kinabal,
+    Lachine,
+    Marshall,
+    MassonLake,
+    Milos,
+    Norenda,
+    Norwood,
+    Orford,
+    PointHarbour,
+    Rawdon,
+    Roanoke,
+    RockCastle,
+    Rolland,
+    Sherbrooke,
+    SnakeRiver,
+    Sparta,
+    Sutton,
+    Thetfordmines,
+    ThreeRivers,
+    Valleyfield,
+    Waterloo,
+}
+
+table Province {
+    key: ProvinceKey;
+    name: string;
+    pos: Buffer.Common.Vec2;
+    icon_pos: Buffer.Common.Vec2;
+    width: uint8;
+    height: uint8;
+    type: TerrainType;
+    energy: uint16;
+    credits: uint16;
+    research: uint16;
+    touching: [ProvinceKey];
+    tiles: Buffer.Map.TileMap;
+}
+
+table ProvinceLookup {
+  provinces: [Province];
+}
+
+root_type ProvinceLookup;

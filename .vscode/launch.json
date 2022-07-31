@@ -5,38 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "command": "yarn dev",
+            "name": "Start backend",
             "request": "launch",
-            "name": "Launch backend",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run-script",
-                "debug"
-            ],
+            "type": "node-terminal",
             "cwd": "${workspaceFolder}/backend",
-            "port": 9229,
-            "skipFiles": [
-                "<node_internals>/**"
-            ]
         },
         {
-            "type": "firefox",
+            "name": "Start frontend",
             "request": "launch",
-            "name": "Debug in Firefox",
-            "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}/src",
-            "preLaunchTask": "npm: start - frontend",
-            "reAttach": true,
-            "pathMappings": [
-                {
-                    "url": "webpack:///src",
-                    "path": "${workspaceFolder}/frontend/src"
-                },
-                {
-                    "url": "webpack:///node_modules",
-                    "path": "${workspaceFolder}/frontend/node_modules"
-                }
-            ]
-        },
+            "type": "chrome",
+            "url": "http://0.0.0.0:3000",
+            "webRoot": "${workspaceFolder}/frontend/src",
+            "cwd": "${workspaceFolder}/frontend",
+            "preLaunchTask": "yarn start - frontend"
+        }
+
     ]
 }

@@ -1,0 +1,6 @@
+namespace Buffer.Common;
+
+struct Vec2 {
+    x:short;
+    y:short;
+}

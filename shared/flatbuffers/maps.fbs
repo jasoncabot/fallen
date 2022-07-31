@@ -1,0 +1,24 @@
+namespace Buffer.Map;
+
+table TileCollision {
+    index: uint16;
+    direction: uint8;
+}
+
+table MapLayer {
+    key: string;
+    data: [uint16];
+}
+
+table TileSet {
+    key: string;
+    gid: uint16;
+    collisions: [TileCollision];
+}
+
+table TileMap {
+    width: uint16;
+    height: uint16;
+    layers: [MapLayer];
+    tilesets: [TileSet];
+}

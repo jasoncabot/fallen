@@ -44,7 +44,7 @@ npm run start:dev
 ```
 
 
-![Fallen Haven Example](./img/fallen-haven-example.jpg)
+![Fallen Haven Example](./docs/img/fallen-haven-example.jpg)
 
 ## Production Deployment
 
