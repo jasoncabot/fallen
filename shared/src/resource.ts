@@ -1,4 +1,4 @@
-import { StructureData } from "@app/shared/structures";
+import { StructureData } from "./structures";
 
 const calculateIncome = (province, category) => {
     // TODO: need to take the current technology

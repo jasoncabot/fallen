@@ -7,7 +7,6 @@ export default {
         },
     },
     moduleNameMapper: {
-        '^@app/shared$': '<rootDir>/../shared/src/index.ts',
         "^@/(.*)$": "<rootDir>/src/$1",
         "^(\\.{1,2}/.*)\\.js$": "$1",
     },

@@ -1,14 +1,12 @@
 {
-  "name": "@app/frontend",
+  "name": "@fallen/frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@app/shared": "file:../shared/src",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.11.45",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "phaser": "^3.55.2",
@@ -17,6 +15,15 @@
     "react-scripts": "5.0.1",
     "typescript": "^4.7.4",
     "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-0",
+    "@babel/plugin-syntax-flow": "^7.14.5",
+    "@babel/plugin-transform-react-jsx": "^7.14.9",
+    "@testing-library/dom": "^7.21.4",
+    "@fallen/shared": "file:../shared",
+    "@types/node": "^18.8.3",
+    "esbuild-copy-static-files": "^0.1.0"
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",
@@ -32,7 +39,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "^@app/shared$": "<rootDir>/../shared/src/index.ts"
+      "^@fallen/shared$": "<rootDir>/../shared/dist/shared.mjs"
     }
   },
   "browserslist": {

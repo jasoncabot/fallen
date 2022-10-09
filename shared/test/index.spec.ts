@@ -1,4 +1,4 @@
-import { loadProvinces } from "@app/shared/index";
+import { loadProvinces } from "../src";
 
 test("Should load all provinces", () => {
     const provinces = loadProvinces();

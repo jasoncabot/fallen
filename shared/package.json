@@ -1,10 +1,19 @@
 {
-  "name": "@app/shared",
+  "name": "@fallen/shared",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/shared.js",
+  "main": "./dist/shared.mjs",
+  "module": "./dist/shared.cjs",
+  "types": "./dist/shared.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/shared.mjs",
+      "require": "./dist/shared.cjs"
+    }
+  },
+  "private": true,
   "scripts": {
-    "build": "node build.js",
+    "build": "tsc -p tsconfig.json && node build.js",
     "build:data": "flatc -o src/ --ts flatbuffers/*.fbs --ts && node build-data.js && node dist/generate.js",
     "start": "node build.js --watch",
     "test": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js"
@@ -13,7 +22,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^28.1.6",
-    "@types/node": "^18.0.5",
+    "@types/node": "^18.8.3",
     "esbuild": "^0.14.49",
     "esbuild-jest": "^0.5.0",
     "flatbuffers": "^2.0.6",

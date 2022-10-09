@@ -14,12 +14,9 @@
         "esModuleInterop": true,
         "baseUrl": "./",
         "paths": {
-            "@app/backend/*": [
+            "@fallen/backend/*": [
                 "src/*"
             ],
-            "@app/shared/*": [
-                "./../shared/src/*"
-            ]
         }
     },
     "include": [

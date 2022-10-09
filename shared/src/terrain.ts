@@ -1,4 +1,4 @@
-import { TerrainType } from "@app/shared/provinces";
+import { TerrainType } from "./provinces";
 
 type TerrainKind = "Plain" | "Mountain" | "Water" | "Bridge" | "Rock" | "Forest";
 

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -19,13 +19,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "paths": {
-      "@app/shared": [
-        "./../shared/src/index.ts"
-      ]
-    }
   },
   "include": [
-    "src"
+    "src/**/*"
   ]
 }

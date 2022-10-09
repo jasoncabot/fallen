@@ -1,4 +1,4 @@
-import { loadProvinces } from "@app/shared/index";
+import { loadProvinces } from "@fallen/shared";
 
 export async function handleRequest(request: Request, env: Bindings) {
     const provinces = loadProvinces();

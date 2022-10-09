@@ -1,11 +1,20 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
+    "strict": true,
+    "outFile": "./dist/shared.d.ts",
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
-    "paths": {
-      "@app/shared/*": ["src/*"]
-    }
-  }
+    "lib": [
+      "es2016",
+      "dom"
+    ],
+  },
+  "include": [
+    "./src/index.ts"
+  ],
+  "exclude": [
+    "./dist",
+    "./node_modules"
+  ]
 }

@@ -15,7 +15,6 @@ const config: Config.InitialOptions = {
         }]
     },
     moduleNameMapper: {
-        "^@app/shared/(.*)$": "<rootDir>/src/$1",
         "^(\\.{1,2}/.*)\\.js$": "$1",
     },
     testEnvironmentOptions: {
