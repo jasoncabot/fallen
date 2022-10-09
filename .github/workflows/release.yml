@@ -1,58 +1,55 @@
-name: Release versioned container image
+name: Deploy
 
 on:
   push:
-    tags:        
-      - release/v*
+    branches:
+      - main
 
 jobs:
-  build:
-    # The type of runner that the job will run on
+  deploy:
     runs-on: ubuntu-latest
-
+    name: Deploy Application
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Version from Tag Name
-        id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 4)
-  
-      - name: Azure Container Registry Login
-        uses: azure/docker-login@v1
+      - name: Read Node version from .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+      - name: Setup Node
+        uses: actions/setup-node@v1
         with:
-          login-server: ${{ secrets.REGISTRY_HOST }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-
-      - name: Build and push frontend
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+      - name: Build Shared
+        working-directory: ./shared
         run: |
-          # .env file is copied as part of Dockerfile
-          echo "API_ENDPOINT=$API_ENDPOINT" >> frontend/.env
-          echo "ASSET_ENDPOINT=/assets/data" >> frontend/.env
-          echo "CANVAS_RENDERER=true" >> frontend/.env
-          echo "WEBGL_RENDERER=true" >> frontend/.env
-          echo "WS_ENDPOINT=https://fallenhaven.jasoncabot.me" >> frontend/.env
-          DOCKER_BUILDKIT=1 docker build -f Dockerfile.frontend . -t ${{ secrets.REGISTRY_HOST }}/fallenhaven/frontend:${{ steps.get_version.outputs.VERSION }}
-          docker push ${{ secrets.REGISTRY_HOST }}/fallenhaven/frontend:${{ steps.get_version.outputs.VERSION }}
-        env:
-          API_ENDPOINT: https://fallenhavenapi.jasoncabot.me
-
-      - name: Build and push backend
+          yarn
+          yarn build
+          CI=true yarn test
+      - name: Build Frontend
+        working-directory: ./frontend
         run: |
-          # .env file is copied as part of Dockerfile
-          echo "REDIS_HOST=$REDIS_HOST" >> backend/.env
-          echo "REDIS_KEY=$REDIS_KEY" >> backend/.env
-          echo "REDIS_PORT=$REDIS_PORT" >> backend/.env
-          echo "PORT=$PORT" >> backend/.env
-          echo "WS_PORT=$WS_PORT" >> backend/.env
-          echo "WS_ORIGIN=$WS_ORIGIN" >> backend/.env
-          DOCKER_BUILDKIT=1 docker build -f Dockerfile.backend . -t ${{ secrets.REGISTRY_HOST }}/fallenhaven/backend:${{ steps.get_version.outputs.VERSION }}
-          docker push ${{ secrets.REGISTRY_HOST }}/fallenhaven/backend:${{ steps.get_version.outputs.VERSION }}
+          yarn
+          yarn build
+          CI=true yarn test
+      - name: Build Backend
+        working-directory: ./backend
+        run: |
+          yarn
+          yarn build
+          yarn test
+      - name: Publish Backend
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          workingDirectory: 'backend'
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: publish
+      - name: Publish Frontend
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: 'frontend'
+          command: pages publish --project-name=$SITE dist
         env:
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_KEY: ${{ secrets.REDIS_KEY }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          PORT: 4500
-          WS_PORT: 3500
-          WS_ORIGIN: "https://fallenhaven.jasoncabot.me"
+          SITE: ${{ github.event.repository.name }}
