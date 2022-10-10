@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.client.json",
+  "compilerOptions": {
+    "paths": {
+      "@client/*": ["./*"]
+    }
+  },
+  "include": ["./**/*", "../shared/**/*", "../vite.config.ts"]
+}

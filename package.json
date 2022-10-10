@@ -1,0 +1,51 @@
+{
+  "name": "fallen",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "deploy": "npm run build && wrangler deploy",
+    "preview": "vite preview",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.client.json --noEmit",
+    "lint": "eslint src client shared",
+    "format": "prettier --write \"src/**/*.ts\" \"client/**/*.{ts,tsx,css}\" \"shared/**/*.ts\"",
+    "cf-typegen": "wrangler types",
+    "generate:data": "flatc -o shared/ --ts flatbuffers/*.fbs && tsx shared/generate.ts"
+  },
+  "dependencies": {
+    "flatbuffers": "^24.3.25",
+    "hono": "^4.7.0",
+    "jose": "^5.10.0",
+    "phaser": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "uuid": "^11.0.5"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.4.0",
+    "@cloudflare/vitest-pool-workers": "^0.8.0",
+    "@eslint/js": "^9.0.0",
+    "@tailwindcss/vite": "^4.1.4",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^25.6.0",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.5",
+    "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "eslint": "^9.0.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "tailwindcss": "^4.1.4",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.30.1",
+    "vite": "^6.3.3",
+    "vitest": "^3.1.2",
+    "wrangler": "^4.13.2"
+  }
+}

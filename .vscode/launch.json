@@ -15,7 +15,7 @@
             "name": "Start frontend",
             "request": "launch",
             "type": "chrome",
-            "url": "http://0.0.0.0:3000",
+            "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}/frontend/src",
             "cwd": "${workspaceFolder}/frontend",
             "preLaunchTask": "yarn start - frontend"

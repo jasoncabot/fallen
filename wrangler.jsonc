@@ -1,0 +1,47 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fallen",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "preview_urls": false,
+  "workers_dev": false,
+  "routes": [
+    {
+      "custom_domain": true,
+      "enabled": true,
+      "pattern": "fallen.jasoncabot.me"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+
+  // Static assets served from the Vite build output
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS"
+  },
+
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "GAME",
+        "class_name": "Game"
+      }
+    ]
+  },
+
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["Game"]
+    }
+  ],
+
+  // Vars are typed by `wrangler types`. Override locally via .dev.vars.
+  // Empty string means the var exists but is falsy in production.
+  "vars": {
+    "DEV": ""
+  }
+}

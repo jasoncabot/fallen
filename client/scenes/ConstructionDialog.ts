@@ -1,0 +1,121 @@
+import Phaser from 'phaser';
+import { Alliance, Displayable, StructureCategory, StructureData, StructureTiles, StructureValue } from '../../shared/index';
+import { GameObjects } from 'phaser';
+import { createButton, manufacturing, registerButtons } from '../assets/Buttons';
+import dialogBuild from '../images/ui/dialog-build.png';
+
+export default class ConstructionDialog extends GameObjects.Container {
+    onStructureSelected: (structure: StructureValue) => void;
+    currentOffset: number;
+    structureKeys: StructureCategory[];
+    currentImages: Phaser.GameObjects.Image[];
+    currentStructure: StructureValue | undefined;
+    nameLabel!: GameObjects.Text;
+    uniqueFeatureLabel!: GameObjects.Text;
+    energyConsumptionLabel!: GameObjects.Text;
+    armourLabel!: GameObjects.Text;
+    costLabel!: GameObjects.Text;
+    restrictionLabel!: GameObjects.Text;
+
+    static preload(scene: Phaser.Scene) {
+        registerButtons(scene, manufacturing);
+        scene.load.image('dialog-build', dialogBuild);
+    }
+
+    constructor(scene: Phaser.Scene, x: number, y: number, side: Alliance, callback: (structure: StructureValue) => void) {
+        super(scene, x, y);
+
+        this.onStructureSelected = callback;
+        this.setSize(384, 268);
+        this.setInteractive(new Phaser.Geom.Rectangle(0, 0, 384, 268), Phaser.Geom.Rectangle.Contains)
+            .on('pointerup', (_pointer: Phaser.Input.Pointer, _x: number, _y: number, event: Phaser.Types.Input.EventData) => {
+            event.stopPropagation();
+            if (this.currentStructure) this.onStructureSelected(this.currentStructure);
+        });
+        this.setScrollFactor(0);
+
+        this.currentOffset = 0;
+        this.structureKeys = (Object.keys(StructureData) as StructureCategory[])
+            .filter((key: StructureCategory) => {
+                const kind = StructureData[key].kind;
+                return kind.constructable && kind.owner.indexOf(side) >= 0;
+            });
+        this.currentImages = [];
+    }
+
+    show() {
+        this.setVisible(true);
+        this.add(this.scene.add.image(0, 0, 'dialog-build').setOrigin(0, 0).setScrollFactor(0));
+
+        this.add(createButton(this.scene, 216, 238, manufacturing.up, (button) => {
+            this.currentOffset -= 1;
+            if (this.currentOffset < 0) this.currentOffset = this.structureKeys.length - 1;
+            this.currentStructure = StructureData[this.structureKeys[this.currentOffset]];
+            this.onCurrentStructureUpdated();
+        }));
+        this.add(createButton(this.scene, 256, 238, manufacturing.down, (button) => {
+            this.currentOffset += 1;
+            if (this.currentOffset >= this.structureKeys.length) this.currentOffset = 0;
+            this.currentStructure = StructureData[this.structureKeys[this.currentOffset]];
+            this.onCurrentStructureUpdated();
+        }));
+
+        const small = 2;
+        const medium = 50;
+        const ox = 16;
+        var oy = 23;
+        this.nameLabel = this.scene.add.text(ox, oy, "", { color: 'green', fontSize: '14px', fontFamily: 'Verdana' });
+        this.add(this.nameLabel);
+        this.uniqueFeatureLabel = this.scene.add.text(ox, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.uniqueFeatureLabel);
+        this.energyConsumptionLabel = this.scene.add.text(ox, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.energyConsumptionLabel);
+        this.armourLabel = this.scene.add.text(ox, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.armourLabel);
+        this.costLabel = this.scene.add.text(ox, oy += (12 + small), "", { color: 'green', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.costLabel);
+        this.restrictionLabel = this.scene.add.text(ox, oy += (12 + medium), "", { color: 'red', fontSize: '12px', fontFamily: 'Verdana' });
+        this.add(this.restrictionLabel);
+
+        this.currentStructure = StructureData[this.structureKeys[this.currentOffset]];
+        this.onCurrentStructureUpdated();
+
+        return this;
+    }
+
+    hide() {
+        this.setVisible(false);
+        this.destroy();
+    }
+
+    onCurrentStructureUpdated() {
+        if (!this.currentStructure) return;
+
+        this.draw(this.currentStructure.display);
+
+        this.nameLabel.setText(this.currentStructure.kind.name);
+        this.uniqueFeatureLabel.setText(this.currentStructure.encyclopedia.short);
+        this.energyConsumptionLabel.setText(`Energy consumption: ${this.currentStructure.energyUsage} EP per turn`);
+        this.armourLabel.setText(`Armour: ${this.currentStructure.hp}`);
+        this.costLabel.setText(`Cost: ${this.currentStructure.build.cost}`);
+        this.restrictionLabel.setText('One per province');
+    }
+
+    draw(structure: Displayable<StructureTiles>) {
+        this.currentImages.forEach(img => { img.destroy() });
+        let offset = structure.offset;
+        const start = { x: 238, y: 90 };
+        for (let x = 0; x < structure.width!; x++) {
+            for (let y = 0; y < structure.height!; y++) {
+                let img = this.scene.add.image(
+                    start.x + ((x - y) * 35),
+                    start.y + (((x + y) / 2) * 36),
+                    structure.tiles,
+                    offset++)
+                    .setOrigin(0);
+                this.currentImages.push(img);
+                this.add(img);
+            }
+        }
+    }
+}

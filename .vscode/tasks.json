@@ -13,12 +13,12 @@
                     "background": {
                         "activeOnStart": true,
                         "beginsPattern": {
-                            "regexp": "yarn run"
+                            "regexp": "\\[esbuild\\] start"
                         },
                         "endsPattern": {
-                            "regexp": "Starting the development server..."
+                            "regexp": "\\[esbuild\\] finish"
                         }
-                    }
+                        }
                 }
             ],
             "label": "yarn start - frontend",

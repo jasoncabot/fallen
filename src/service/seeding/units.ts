@@ -1,0 +1,89 @@
+export type UnitOwner = 'PLAYER' | 'OPPOSITE';
+
+export interface UnitSeed {
+  type: string;
+  position: { x: number; y: number };
+  experience: number;
+  owner?: UnitOwner;
+}
+
+export const units: Record<string, UnitSeed[]> = {
+  haven: [
+    { type: 'SQUAD', position: { x: 25, y: 20 }, experience: 1 },
+    { type: 'SQUAD', position: { x: 22, y: 27 }, experience: 1 },
+    { type: 'SQUAD', position: { x: 18, y: 19 }, experience: 1 },
+    { type: 'LTTANK', position: { x: 26, y: 32 }, experience: 1 },
+    { type: 'TROOP', position: { x: 30, y: 29 }, experience: 1 },
+    { type: 'TROOP', position: { x: 26, y: 20 }, experience: 1 },
+    { type: 'LTTANK', position: { x: 30, y: 22 }, experience: 1 },
+    { type: 'LTTANK', position: { x: 30, y: 26 }, experience: 1 }
+  ],
+  'eagle-nest': [
+    { position: { x: 23, y: 25 }, type: 'LONGRANGE', experience: 1 },
+    { position: { x: 25, y: 28 }, type: 'TANK', experience: 1 },
+    { position: { x: 3, y: 23 }, type: 'TANK', experience: 1 },
+    { position: { x: 3, y: 21 }, type: 'TANK', experience: 1 },
+    { position: { x: 5, y: 7 }, type: 'TANK', experience: 1 },
+    { position: { x: 21, y: 27 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 31, y: 17 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 27, y: 24 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 26, y: 28 }, type: 'TANK', experience: 1 },
+    // Units that join the player as part of the mission
+    { position: { x: 23, y: 39 }, type: 'SQUAD', experience: 4, owner: 'PLAYER' },
+    { position: { x: 29, y: 39 }, type: 'SQUAD', experience: 2, owner: 'PLAYER' },
+    { position: { x: 32, y: 38 }, type: 'SQUAD', experience: 2, owner: 'PLAYER' },
+    { position: { x: 30, y: 39 }, type: 'SQUAD', experience: 2, owner: 'PLAYER' },
+    { position: { x: 26, y: 39 }, type: 'SQUAD', experience: 3, owner: 'PLAYER' },
+    { position: { x: 25, y: 42 }, type: 'TANK', experience: 2, owner: 'PLAYER' },
+    { position: { x: 29, y: 42 }, type: 'TANK', experience: 4, owner: 'PLAYER' },
+    { position: { x: 26, y: 42 }, type: 'TANK', experience: 2, owner: 'PLAYER' },
+    { position: { x: 23, y: 42 }, type: 'TANK', experience: 3, owner: 'PLAYER' },
+    { position: { x: 22, y: 42 }, type: 'TANK', experience: 2, owner: 'PLAYER' },
+    { position: { x: 24, y: 39 }, type: 'SQUAD', experience: 2, owner: 'PLAYER' },
+    { position: { x: 27, y: 39 }, type: 'SQUAD', experience: 3, owner: 'PLAYER' },
+    { position: { x: 28, y: 42 }, type: 'TANK', experience: 4, owner: 'PLAYER' },
+    { position: { x: 21, y: 38 }, type: 'SQUAD', experience: 2, owner: 'PLAYER' }
+  ],
+  cartasone: [
+    { position: { x: 40, y: 21 }, type: 'LTTANK', experience: 1 },
+    { position: { x: 25, y: 6 }, type: 'LTTANK', experience: 1 },
+    { position: { x: 29, y: 19 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 40, y: 14 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 38, y: 7 }, type: 'LTTANK', experience: 1 },
+    { position: { x: 19, y: 28 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 23, y: 14 }, type: 'LONGRANGE', experience: 1 },
+    { position: { x: 1, y: 15 }, type: 'TANK', experience: 1 },
+    { position: { x: 30, y: 21 }, type: 'LTTANK', experience: 1 },
+    { position: { x: 26, y: 3 }, type: 'LONGRANGE', experience: 1 },
+    { position: { x: 33, y: 24 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 18, y: 7 }, type: 'LTTANK', experience: 1 },
+    { position: { x: 31, y: 20 }, type: 'LONGRANGE', experience: 1 },
+    { position: { x: 34, y: 24 }, type: 'LTTANK', experience: 1 },
+    { position: { x: 23, y: 13 }, type: 'TANK', experience: 1 },
+    { position: { x: 35, y: 3 }, type: 'LTTANK', experience: 1 },
+    { position: { x: 43, y: 6 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 35, y: 13 }, type: 'LONGRANGE', experience: 1 },
+    { position: { x: 31, y: 7 }, type: 'LONGRANGE', experience: 1 },
+    { position: { x: 43, y: 27 }, type: 'LONGRANGE', experience: 1 },
+    { position: { x: 40, y: 23 }, type: 'LONGRANGE', experience: 1 },
+    { position: { x: 47, y: 22 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 4, y: 16 }, type: 'LONGRANGE', experience: 1 },
+    { position: { x: 22, y: 30 }, type: 'TANK', experience: 1 },
+    { position: { x: 39, y: 30 }, type: 'TANK', experience: 1 },
+    { position: { x: 35, y: 19 }, type: 'TANK', experience: 1 },
+    { position: { x: 39, y: 18 }, type: 'TANK', experience: 1 },
+    { position: { x: 29, y: 11 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 30, y: 13 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 27, y: 5 }, type: 'TANK', experience: 1 }
+  ],
+  milos: [
+    { position: { x: 4, y: 36 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 40, y: 21 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 5, y: 0 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 3, y: 19 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 42, y: 38 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 32, y: 9 }, type: 'SQUAD', experience: 1 },
+    { position: { x: 24, y: 24 }, type: 'LONGRANGE', experience: 3 },
+    { position: { x: 20, y: 24 }, type: 'TANK', experience: 3 }
+  ]
+};

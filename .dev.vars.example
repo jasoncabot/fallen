@@ -1,0 +1,6 @@
+# Copy this file to .dev.vars for local development (never commit .dev.vars)
+# These vars override wrangler.jsonc [vars] during `wrangler dev` / `vite dev`
+
+# Enables the dev auth bypass: accepts `Authorization: Bearer <uuid>` header
+# instead of a real Cloudflare Access JWT. Set to empty string to disable.
+DEV=true
