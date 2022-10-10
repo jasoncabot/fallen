@@ -48,12 +48,6 @@ npm run start:dev
 
 ## Production Deployment
 
-The Javascript frontend is built using [webpack](./frontend/config/webpack.prod.js) to produce a static bundle that can be deployed to any CDN.
-
-The game is [currently running](https://fallenhaven.jasoncabot.me) on Azure Kubernetes Service.
-
-It's a static nginx server [configured](./frontend/nginx.conf) to serve a static website where the Kubernetes Deployment, Service and Ingress are defined in this [manifest](./manifests/frontend.yaml)
-
-Everything is deployed automatically using [GitHub Actions](./.github/workflows/build-deploy-frontend.yml) and an Azure Service Principal
-
-The backend is built using standard Node and an express web server which is bundled into a Docker image before being deployed to the same Kubernetes cluster as the frontend.
+* Frontend is React + Phaser on Cloudflare Pages
+* Shared library is Typescript and data encoded as Flatbuffers that can be imported on either front or backend
+* Backend is Typescript and Node on Cloudflare Workers

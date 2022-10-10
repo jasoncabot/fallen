@@ -1,8 +1,8 @@
 import { UnitType } from "./units";
 
-type StructureCategory = "WALL" | "HTUR" | "HAIR" | "HBAR" | "HBAY" | "HDEF" | "HENY" | "HFAC" | "HLAB" | "HMIN" | "HRAD" | "HSHP" | "HSIL" |
+export type StructureCategory = "WALL" | "HTUR" | "HAIR" | "HBAR" | "HBAY" | "HDEF" | "HENY" | "HFAC" | "HLAB" | "HMIN" | "HRAD" | "HSHP" | "HSIL" |
     "ATUR" | "AAIR" | "ABAR" | "ABAY" | "ADEF" | "AENY" | "AFAC" | "ALAB" | "AMIN" | "ARAD" | "ASHP" | "ASIL";
-type StructureType = "WALL" | "TOWER" | "AIRPORT" | "BARRACKS" | "STARPORT" | "ANTIMISSILE" | "ENERGY" | "FACTORY" | "LAB" | "MINING" | "SCANNER" | "DROPSHIP" | "MISSILE";
+    export type StructureType = "WALL" | "TOWER" | "AIRPORT" | "BARRACKS" | "STARPORT" | "ANTIMISSILE" | "ENERGY" | "FACTORY" | "LAB" | "MINING" | "SCANNER" | "DROPSHIP" | "MISSILE";
 type Alliance = "HUMAN" | "ALIEN" | "NEUTRAL";
 type Placement = "B-WALL" | "B-WALL-OR-ROAD" | "B-ROAD" | "ANYWHERE";
 type StructureTiles = "structure-build" | "structure-infra" | "structure-human" | "structure-human-dropship" | "structure-alien" | "structure-alien-dropship";
@@ -10,7 +10,7 @@ type StructureTiles = "structure-build" | "structure-infra" | "structure-human" 
 interface StructureKind {
     category: StructureCategory
     type: StructureType
-    name: String
+    name: string
     constructable: boolean
     owner: Alliance[]
 }
@@ -37,7 +37,7 @@ export interface EncyclopediaEntry<EntryType> {
     next?: EntryType
     prev?: EntryType
 }
-interface StructureValue {
+export interface StructureValue {
     kind: StructureKind
     display: Displayable<StructureTiles>
     action?: StructureAction

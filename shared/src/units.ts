@@ -10,11 +10,11 @@ export type UnitType = "SQUAD" |
     "HEAVYGRAV" |
     "LONGRANGEHOVER";
 
-type UnitCategory = "HSQU" | "HRAN" | "HATV" | "HART" | "HBUG" | "HTNK" | "HSPE" | "HGRV" | "HGUN" | "ASQD" | "ASNI" | "ALTK" | "APLA" | "AGRV" | "AFLY" | "AMDT" | "ASUP" | "AMEG" | "NGRV" | "NATV" | "NTNK" | "NROC";
+export type UnitCategory = "HSQU" | "HRAN" | "HATV" | "HART" | "HBUG" | "HTNK" | "HSPE" | "HGRV" | "HGUN" | "ASQD" | "ASNI" | "ALTK" | "APLA" | "AGRV" | "AFLY" | "AMDT" | "ASUP" | "AMEG" | "NGRV" | "NATV" | "NTNK" | "NROC";
 
 type Movement = "GROUND" | "HOVER";
 
-interface WeaponData {
+export interface WeaponData {
     name: "PLASMA LAUNCHER" | "EXPLOSIVE MINE"
     range: number
     damage: {
@@ -27,7 +27,7 @@ interface WeaponData {
 
 }
 
-interface UnitValue {
+export interface UnitValue {
     kind: {
         category: UnitCategory
         type: UnitType
@@ -1055,3 +1055,5 @@ const data: Record<UnitCategory, UnitValue> = {
         }
     }
 }
+
+export { data as UnitData };
