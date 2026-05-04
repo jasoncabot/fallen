@@ -1,3 +1,4 @@
+import { cloudflareTest } from '@cloudflare/vitest-pool-workers';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -5,15 +6,10 @@ export default defineConfig({
     projects: [
       {
         // Worker tests run inside the real workerd runtime via miniflare
+        plugins: [cloudflareTest({ wrangler: { configPath: './wrangler.jsonc' } })],
         test: {
           name: 'worker',
           include: ['src/**/*.{spec,test}.ts'],
-          pool: '@cloudflare/vitest-pool-workers',
-          poolOptions: {
-            workers: {
-              wrangler: { configPath: './wrangler.jsonc' }
-            }
-          }
         }
       },
       {
