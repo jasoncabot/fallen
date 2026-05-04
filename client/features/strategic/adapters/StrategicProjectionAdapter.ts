@@ -9,7 +9,6 @@ import {
 import { ConstructionModeCategory } from '../construction';
 import { StrategicProjectionAdapterPort } from '../ports';
 
-import { v4 } from 'uuid';
 
 interface UnitBuilder {
     owner: Alliance;
@@ -488,7 +487,7 @@ export default class StrategicProjectionAdapter implements StrategicProjectionAd
     }
 
     buildStructure(category: StructureCategory, position: { x: number, y: number }) {
-        const structureId: StructureIdentifier = v4();
+        const structureId: StructureIdentifier = crypto.randomUUID();
         let reference = this.structureReferenceLookup[category];
         const instance: StructureEntityState = {
             id: structureId,

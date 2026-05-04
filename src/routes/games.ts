@@ -1,5 +1,4 @@
 import { Hono } from 'hono';
-import { v4 as uuidv4 } from 'uuid';
 import { requireUser, type HonoEnv } from '../middleware/auth';
 import {
   buildGameListId,
@@ -32,7 +31,7 @@ games.get('/', async (c) => {
 games.post('/', async (c) => {
   const userId = c.get('userId');
   const body = await c.req.json<CreateRequest>();
-  const gameId = uuidv4();
+  const gameId = crypto.randomUUID();
   const obj = c.env.GAME.get(c.env.GAME.idFromName(gameId));
   const created = await obj
     .fetch(createGameAction(gameId, userId), { method: 'POST', body: JSON.stringify(body) })
@@ -62,7 +61,7 @@ games.post('/:id/ws', async (c) => {
   const userId = c.get('userId');
   const gameId = c.req.param('id');
   const tokenObj = c.env.GAME.get(c.env.GAME.idFromName('tokens'));
-  return tokenObj.fetch(createTokenGameAction(gameId, userId, uuidv4()));
+  return tokenObj.fetch(createTokenGameAction(gameId, userId, crypto.randomUUID()));
 });
 
 // Upgrade to WebSocket using a previously minted token
